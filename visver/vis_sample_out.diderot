@@ -1,0 +1,47 @@
+//initialize fields
+//unu save -f nrrd -e ascii -i ev.nrrd | less
+field#3(2)[]F = c4hexic⊛  image("rst/data/output5_p_observ.nrrd");
+
+//the middle
+input real midx;
+input real midy;
+//take steps in each direction (to get same distance from center)
+input real incx;
+input real incy;
+input int positions;
+
+//distance from center
+function real  rad(vec2 pos){
+    real diffx = (pos[0]-midx);
+    real diffy = (pos[1]-midy);
+    return sqrt(diffx*diffx+ diffy*diffy);
+}
+
+
+strand raycast(int i) {
+    real c = -9;
+    output tensor [9] ev = [c,c,c,c,c,c,c,c,c];
+    tensor [2] pos = [0,0];
+    update {
+
+        tensor [2] pos_0 = [midx-i*incx,midy-i*incy];
+        tensor [2] pos_1 = [midx+i*incx,midy+i*incy];
+        tensor [2] pos_2 = [midx+i*incx,midy-i*incy];
+        tensor [2] pos_3 = [midx-i*incx,midy+i*incy];
+
+        real probe_0 = c;
+        real probe_1 = c;
+        real probe_2 = c;
+        real probe_3 = c;
+        if(inside(pos_0, F) && inside(pos_1, F) && inside(pos_2, F) && inside(pos_3, F)){
+            probe_0 = F(pos_0);
+            probe_1 = F(pos_1);
+            probe_2 = F(pos_2);
+            probe_3 = F(pos_3);
+        }
+        ev = [pos_1[0], rad(pos_0), rad(pos_1), rad(pos_2), rad(pos_3), probe_0, probe_1, probe_2, probe_3];
+        stabilize;
+
+   }
+}
+initially [ raycast(i) | i in 0..positions-1 ];

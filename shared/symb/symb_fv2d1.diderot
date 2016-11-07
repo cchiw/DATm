@@ -1,0 +1,80 @@
+input int sz0 ("# samples on faster axis") = 101;
+input int sz1 ("# samples on slower axis") = 100;
+input real width ("approx width of world-space region sampled") = 1;
+input real off ("translation offset from origin-centered grid") = 0;
+input real shear ("amount of shear in sampling grid") = 0;
+input real angle ("orientation (in degrees) of faster axis") = 0;
+input vec4 parm ("parameters that functions may use") = [0,0,0,0];
+
+real theta = angle*π/180;
+// rotation by theta of [1,0] towards [0,1]
+//tensor[1,1] rot = [[cos(theta)],[sin(theta))]];
+// sample spacing on faster and (unsheared) slower axis
+real spc = width/(sz0-1);
+
+// changed hereto do 1 dimension
+real edge0 =spc;// rot•spc;
+
+// location of first sample
+real orig = -(edge0*(sz0-1))/2 + off;
+
+//-- field defined by coefficients --
+//-- single--
+input vec4 base1 = [0, 0, 0, 0];    // _, x, x*x
+input vec4 base2 = [0, 0, 0, 0];
+
+
+function real axis(real x, vec4 base){
+    real a = base[0];
+    real b = base[1];
+    real c = base[2];
+    real d = base[3];
+    return a+b*x+c*x*x+d*x*x*x;
+}
+
+function vec2 func(real x) {
+    return [axis(x, base1), axis(x, base2)];
+}
+
+strand sample(int idx0) {
+    output vec2 out = [0.0,0.0];
+    update {
+        /* Diderot doesn't (currently) allow print statements from
+        global initialization, so to print something once per
+        program, you need to test for a condition that will be true
+        for one strand.  By the immediate stabilize, this will only
+        run for one iteration. */
+        if (0 == idx0) {
+        print("NRRD0004\n");
+        print("# Complete NRRD file format specification at:\n");
+        print("# http://teem.sourceforge.net/nrrd/format.html\n");
+        // NOTE: this assumes we haven't been compiled with --double
+        print("type: float\n");
+        print("dimension: 2 \n");
+        print("sizes: 2 ", sz0, "\n");
+        print("kinds: 2-vector space \n");
+       // print("centers: cell\n");
+        // NOTE: this assumes machine endianness
+        print("endian: little\n");
+        print("encoding: raw\n");
+        print("space dimension: 1\n");
+        // Diderot prints vectors like it parses them, e.g "[0.1,0.3]"
+        // but this is not how orientation vectors are stored in the NRRD
+        // header, hence the need to print individual components
+        print("space directions: none (", edge0, ")\n");
+        print("space origin: (", orig, ")\n");
+        // NOTE: this assumes output filename is not explicitly set
+        print("data file: out.nrrd\n");
+        print("byte skip: -1\n");
+    }
+    out = func(orig + idx0*edge0);
+    stabilize;
+    }
+}
+
+/*
+** Create one strand per sample point. The "initially [ ]" creates a grid
+** of strands (as opposed to a collection).
+*/
+initially [ sample(idx0)
+| idx0 in 0..(sz0-1) ];
