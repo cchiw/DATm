@@ -1,0 +1,60 @@
+//initialize fields
+//unu save -f nrrd -e ascii -i ev.nrrd | less
+field#3(2)[]F = c4hexic⊛  image("rst/data/output5_p_observ.nrrd");
+
+//the middle
+input real midx;
+input real midy;
+//take steps in each direction (to get same distance from center)
+input real incx;
+input real incy;
+input int positions;
+
+
+function real rad(vec2 pos){
+real x = pos[0];
+real y = pos[1];
+return sqrt(x*x+y*y);
+}
+function tensor [9] eval(int i, real dist, tensor [2]pos0, tensor [2] pos1, tensor [2]pos2,tensor [2]pos3){
+    tensor [2] pos_0 = [midx+pos0[0], midy+pos0[1]];
+    tensor [2] pos_1 = [midx-pos1[0], midy-pos1[1]];
+    tensor [2] pos_2 = [midx+pos2[0], midy-pos2[1]];
+    tensor [2] pos_3 = [midx-pos3[0], midy-pos3[1]];
+    real c = -9;
+    real probe_0 = c;
+    real probe_1 = c;
+    real probe_2 = c;
+    real probe_3 = c;
+    if(inside(pos_0, F) && inside(pos_1, F) && inside(pos_2, F) && inside(pos_3, F)){
+        probe_0 = F(pos_0);
+        probe_1 = F(pos_1);
+        probe_2 = F(pos_2);
+        probe_3 = F(pos_3);
+    }
+    tensor [9] ev = [i, rad(pos_0), rad(pos_1),rad(pos_2), rad(pos_3), probe_0, probe_1, probe_2, probe_3];
+return ev;
+
+}
+
+strand raycast(int i) {
+    real c = -9;
+    output tensor [9] vis_sample_out = [c,c,c,c,c,c,c,c,c];
+    tensor [2] pos0 = [0,0];
+    tensor [2] pos1 = [0,0];
+    tensor [2] pos2 = [0,0];
+    tensor [2] pos3 = [0,0];
+
+    //distance from center
+    real dist = i*incx;
+
+    update {
+        vec2 pos = [0,0];
+        foo_samplespread
+        vis_sample_out =  eval(i, dist, pos0,pos1,pos2,pos3);
+
+        stabilize;
+
+   }
+}
+initially [ raycast(i) | i in 0..positions-1 ];
