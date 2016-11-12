@@ -1,0 +1,56 @@
+
+field#3(2)[]F = c4hexic⊛  image("rst/data/output5_p_observ.nrrd");
+int ires = 300;
+//the middle
+input real midx;
+input real midy;
+//take steps in each direction (to get same distance from center)
+input real incx;
+input real incy;
+
+
+function vec2 get_pos0(vec2 pos){
+    real inc_xx = pos[0];
+    real inc_yy = pos[1];
+    return [midx-inc_xx,midy-inc_yy];
+}
+function vec2 get_pos1(vec2 pos){
+    real inc_xx = pos[0];
+    real inc_yy = pos[1];
+    return [midx+inc_xx,midy+inc_yy];
+}
+function vec2 get_pos2(vec2 pos){
+    real inc_xx = pos[0];
+    real inc_yy = pos[1];
+    return [midx+inc_xx,midy-inc_yy];
+}
+function vec2 get_pos3(vec2 pos){
+    real inc_xx = pos[0];
+    real inc_yy = pos[1];
+    return [midx-inc_xx,midy+inc_yy];
+}
+
+function bool ss(vec2 pos, vec2 pos0){
+    real diffx = |pos[0]-pos0[0]|;
+    real diffy = |pos[1]-pos0[1]|;
+    real eps = 2;
+    return ((diffx<eps) && (diffy<eps));
+}
+
+strand raycast(real ui, real vi) {
+
+    output tensor [3] vis_color = [1,1,1];
+    tensor[3] mark_default = [0,0,1.2];
+    tensor [3] mark_color =  [1.2,0.4,0.3];
+    tensor[2] pos = [ui,vi];
+    foo_colorspread
+
+    update {
+        if(inside(pos,F)){
+            foo_color_mark
+        }
+        stabilize;
+      }
+}
+initially [ raycast(ui,vi)
+            | vi in 0..ires-1, ui in 0..ires-1 ];

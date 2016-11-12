@@ -1,0 +1,406 @@
+
+field#3(2)[]F = c4hexic⊛  image("../rst/data/output5_p_observ.nrrd");
+int ires = 300;
+//the middle
+input real midx=150;
+input real midy=150;
+//take steps in each direction (to get same distance from center)
+input real incx=5;
+input real incy=5;
+
+function real pnt(real dist, real p){
+    //r^2-y^2=x^2
+    real pp = p;
+    real rr = dist*dist;
+return sqrt(rr-pp*pp);
+}
+
+function real get_x(int i){
+real pos_x =0;
+    if(i==0){ pos_x=0;}
+    else if(i<1){ pos_x=0;}//up to 0
+    else if(i<2){ pos_x=4;}//up to 5
+    else if(i<3){ pos_x=7;}//up to 10
+    else if(i<4){ pos_x=2;}//up to 15
+    else if(i<5){ pos_x=18;}//up to 20
+    else if(i<6){ pos_x=5;}//up to 25
+    else if(i<7){ pos_x=27;}//up to 30
+    else if(i<8){ pos_x=11;}//up to 35
+    else if(i<9){ pos_x=33;}//up to 40
+    else if(i<10){ pos_x=39;}//up to 45
+    else if(i<11){ pos_x=47;}//up to 50
+    else if(i<12){ pos_x=4;}//up to 55
+    else if(i<13){ pos_x=58;}//up to 60
+    else if(i<14){ pos_x=61;}//up to 65
+    else if(i<15){ pos_x=13;}//up to 70
+    else if(i<16){ pos_x=45;}//up to 75
+    else if(i<17){ pos_x=70;}//up to 80
+    else if(i<18){ pos_x=60;}//up to 85
+    else if(i<19){ pos_x=81;}//up to 90
+    else if(i<20){ pos_x=65;}//up to 95
+    else if(i<21){ pos_x=90;}//up to 100
+    else if(i<22){ pos_x=10;}//up to 105
+    else if(i<23){ pos_x=75;}//up to 110
+    else if(i<24){ pos_x=110;}//up to 115
+    else if(i<25){ pos_x=77;}//up to 120
+    else if(i<26){ pos_x=118;}//up to 125
+    else if(i<27){ pos_x=120;}//up to 130
+    else if(i<28){ pos_x=17;}//up to 135
+    else if(i<29){ pos_x=53;}//up to 140
+    else if(i<30){ pos_x=140;}//up to 145
+    else if(i<35){ pos_x=100;}//150
+    return pos_x;
+}
+
+
+function vec2 get_pos0(int i, real dist, real inc_x){
+    real inc_xx = dist-get_x(i);
+    // inc_xx  = i*incx;
+    //real inc_yy  = i*incy;
+    real inc_yy = pnt(dist,  inc_xx);
+
+    return [midx-inc_xx,midy-inc_yy];
+}
+function vec2 get_pos1(int i, real dist, real inc_x){
+    real inc_xx = dist-get_x(i);
+    //inc_xx  = i*incx;
+    //real inc_yy  = i*incy;
+    real inc_yy = pnt(dist,  inc_xx);
+    return [midx+inc_xx,midy+inc_yy];
+}
+function vec2 get_pos2(int i, real dist, real inc_x){
+    real inc_xx = dist-get_x(i);
+    //inc_xx  = i*incx;
+    //real inc_yy  = i*incy;
+    real inc_yy = pnt(dist,  inc_xx);
+    return [midx+inc_xx,midy-inc_yy];
+}
+function vec2 get_pos3(int i, real dist, real inc_x){
+    real inc_xx = dist-get_x(i);
+    //inc_xx  = i*incx;
+    //real inc_yy  = i*incy;
+    real inc_yy = pnt(dist,  inc_xx);
+    return [midx-inc_xx,midy+inc_yy];
+}
+
+function bool ss(vec2 pos, vec2 pos0){
+    real diffx = |pos[0]-pos0[0]|;
+    real diffy = |pos[1]-pos0[1]|;
+    real eps = 2;
+    return ((diffx<eps) && (diffy<eps));
+}
+
+strand raycast(real ui, real vi) {
+
+    output tensor [3] out = [1,1,1];
+
+    update {
+
+        tensor[2] pos = [ui,vi];
+
+
+int i=0;
+real dist = i*incx;
+real inc_xx = dist-5;
+vec2 pos0a = get_pos0(i,dist,inc_xx);
+vec2 pos0b = get_pos1(i,dist,inc_xx);
+vec2 pos0c = get_pos2(i,dist,inc_xx);
+vec2 pos0d = get_pos3(i,dist,inc_xx);
+i=1;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos1a = get_pos0(i,dist,inc_xx);
+vec2 pos1b = get_pos1(i,dist,inc_xx);
+vec2 pos1c = get_pos2(i,dist,inc_xx);
+vec2 pos1d = get_pos3(i,dist,inc_xx);
+i=2;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos2a = get_pos0(i,dist,inc_xx);
+vec2 pos2b = get_pos1(i,dist,inc_xx);
+vec2 pos2c = get_pos2(i,dist,inc_xx);
+vec2 pos2d = get_pos3(i,dist,inc_xx);
+i=3;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos3a = get_pos0(i,dist,inc_xx);
+vec2 pos3b = get_pos1(i,dist,inc_xx);
+vec2 pos3c = get_pos2(i,dist,inc_xx);
+vec2 pos3d = get_pos3(i,dist,inc_xx);
+i=4;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos4a = get_pos0(i,dist,inc_xx);
+vec2 pos4b = get_pos1(i,dist,inc_xx);
+vec2 pos4c = get_pos2(i,dist,inc_xx);
+vec2 pos4d = get_pos3(i,dist,inc_xx);
+i=5;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos5a = get_pos0(i,dist,inc_xx);
+vec2 pos5b = get_pos1(i,dist,inc_xx);
+vec2 pos5c = get_pos2(i,dist,inc_xx);
+vec2 pos5d = get_pos3(i,dist,inc_xx);
+i=6;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos6a = get_pos0(i,dist,inc_xx);
+vec2 pos6b = get_pos1(i,dist,inc_xx);
+vec2 pos6c = get_pos2(i,dist,inc_xx);
+vec2 pos6d = get_pos3(i,dist,inc_xx);
+i=7;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos7a = get_pos0(i,dist,inc_xx);
+vec2 pos7b = get_pos1(i,dist,inc_xx);
+vec2 pos7c = get_pos2(i,dist,inc_xx);
+vec2 pos7d = get_pos3(i,dist,inc_xx);
+i=8;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos8a = get_pos0(i,dist,inc_xx);
+vec2 pos8b = get_pos1(i,dist,inc_xx);
+vec2 pos8c = get_pos2(i,dist,inc_xx);
+vec2 pos8d = get_pos3(i,dist,inc_xx);
+i=9;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos9a = get_pos0(i,dist,inc_xx);
+vec2 pos9b = get_pos1(i,dist,inc_xx);
+vec2 pos9c = get_pos2(i,dist,inc_xx);
+vec2 pos9d = get_pos3(i,dist,inc_xx);
+i=10;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos10a = get_pos0(i,dist,inc_xx);
+vec2 pos10b = get_pos1(i,dist,inc_xx);
+vec2 pos10c = get_pos2(i,dist,inc_xx);
+vec2 pos10d = get_pos3(i,dist,inc_xx);
+i=11;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos11a = get_pos0(i,dist,inc_xx);
+vec2 pos11b = get_pos1(i,dist,inc_xx);
+vec2 pos11c = get_pos2(i,dist,inc_xx);
+vec2 pos11d = get_pos3(i,dist,inc_xx);
+i=12;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos12a = get_pos0(i,dist,inc_xx);
+vec2 pos12b = get_pos1(i,dist,inc_xx);
+vec2 pos12c = get_pos2(i,dist,inc_xx);
+vec2 pos12d = get_pos3(i,dist,inc_xx);
+i=13;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos13a = get_pos0(i,dist,inc_xx);
+vec2 pos13b = get_pos1(i,dist,inc_xx);
+vec2 pos13c = get_pos2(i,dist,inc_xx);
+vec2 pos13d = get_pos3(i,dist,inc_xx);
+i=14;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos14a = get_pos0(i,dist,inc_xx);
+vec2 pos14b = get_pos1(i,dist,inc_xx);
+vec2 pos14c = get_pos2(i,dist,inc_xx);
+vec2 pos14d = get_pos3(i,dist,inc_xx);
+i=15;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos15a = get_pos0(i,dist,inc_xx);
+vec2 pos15b = get_pos1(i,dist,inc_xx);
+vec2 pos15c = get_pos2(i,dist,inc_xx);
+vec2 pos15d = get_pos3(i,dist,inc_xx);
+i=16;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos16a = get_pos0(i,dist,inc_xx);
+vec2 pos16b = get_pos1(i,dist,inc_xx);
+vec2 pos16c = get_pos2(i,dist,inc_xx);
+vec2 pos16d = get_pos3(i,dist,inc_xx);
+i=17;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos17a = get_pos0(i,dist,inc_xx);
+vec2 pos17b = get_pos1(i,dist,inc_xx);
+vec2 pos17c = get_pos2(i,dist,inc_xx);
+vec2 pos17d = get_pos3(i,dist,inc_xx);
+i=18;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos18a = get_pos0(i,dist,inc_xx);
+vec2 pos18b = get_pos1(i,dist,inc_xx);
+vec2 pos18c = get_pos2(i,dist,inc_xx);
+vec2 pos18d = get_pos3(i,dist,inc_xx);
+i=19;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos19a = get_pos0(i,dist,inc_xx);
+vec2 pos19b = get_pos1(i,dist,inc_xx);
+vec2 pos19c = get_pos2(i,dist,inc_xx);
+vec2 pos19d = get_pos3(i,dist,inc_xx);
+i=20;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos20a = get_pos0(i,dist,inc_xx);
+vec2 pos20b = get_pos1(i,dist,inc_xx);
+vec2 pos20c = get_pos2(i,dist,inc_xx);
+vec2 pos20d = get_pos3(i,dist,inc_xx);
+i=21;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos21a = get_pos0(i,dist,inc_xx);
+vec2 pos21b = get_pos1(i,dist,inc_xx);
+vec2 pos21c = get_pos2(i,dist,inc_xx);
+vec2 pos21d = get_pos3(i,dist,inc_xx);
+i=22;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos22a = get_pos0(i,dist,inc_xx);
+vec2 pos22b = get_pos1(i,dist,inc_xx);
+vec2 pos22c = get_pos2(i,dist,inc_xx);
+vec2 pos22d = get_pos3(i,dist,inc_xx);
+i=23;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos23a = get_pos0(i,dist,inc_xx);
+vec2 pos23b = get_pos1(i,dist,inc_xx);
+vec2 pos23c = get_pos2(i,dist,inc_xx);
+vec2 pos23d = get_pos3(i,dist,inc_xx);
+i=24;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos24a = get_pos0(i,dist,inc_xx);
+vec2 pos24b = get_pos1(i,dist,inc_xx);
+vec2 pos24c = get_pos2(i,dist,inc_xx);
+vec2 pos24d = get_pos3(i,dist,inc_xx);
+i=25;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos25a = get_pos0(i,dist,inc_xx);
+vec2 pos25b = get_pos1(i,dist,inc_xx);
+vec2 pos25c = get_pos2(i,dist,inc_xx);
+vec2 pos25d = get_pos3(i,dist,inc_xx);
+i=26;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos26a = get_pos0(i,dist,inc_xx);
+vec2 pos26b = get_pos1(i,dist,inc_xx);
+vec2 pos26c = get_pos2(i,dist,inc_xx);
+vec2 pos26d = get_pos3(i,dist,inc_xx);
+i=27;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos27a = get_pos0(i,dist,inc_xx);
+vec2 pos27b = get_pos1(i,dist,inc_xx);
+vec2 pos27c = get_pos2(i,dist,inc_xx);
+vec2 pos27d = get_pos3(i,dist,inc_xx);
+i=28;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos28a = get_pos0(i,dist,inc_xx);
+vec2 pos28b = get_pos1(i,dist,inc_xx);
+vec2 pos28c = get_pos2(i,dist,inc_xx);
+vec2 pos28d = get_pos3(i,dist,inc_xx);
+i=29;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos29a = get_pos0(i,dist,inc_xx);
+vec2 pos29b = get_pos1(i,dist,inc_xx);
+vec2 pos29c = get_pos2(i,dist,inc_xx);
+vec2 pos29d = get_pos3(i,dist,inc_xx);
+i=30;
+dist = i*incx;
+inc_xx = dist-5;
+vec2 pos30a = get_pos0(i,dist,inc_xx);
+vec2 pos30b = get_pos1(i,dist,inc_xx);
+vec2 pos30c = get_pos2(i,dist,inc_xx);
+vec2 pos30d = get_pos3(i,dist,inc_xx);
+
+tensor[3] mark = [0,0,1.2];
+tensor[3] mark1 =  mark ;
+tensor[3] mark5 = mark ;
+tensor[3] mark10 = mark ;
+tensor[3] mark15 = mark ;
+tensor[3] mark20 = mark ;
+tensor[3] mark25 = mark ;
+tensor[3] mark30 = mark ;
+//tensor[3] mark1 = [1,1,1.8];
+//tensor[3] mark5 = [1,1,1.5];
+//tensor[3] mark10 = [1,1,1.2];
+//tensor[3] mark15 = [1,1,0.9];
+//tensor[3] mark20 = [1,1,0.6];
+//tensor[3] mark25 = [1,1,0.3];
+//tensor[3] mark30 = [1,1.0,0.0];
+
+        if (inside(pos,F)){
+if(ss(pos,pos0a) || ss(pos,pos0b) || ss(pos,pos0c) || ss(pos,pos0d))
+{out = mark1;}
+else if(ss(pos,pos1a) || ss(pos,pos1b) || ss(pos,pos1c) || ss(pos,pos1d))
+{out = mark1;}
+else if(ss(pos,pos2a) || ss(pos,pos2b) || ss(pos,pos2c) || ss(pos,pos2d))
+{out = mark1;}
+else if(ss(pos,pos3a) || ss(pos,pos3b) || ss(pos,pos3c) || ss(pos,pos3d))
+{out = mark1;}
+else if(ss(pos,pos4a) || ss(pos,pos4b) || ss(pos,pos4c) || ss(pos,pos4d))
+{out = mark1;}
+else if(ss(pos,pos5a) || ss(pos,pos5b) || ss(pos,pos5c) || ss(pos,pos5d))
+{out = mark5;}
+else if(ss(pos,pos6a) || ss(pos,pos6b) || ss(pos,pos6c) || ss(pos,pos6d))
+{out = mark5;}
+else if(ss(pos,pos7a) || ss(pos,pos7b) || ss(pos,pos7c) || ss(pos,pos7d))
+{out = mark5;}
+else if(ss(pos,pos8a) || ss(pos,pos8b) || ss(pos,pos8c) || ss(pos,pos8d))
+{out =mark5;}
+else if(ss(pos,pos9a) || ss(pos,pos9b) || ss(pos,pos9c) || ss(pos,pos9d))
+{out = mark5;}
+else if(ss(pos,pos10a) || ss(pos,pos10b) || ss(pos,pos10c) || ss(pos,pos10d))
+{out = mark10;}
+else if(ss(pos,pos11a) || ss(pos,pos11b) || ss(pos,pos11c) || ss(pos,pos11d))
+{out = mark10;}
+else if(ss(pos,pos12a) || ss(pos,pos12b) || ss(pos,pos12c) || ss(pos,pos12d))
+{out = mark10;}
+else if(ss(pos,pos13a) || ss(pos,pos13b) || ss(pos,pos13c) || ss(pos,pos13d))
+{out = mark10;}
+else if(ss(pos,pos14a) || ss(pos,pos14b) || ss(pos,pos14c) || ss(pos,pos14d))
+{out = mark10;}
+else if(ss(pos,pos15a) || ss(pos,pos15b) || ss(pos,pos15c) || ss(pos,pos15d))
+{out = mark15;}
+else if(ss(pos,pos16a) || ss(pos,pos16b) || ss(pos,pos16c) || ss(pos,pos16d))
+{out = mark15;}
+else if(ss(pos,pos17a) || ss(pos,pos17b) || ss(pos,pos17c) || ss(pos,pos17d))
+{out = mark15;}
+else if(ss(pos,pos18a) || ss(pos,pos18b) || ss(pos,pos18c) || ss(pos,pos18d))
+{out = mark15;}
+else if(ss(pos,pos19a) || ss(pos,pos19b) || ss(pos,pos19c) || ss(pos,pos19d))
+{out = mark15;}
+else if(ss(pos,pos20a) || ss(pos,pos20b) || ss(pos,pos20c) || ss(pos,pos20d))
+{out = mark20;}
+else if(ss(pos,pos21a) || ss(pos,pos21b) || ss(pos,pos21c) || ss(pos,pos21d))
+{out = mark20;}
+else if(ss(pos,pos22a) || ss(pos,pos22b) || ss(pos,pos22c) || ss(pos,pos22d))
+{out = [1.2,0.4,0.3];}
+else if(ss(pos,pos23a) || ss(pos,pos23b) || ss(pos,pos23c) || ss(pos,pos23d))
+{out = mark20;}
+else if(ss(pos,pos24a) || ss(pos,pos24b) || ss(pos,pos24c) || ss(pos,pos24d))
+{out = mark20;}
+else if(ss(pos,pos25a) || ss(pos,pos25b) || ss(pos,pos25c) || ss(pos,pos25d))
+{out = mark25;}
+else if(ss(pos,pos26a) || ss(pos,pos26b) || ss(pos,pos26c) || ss(pos,pos26d))
+{out = mark25;}
+else if(ss(pos,pos27a) || ss(pos,pos27b) || ss(pos,pos27c) || ss(pos,pos27d))
+{out = mark25;}
+else if(ss(pos,pos28a) || ss(pos,pos28b) || ss(pos,pos28c) || ss(pos,pos28d))
+{out = mark25;}
+else if(ss(pos,pos29a) || ss(pos,pos29b) || ss(pos,pos29c) || ss(pos,pos29d))
+{out = mark25;}
+else if(ss(pos,pos30a) || ss(pos,pos30b) || ss(pos,pos30c) || ss(pos,pos30d))
+{out = mark30;}
+            else{out=[F(pos),F(pos),F(pos)];}
+         }
+
+        stabilize;
+      }
+}
+initially [ raycast(ui,vi)
+            | vi in 0..ires-1, ui in 0..ires-1 ];
