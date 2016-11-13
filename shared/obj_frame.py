@@ -104,7 +104,7 @@ class frame:
         elif(branch == branch_ein16):
             path+= "ein16/bin/diderotc "
         elif(branch == branch_other):
-            path+= branch_other+"bin/diderotc  "
+            path+= branch_other+"bin/diderotc --exec "
         if(precision ==precision_double):
             path+= " --double "
         return path
@@ -132,15 +132,22 @@ class frame:
         elif(branch == branch_ein16):
             return False
         elif(branch == branch_other):
-            return False  # assumption
+            return True # assumption
 
     def transform_template_size(self):
-        if(self.template==template_isPlain):
-            return num_pos+1
-        else:
+        if(self.template==template_isIso):
+            return 300
+        elif(self.template ==template_isMipMax or  self.template ==template_isMipSum):
             return 300 #300x300
+        elif(self.template==template_isPlain):
+            raise Exception ("plain template"+self.template)
+
     def transform_template_file(self):
         if(self.template==template_isPlain):
             return "shared/template/foo.ddro"
-        else:
+        elif(self.template==template_isMipMax):
+            return "shared/template/sum.ddro"
+        elif(self.template==template_isMipSum):
             return "shared/template/mip.ddro"
+        elif(self.template==template_isIso):
+            return "shared/template/iso.ddro"

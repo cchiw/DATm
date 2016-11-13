@@ -10,6 +10,7 @@ input real incx;
 input real incy;
 input int positions;
 
+
 //distance from center
 function real  rad(vec2 pos){
     real diffx = (pos[0]-midx);
@@ -17,29 +18,89 @@ function real  rad(vec2 pos){
     return sqrt(diffx*diffx+ diffy*diffy);
 }
 
+function real pnt(real dist, real p){
+    //r^2-y^2=x^2
+    real pp = p;
+    real rr = dist*dist;
+    return sqrt(rr-pp*pp);
+}
+
+function tensor [9] eval(int i, real dist, real pos_x ){
+real pos_y = pnt(dist, pos_x);
+    tensor [2] pos_0 = [midx+pos_x, midy+ pos_y ];
+    tensor [2] pos_1 = [midx-pos_x, midy-pos_y];
+    tensor [2] pos_2 = [midx+pos_x, midy-pos_y];
+    tensor [2] pos_3 = [midx-pos_x, midy-pos_y];
+    real c = -9;
+    real probe_0 = c;
+    real probe_1 = c;
+    real probe_2 = c;
+    real probe_3 = c;
+    if(inside(pos_0, F) && inside(pos_1, F) && inside(pos_2, F) && inside(pos_3, F)){
+        probe_0 = F(pos_0);
+        probe_1 = F(pos_1);
+        probe_2 = F(pos_2);
+        probe_3 = F(pos_3);
+    }
+    tensor [9] ev = [i, pos_0[0], pos_0[1],rad(pos_2), rad(pos_3), probe_0, probe_1, probe_2, probe_3];
+return ev;
+
+}
 
 strand raycast(int i) {
     real c = -9;
     output tensor [9] ev = [c,c,c,c,c,c,c,c,c];
     tensor [2] pos = [0,0];
+
+    //distance from center
+    real dist = i*incx;
+
     update {
 
+
+        real pos_x = 0;
+if(i==0){ pos_x=0;}
+else if(i<1){ pos_x=0;}//up to 0
+else if(i<2){ pos_x=4;}//up to 5
+else if(i<3){ pos_x=7;}//up to 10
+else if(i<4){ pos_x=2;}//up to 15
+else if(i<5){ pos_x=18;}//up to 20
+else if(i<6){ pos_x=5;}//up to 25
+else if(i<7){ pos_x=27;}//up to 30
+else if(i<8){ pos_x=11;}//up to 35
+else if(i<9){ pos_x=33;}//up to 40
+else if(i<10){ pos_x=39;}//up to 45
+else if(i<11){ pos_x=47;}//up to 50
+else if(i<12){ pos_x=4;}//up to 55
+else if(i<13){ pos_x=58;}//up to 60
+else if(i<14){ pos_x=61;}//up to 65
+else if(i<15){ pos_x=13;}//up to 70
+else if(i<16){ pos_x=45;}//up to 75
+else if(i<17){ pos_x=70;}//up to 80
+else if(i<18){ pos_x=60;}//up to 85
+else if(i<19){ pos_x=81;}//up to 90
+else if(i<20){ pos_x=65;}//up to 95
+else if(i<21){ pos_x=90;}//up to 100
+else if(i<22){ pos_x=10;}//up to 105
+else if(i<23){ pos_x=75;}//up to 110
+else if(i<24){ pos_x=110;}//up to 115
+else if(i<25){ pos_x=77;}//up to 120
+else if(i<26){ pos_x=118;}//up to 125
+else if(i<27){ pos_x=120;}//up to 130
+else if(i<28){ pos_x=17;}//up to 135
+else if(i<29){ pos_x=53;}//up to 140
+else if(i<30){ pos_x=140;}//up to 145
+else if(i<35){ pos_x=100;}//150
+        ev =  eval(i, dist, pos_x);
+
+/*
         tensor [2] pos_0 = [midx-i*incx,midy-i*incy];
         tensor [2] pos_1 = [midx+i*incx,midy+i*incy];
         tensor [2] pos_2 = [midx+i*incx,midy-i*incy];
         tensor [2] pos_3 = [midx-i*incx,midy+i*incy];
+*/
 
-        real probe_0 = c;
-        real probe_1 = c;
-        real probe_2 = c;
-        real probe_3 = c;
-        if(inside(pos_0, F) && inside(pos_1, F) && inside(pos_2, F) && inside(pos_3, F)){
-            probe_0 = F(pos_0);
-            probe_1 = F(pos_1);
-            probe_2 = F(pos_2);
-            probe_3 = F(pos_3);
-        }
-        ev = [pos_1[0], rad(pos_0), rad(pos_1), rad(pos_2), rad(pos_3), probe_0, probe_1, probe_2, probe_3];
+
         stabilize;
 
    }

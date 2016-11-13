@@ -141,7 +141,7 @@ def writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt):
 
 ## starts with writing heading in each txt file
 def write_heading(testing_frame):
-    name = "\n-name: "+frame.get_name(testing_frame)
+    name = "\n-name: "+frame.get_name(testing_frame)+ "\n template"+frame.get_template(testing_frame)
     runtimepath = "\n-runtimepath: "+ frame.transform_runtimepath(testing_frame)
     coeff_style = "\n-coeff: "+frame.get_coeff_style(testing_frame)
     samples = "\n-samples: "+str(frame.get_samples(testing_frame))
@@ -171,8 +171,11 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
     for i in apx:
         os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/test"+i)
     
+    tmp ="_max.png"
     print "opname:",opname
-    os.system("cp "+path+"/test.png "+path+"/"+opname+".png")
+    os.system("cp "+path+"/test.png "+path+"/"+opname+tmp)
+#os.system("cp "+rst_data+"/color.png "+path+"/"+opname+"_color"+tmp)
+    os.system("cp "+"rst/data/vis_color.png "+path+"/"+opname+"_color"+tmp)
     os.system("rm "+path+"/test.png ")
     for i in range(3):
         os.system("cp "+rst_data+"/inputfile"+str(i)+".nrrd "+path+"/inputfile_"+str(i)+".nrrd")
@@ -190,6 +193,8 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
     st = a+b+d+e
     f = open(path+"/rst.txt", 'w+')
     f.write(st)
+    os.system("open  "+path+"/"+opname+"_color.png")
+    #os.system("open  "+path+"/"+opname+"_max.png")
     return
 
 
