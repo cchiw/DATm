@@ -40,12 +40,12 @@ def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_
     counter.inc_locals(cnt, rtn)
     # write to file
     if (rst_terrible_1==1):
-        writeToRst2(opr_name,  "/fails/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
+        writeToRst2("f_"+opr_name,  "fails/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
         write_terrible(test_header_1)
         writesummary(test_header_0)
     else:
-        writeToRst2(opr_name, "/passes/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
-    return
+        writeToRst2("p_"+opr_name, "passes/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
+        return
 
 ##################################################################################################
 ##################################################################################################
@@ -90,9 +90,9 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     print "\n ******************************   vis b"
     PARAMS = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
-    print "\n ******************************  vis  c"
+    print "\n ******************************   pre write date "
     (isCompile, isRun) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd,t_size*t_size,t_file)
-    print "\n ****************************** vis   d"
+    print "\n ******************************  post write data"
     if(isRun == None):
         # did not run
         if(isCompile == None):
@@ -105,6 +105,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             return 2
     else:
         # read observed data
+        print "---------------  pre read  observed data ----------------------"
+        os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
         observed_data = observed(app, g_output)
         # center of spehere
         arg_center = (t_size/2)
@@ -112,13 +114,25 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         arg_positions  = 30
         # increment testing points
         arg_inc=arg_center/ arg_positions
-        
+        arg_perline = 9 # output of mip program
         # take samples of output
-        observed_sphere = run_sample(t_runtimepath,  arg_center, arg_positions, arg_inc)
-        #print "observed_eval",observed_eval
+        
+        print "---------------  pre read diderot ----------------------"
+        # sampling diderot file
+        os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
+        positions = mk_vis_files(app, positions, arg_inc, arg_positions)
+        os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
+        print "--------------- pre run sample-----------------------"
+        observed_sphere =  run_sample(t_runtimepath, arg_center, arg_positions, arg_inc)
+        print "observed_eval",observed_sphere
         rtn  = eval_sample(observed_sphere)
+        print "--------------- pre color-----------------------"
+
+        #run_color(t_runtimepath, arg_center, arg_positions, arg_inc)
+        
+
         # collect results
-        vis_analyze(app.opr.name+"_"+app.lhs.opr.name, names, fnames, name_describe, cnt, rtn, observed_data, observed_sphere, PARAMS, g_branch)
+        vis_analyze(app.opr.name+"_", names, fnames, name_describe, cnt, rtn, observed_data, observed_sphere, PARAMS, g_branch)
         return 3
         #else:
         #return None
@@ -129,9 +143,9 @@ def input_ty1(e):
     print "e.id=",e.id
     print "ty_vec3F_d3.id:",ty_vec3F_d3.id
     print "ty_scalarF_d3.id:",ty_scalarF_d3.id
-    if( (e.id==ty_vec3F_d3.id)):
+    if( (e.id==ty_scalarF_d3.id)):
         return True
-    elif( (e.id==ty_scalarF_d3.id)):
+    elif( (e.id==ty_vec3F_d3.id)):
         return True
     else:
         return False
@@ -165,8 +179,13 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
         print "app.oty:",app.oty," name:",app.oty.name
         return
     if( not (input_ty2(app.lhs))):
+    #    print "does not pass"
+    #    return
+    # layer 1
+    #if( not (input_ty2(app))):
         print "does not pass"
         return
+    
     if(not (app.rhs==None)):
         if(not (input_ty1(app.rhs.fldty))):
             print "does not pass"
@@ -194,6 +213,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
         os.system(" rm symb_* ")
     else:
         return
+
 
 
 ##################################################################################################

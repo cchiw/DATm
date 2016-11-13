@@ -65,7 +65,7 @@ strand raycast(real rayU, real rayV) {
          continue;                       // then move onto next iteration
       }
      // update output based on last sample
-    foo_fieldOut
+    foo_maxfieldOut
 
    }
 }

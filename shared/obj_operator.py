@@ -74,10 +74,10 @@ op_slicev1 = operator(id+3,"slicev1", 1, u'[1]', place_right, limit_none, False)
 op_slicet0 = operator(id+4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, False)
 op_slicet1 = operator(id+5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
 op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
-op_unary= op_reg+ op_diff+op_slice
+op_unary= op_reg+ op_diff#+op_slice
 
 #binary operators
-id=id+len(op_slice )
+#id=id+len(op_slice )
 #print"addition id",id
 op_add = operator(id,"addition", 2,"+", place_middle, limit_none, False)
 op_subtract = operator(id+1,"subtraction", 2, "-", place_middle, limit_none, False)
@@ -101,17 +101,18 @@ id=id+len(op_binary)
 #Trig
 op_cosine = operator(id, "cosine", 1, u'cos', place_left, limit_none, True)
 op_sine = operator(id+1, "sine", 1, u'sin', place_left, limit_none, True)
-op_atangent = operator(id+2, "arctangent", 1, u'atan', place_left, limit_none, True)
-op_tangent = operator(id+3, "tangent", 1, u'tan', place_left, limit_none, True)
+
 # limit- x must be between -1 and 1 for acos|asine and positive for sqrt.
 # to avoid getting a bunch of (inf, or NAN)
 # operator arguments are augmented here and in test_eval
-op_acosine = operator(id+4, "arccosine", 1,  (u'acos(0.01*', u')'), place_split, limit_trig, True)
-op_asine = operator(id+5, "arcsine", 1,  (u'asin(0.01*', u')'), place_split, limit_trig, True)
+op_acosine = operator(id+2, "arccosine", 1,  (u'acos(0.01*', u')'), place_split, limit_trig, True)
+op_asine = operator(id+3, "arcsine", 1,  (u'asin(0.01*', u')'), place_split, limit_trig, True)
 #note sqrt is 'sqrt' in each branch
-op_sqrt = operator(id+6, "sqrt", 1, (u'sqrt(|', u'|)'), place_split, limit_nonzero, False)
+op_sqrt = operator(id+4, "sqrt", 1, (u'sqrt(|', u'|)'), place_split, limit_nonzero, False)
+op_atangent = operator(id+5, "arctangent", 1, u'atan', place_left, limit_none, True)
+op_tangent = operator(id+6, "tangent", 1, u'tan', place_left, limit_none, True)
 
-op_trig=[ op_cosine, op_sine, op_atangent, op_tangent, op_acosine, op_asine, op_sqrt]
+op_trig=[ op_cosine, op_sine, op_acosine, op_asine, op_sqrt]#,op_atangent, op_tangent]
 
 
 # embed some operators

@@ -1,0 +1,59 @@
+//unu save -f nrrd -e ascii -i a.nrrd | less
+// unu jhisto -i pos.nrrd -b 500 500 -min -4 4 -max 4 -4 -t float | unu 2op gt - 0 | unu quantize -b 8 -o pos.png
+
+
+input real isoval ("isovalue of isosurface to sample") = 0.6;
+input int stepsMax ("max # steps allowed for convergence") = 10;
+input real epsilon ("convergence threshold") = 0.001;
+input image(2)[] img ("data to isocontour") = image("../symb/a.nrrd");
+
+// way of specifying the grid on which sampling is done
+input vec2 cmin ("# lower corner of sampling grid") = [-1,-1];
+input vec2 cmax ("# upper corner of sampling grid") = [1,1];
+input int size ("# samples on both axes of sampling grid") = 30;
+
+// field is defined so that isocontour of interest is the zero levelset
+field#1(2)[] F = c4hexic ⊛ img - isoval;
+
+/*
+The ID argument is not actually used, but it is included here as an
+example of a way of identifying strands that can be useful for
+debugging.
+*/
+strand iso(int ID, vec2 pos0) { // vec2 is a synonym for tensor[2]
+   output vec2 pos = pos0;
+   int steps = 0;
+   update {
+      // Stop if no longer inside, or have taken too many steps.
+      if (!inside(pos, F) || steps > stepsMax) {
+         die;
+      }
+
+      // Subsequent expressions are undefined if |∇F| is zero
+      if (|∇F(pos)| == 0.0) {
+         die;
+      }
+
+      // The Newton-Raphson step
+      vec2 delta = -normalize(∇F(pos)) * F(pos)/|∇F(pos)|;
+      pos += delta;
+
+      // We've converged if delta is small enough
+      if (|delta| < epsilon) {
+         stabilize;
+      }
+      steps += 1;
+   }
+}
+
+/*
+** This generates a node-centered sampling of the region;
+** a cell-centered sampling would be created with:
+                [lerp(cmin[0], cmax[0], -0.5, idx0, size-0.5),
+                 lerp(cmin[1], cmax[1], -0.5, idx1, size-0.5)])
+*/
+initially { iso(idx0 + size*idx1,
+                [lerp(cmin[0], cmax[0], 0, idx0, size-1),
+                 lerp(cmin[1], cmax[1], 0, idx1, size-1)])
+           | idx1 in 0..(size-1),   // SLOWER axis
+             idx0 in 0..(size-1) }; // FASTER axis

@@ -13,8 +13,8 @@ ty_All ="mix of tensors and fields"
 
 branch_vis15 = "vis15"
 branch_ein16 = "ein16"
-branch_other = "charisee_dev/"
-
+branch_other = "vis15-old/"
+#branch_other = "charisee/"
 
 precision_double ="double"
 precision_single ="singe"
@@ -28,8 +28,10 @@ h_mixcbc = "mix" # [h_hex,h_bs3,h_hex]
 h_mixcbt = "mixt"
 
 
-template_isPlain = "tplain"
-template_isMip = "tmip"
+template_isPlain = "t_plain"
+template_isMipMax = "t_mipMax"
+template_isMipSum = "t_mipSum"
+template_isIso = "t_iso"
 
 
 #directory to save programs

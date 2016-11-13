@@ -6,7 +6,6 @@ sys.path.insert(0, 'objcts/')
 
 s_layer = 2
 s_random_range = 0
-
 from obj_frame import *
 
 cpath =  "/Users/chariseechiw/diderot/"
@@ -17,9 +16,9 @@ cpath =  "/Users/chariseechiw/diderot/"
 
 name = " current"
 # branch information
-s_branch  = branch_vis15
+#s_branch  = branch_vis15
 #s_branch  = branch_ein16
-#s_branch  = branch_other
+s_branch  = branch_other
 s_revision = "r"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
@@ -121,5 +120,9 @@ def get_testing_frame(n_frame):
 def set_template(template):
     t = template_isPlain
     if (template==1):
-        t= template_isMip
+        t= template_isMipMax
+    elif (template==2):
+        t= template_isMipSum
+    elif (template==3):
+        t= template_isIso
     return frame(name, s_branch, s_revision, s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, s_krn,s_random_range,s_random_limit, s_space, s_layer,t)

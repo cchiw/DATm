@@ -18,39 +18,11 @@ vec2 edge1 = rot•[0, spc[1]] + shear*edge0;
 // location of first sample
 vec2 orig = -(edge0*(sz0-1) + edge1*(sz1-1))/2 + off;
 
-//-- field defined by coefficients --
-input tensor[4] setA =[0,0,0,0];
-input tensor[4] setB =[0,0,0,0];
-input tensor[4] setC =[0,0,0,0];
-input tensor[4] setD =[0,0,0,0];
+
 
 function real func(vec2 pos) {
-    real x = pos[0];
-    real y = pos[1];
-    real a = setA[0];
-    real b = setA[1];
-    real c = setA[2];
-    real d = setA[3];
-    real e = setB[0];
-    real f = setB[1];
-    real g = setB[2];
-    real h = setB[3];
-    real i = setC[0];
-    real j = setC[1];
-    real k = setC[2];
-    real l = setC[3];
-    real m = setD[0];
-    real n = setD[1];
-    real o = setD[2];
-    real p = setD[3];
 
-
-    // as intended to be represented
-    real tA = a + b*y + c*x*y+ d*x;
-    real tB = ((e+f*x+g*(x*x))*y*y) + (h*(x*x)*y);
-    real tC = i*(x*x) + (j+k*x+l*(x*x))*y*y*y;
-    real tD = (x*x*x)*((m*y*y*y)+(n*y*y)+(o*y)+p);
-    return  tA+tB+tC+tD;
+return 1 - pos•pos;
 }
 
 strand sample(int idx0, int idx1) {

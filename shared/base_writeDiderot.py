@@ -701,3 +701,20 @@ def index_field_at_positions(f, pos, app):
     f.write(foo.encode('utf8'))
 
 
+
+def outLine(f, app):
+    type  = app.oty
+    #print "\n outline-","type: ",type.name," app: ",app.name
+    if (fty.is_Field(type)):
+        #print "isfld-layer 1"
+        outLineF(f, type)
+    else:
+        if(app.isrootlhs):
+            return gotop1(f,app, "\toutput ", foo_out)
+        elif((app.lhs).isrootlhs):
+            #print "twice embedded"
+            return gotop2(f,app, "\toutput ", foo_out)
+        else:
+            #print "third layers"
+            return gotop3(f, app, "\toutput ", foo_out)
+
