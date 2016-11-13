@@ -71,7 +71,7 @@ function tensor[3] func(vec3 pos) {
     real y = pos[1];
     real z = pos[2];
     real ret = 1 - pos•pos;
-    return [ret, ret, ret];
+    return pos;
 
 }
 
