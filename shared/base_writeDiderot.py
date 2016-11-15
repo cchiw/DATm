@@ -617,7 +617,7 @@ def check_conditional(f, ff, app):
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
     foo =  ""
-    if(app.isrootlhs):
+    if(app.isrootlhs or oty.dim==1):
         foo = set
     else: #twice embedded
         # there might be a conditional restraint
