@@ -54,6 +54,14 @@ def cmd(layer, testing_frame, cnt, shift, args):
             #run all the programs
             embed2_iter_inner(testing_frame, cnt)
             writeCumulative(cnt)
+    elif (args==10):
+            #run all the programs
+            t_start= int(sys.argv[shift+1])
+            t_range = int(sys.argv[shift+2])
+            embed2_iter_inner_setrange(t_start, t_range,    testing_frame, cnt)
+            writeCumulative(cnt)
+    
+
     elif (args==1):
            # given operator id for inner  operator
             t_inner = int(sys.argv[shift+1])
