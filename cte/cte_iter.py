@@ -301,6 +301,20 @@ def embed2_iter_inner(testing_frame, cnt):
 
     return
 
+#run all possible examples from 0...n
+def embed2_iter_inner_setrange(t_start, t_range, testing_frame, cnt):
+    n_opr = getN()
+    for t_opr in range(t_range):
+        t_opr+=t_start
+        startx = time.time()
+        opr_inner = (id_toOpr(t_opr))
+        ex = oprToEx(opr_inner, testing_frame, cnt)
+        embed_base_iter_outer(ex, opr_inner, testing_frame, cnt)
+    
+    return
+
+
+
 #specify outer operator
 def embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt):
     counter.zero_total(cnt)  #zero counters
