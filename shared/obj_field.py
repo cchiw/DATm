@@ -11,8 +11,7 @@ import re
 import os
 from base_constants import *
 from obj_ty import *
-from obj_coeff import mk_exp
-
+from obj_coeff import mk_exp, mk_exp_debug1, mk_exp_debug2
 class kernel:
     def __init__(self, str, continuity, order):
         # str: string used in diderot program for kernel
@@ -145,10 +144,11 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
     input1 = inputfile+tag
     def get_vec(n):
         if (n==2):
-            (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff, t_template)
-            (coeff2, exp2)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff1, exp1)= mk_exp_debug1(dim, coeff_style, ucoeff, t_template)
+            (coeff2, exp2)= mk_exp_debug2(dim, coeff_style, ucoeff, t_template)
             coeffs= [ coeff1,coeff2]
             exps = [exp1,exp2]
+   
             #print " inside get vec(): exp1", exp1
             #print " inside get vec(): exp2", exp2
             return (coeffs, exps)

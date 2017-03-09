@@ -481,7 +481,9 @@ def fn_det(fld):
         c = exp[1][0]
         b = exp[0][1]
         if(n==2):
-            return a*d-b*c
+            x= a*d-b*c
+            print x 
+            return x
         elif(n==3):
             a = exp[0][0]
             b = exp[0][1]
@@ -617,6 +619,67 @@ def fn_outer(fld1, fld2):
             raise Exception("outer product is not supported")
     else:
         raise Exception("outer product is not supported")
+
+def getConcatV(n, exp1):
+    rtn1 = []
+    for i in range(n):
+        rtn1.append(exp1[i])
+    return rtn1
+
+def getConcatM(n,m,exp1):
+    rtn1 = []
+    for i in range(n):
+        rtn2=[]
+        for j in range(m):
+            rtn2.append(exp1[i][j])
+        rtn1.append(rtn2)
+    return rtn1
+
+def fn_concat2(fld1, fld2):
+    exp1 = field.get_data(fld1)
+    exp2 = field.get_data(fld2)
+    ityp1 = field.get_ty(fld1)
+    ityp2 = field.get_ty(fld2)
+    if(fty.is_Scalar(ityp1)):
+        return [exp1,exp2]
+    elif(fty.is_Vector(ityp2)):
+        [n] = fty.get_shape(ityp2)
+        rtn1 = getConcatV(n, exp1)
+        rtn2 = getConcatV(n, exp2)
+        return [rtn1, rtn2]
+
+    elif(fty.is_Matrix(ityp2)):
+        [n, m] = fty.get_shape(ityp2)
+        rtn1 = getConcatM(n,m,exp1)
+        rtn2 = getConcatM(n,m,exp2)
+        return [rtn1, rtn2]
+
+    else:
+        raise Exception("concat of higher level is not supported")
+
+def fn_concat3(fld1, fld2, fld3):
+    exp1 = field.get_data(fld1)
+    exp2 = field.get_data(fld2)
+    exp3 = field.get_data(fld3)
+    if(fty.is_Scalar(ityp1)):
+        return [exp1,exp2, exp3]
+    elif(fty.is_Vector(ityp2)):
+        [n] = fty.get_shape(ityp2)
+        rtn1 = getConcatV(n, exp1)
+        rtn2 = getConcatV(n, exp2)
+        rtn3 = getConcatv(n, exp3)
+        return [rtn1, rtn2, rtn3]
+    
+    elif(fty.is_Matrix(ityp2)):
+        [n, m] = fty.get_shape(ityp2)
+        rtn1 = getConcatM(n,m,exp1)
+        rtn2 = getConcatM(n,m,exp2)
+        rtn3 = getConcatM(n,m,exp3)
+        return [rtn1, rtn2, rtn3]
+    else:
+        raise Exception("concat of higher level is not supported")
+
+
 
 
 #evaluate inner product
@@ -986,6 +1049,7 @@ def applyToExp_B_V(e):
         return applyToVectors(exp1,exp2 ,fn_modulate)
     elif(op_cross==fn_name):
         return fn_cross(fld1, fld2)
+
     else:
        return applyToExp_B_rest(e)
 
@@ -1058,6 +1122,8 @@ def binary(e):
         return fn_inner(f, g)
     elif(op_scale==fn_name): #scaling
         return fn_scaling(f,g)
+    elif(op_concat2==fn_name):#concat 2
+        return fn_concat2(f,g)
     elif (field.is_Scalar(f) and field.is_Scalar(g)): # input is a scalar field
         return applyToExp_B_S(e)
     elif (field.is_Vector(f) and field.is_Vector(g)):
@@ -1068,6 +1134,15 @@ def binary(e):
         return applyToExp_B_T3(e)
     else:
          return applyToExp_B_rest(e)
+
+#def arity_third(e):
+#       need to add thirs argument to apply object 
+#    (f, g) =apply.get_binary(e)
+#    fn_name = e.opr
+#    if(op_concat2==fn_name):#concat 2
+#        return fn_concat2(f,g)
+#    else
+#        raise Fail
 
 def applyUnaryOnce(oexp_inner,app_inner,app_outer):
     #print "applyUnaryOnce",app_inner.opr.name,"-",app_outer.opr.name
@@ -1092,7 +1167,7 @@ def applyBinaryOnce(oexp_inner,app_inner,app_outer,rhs):
     
     app_tmp = apply("tmp", opr_outer, lhs_tmp, rhs, oty_outer, true,true)
     oexp_tmp = binary(app_tmp)
-
+    print "oexp_tmp", oexp_tmp
     return (oty_outer, oexp_tmp)
 
 
@@ -1121,6 +1196,7 @@ def sort(e):
             #print "about to do a simple apply"
             (_, oexp_inner) = simple_apply(app_inner)
             #print "post simple apply"
+            print "oexp_inner", oexp_inner
             (oty_outer, oexp_tmp) =  applyUnaryOnce(oexp_inner, app_inner, app_outer1)
             return (oty_outer, oexp_tmp)
         elif(arity_outer1==2):

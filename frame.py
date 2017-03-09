@@ -4,7 +4,7 @@ from base_constants import *
 sys.path.insert(0, 'objcts/')
 
 
-s_layer = 2
+s_layer =  2
 s_random_range = 0
 from obj_frame import *
 
@@ -16,16 +16,16 @@ cpath =  "/Users/chariseechiw/diderot/"
 
 name = " current"
 # branch information
-#s_branch  = branch_vis15
+s_branch  = branch_chiw17
 #s_branch  = branch_ein16
-s_branch  = branch_other
+#s_branch  = branch_other
 s_revision = "r"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
 # order of coefficients
-s_coeff_style = coeff_quadratic
+#s_coeff_style = coeff_quadratic
 #s_coeff_style = coeff_cubic
-#s_coeff_style = coeff_linear
+s_coeff_style = coeff_linear
 # kernel
 s_krn = h_hex
 #s_krn = h_bs3
