@@ -180,7 +180,7 @@ def applyUnaryOp(op1,ityps):
     ashape = ityp1.shape
     
     name =  "op1 "+op1.name+"("+ityp1.name+")"
-    #print "apply unary op", name, ashape
+    print "apply unary op", name, ashape
     def same():
         return (true, ityp1)
     def err():
@@ -215,7 +215,6 @@ def applyUnaryOp(op1,ityps):
         else:
             return same() #type unaffected by operation
     elif(op_norm==op1):            # apply op_norm
-       
         return mkTyp([])
     elif (op_negationT==op1):
         return same() #type unaffected by operation
@@ -357,18 +356,18 @@ def applyUnaryOp(op1,ityps):
 
 #type of field after operation is applied
 def applyBinaryOp(op1,ityps):
-    #print "---------------------  applyBinaryOp ---------"
+    print "---------------------  applyBinaryOp ---------"
     name =  "op1 "+op1.name
-    #print name
+    print name
     ityp1 = ityps[0]
     ityp2 = ityps[1]
-    #print "ityps:",ityps
-    #print "ityp1 :",ityp1
-    #print ityp1.name
+    print "ityps:",ityps
+    print "ityp1 :",ityp1
+    print ityp1.name
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
     name += "("+ityp1.name+","+ityp2.name+")"
-
+    print "type name", name
     (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
     if(not tf):
         return (false, "not the same dimension")
@@ -433,6 +432,17 @@ def applyBinaryOp(op1,ityps):
                     return err()
         else:
             return err()
+    elif(op_concat2==op1):
+        print "concat 2 ********  here "
+        if((not fty.is_Field(ityp1)) or (not fty.is_Field(ityp2))):
+            return err()
+        else:
+            ashape = ityp1.shape
+            bshape = ityp2.shape
+            if(ashape==bshape):
+                return mkTyp ([2]+ashape)
+            else:
+                return err()
     else:
         # rest of operators are non scalar
         if(fty.is_Scalar(ityp1) or fty.is_Scalar(ityp2)):
@@ -472,17 +482,68 @@ def applyBinaryOp(op1,ityps):
                 return err()
 
 
+#type of field after operation is applied
+def applyThirdOp(op1,ityps):
+    print "---------------------  applyBinaryOp ---------"
+    name =  "op1 "+op1.name
+    print name
+    ityp1 = ityps[0]
+    ityp2 = ityps[1]
+    ityp3 = ityps[2]
+    ashape = fty.get_shape(ityp1)
+    bshape = fty.get_shape(ityp2)
+    name += "("+ityp1.name+","+ityp2.name+","+ityp3.name+")"
+    print "type name", name
+    (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
+    if(not tf):
+        return (false, "not the same dimension")
+    k = fldty.k
+    dim = fldty.dim
+    #print "---------------------  continue ---------"
+    def err():
+        # type not supported
+        return (false, name)
+    def mkTyp(shape):
+        if (len(shape)>3):
+            return err()
+        else:
+            (tf, rty1) = shapeToTyhelper(shape, dim)
+            if(tf):
+                rtn1 = fty.convertTy(rty1, k)
+                return (true, rtn1)
+            else:
+                return err()
+    if(op_concat3==op1):
+        print "concat 3 ********  here "
+        if((not fty.is_Field(ityp1)) or (not fty.is_Field(ityp2)) or (not fty.is_Field(ityp3))):
+            return err()
+        else:
+            ashape = ityp1.shape
+            bshape = ityp2.shape
+            cshape = ityp3.shape
+            if(ashape==bshape and ashape ==cshape):
+                return mkTyp ([3]+ashape)
+            else:
+                return err()
+    else:
+        return err()
 ##################################################################################################
 # apply unary and binary operator
 def get_tshape(opr1, ishape):
     
+    print "inside getshape", opr1.name
     arity=opr1.arity
     if(arity==1):
-        return applyUnaryOp(opr1,ishape)
+        x= applyUnaryOp(opr1,ishape)
+        print "retn from get unary", x
+        return x
     elif(arity==2):
         #print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
-        return applyBinaryOp(opr1, ishape)
-
+        x = applyBinaryOp(opr1, ishape)
+        print "rtn from get binary", x
+        return x
+    elif(arity==3):
+        return applyThirdOp(op1, ishape)
 
 # create apply, operator and field objects
 # from an example opr number, type number, and input file
@@ -521,6 +582,14 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
     name = opr_outer.name+"("+opr_inner.name+")"
     outer_arity = opr_outer.arity
     inner_arity = opr_inner.arity
+    
+    def prntShape(name, es):
+        print name
+        for i in es:
+            print "i:",i.name
+    prntShape ("ishape:",ishape)
+    print "otype1:", otype1.name
+    print "tshape2:", tshape2.name
     def set_innerApp(shape):
         return mkApply_fld(name, opr_inner, shape, inputfile, otype1, coeff_style, ucoeff, g_krn,t_template)
     def set_outerApp(lhs, rhs):
@@ -540,12 +609,14 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
     elif (outer_arity==2 and inner_arity==1): # one is a unary operator
         # apply inner operator to first arg
         ishape1 = [ishape[0]]
+        prntShape ("set inner app:", ishape1)
         (z1, coeffs) =  set_innerApp(ishape1)
-         # create another argument (tensor/field)
+        print "create another argument (tensor/field)"
         id2 = 1
         (F2, finfo2, coeff2) = set_field(id2)
         # apply outer operator to otype and second arg
         ishape3 =  [otype1, ishape[1]]
+        prntShape ("ishape3:",ishape3)
         z2 = set_outerApp(z1, F2)#, ishape3
         coeffs = coeffs+[coeff2]
         return (z2, coeffs)

@@ -28,9 +28,9 @@ from cte_compare import compare
 def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
     #print "X", x
-    x = name_file+"\n\t"+name_describe+"| "+name_ty+"| "+rtn_1
+    x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
     writeall(x)
-    print "-", x
+    print  x
 
     
     # collect results
@@ -40,7 +40,8 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-    elif (rst_NA_1==1):
+        raise Fail 
+    elif (rst_NA_1==9):
          rst_NA(name_file, x, name_describe,  branch)
     return
 
@@ -93,6 +94,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
+            raise Fail("compile")
             return 1
         else:
             counter.inc_run(cnt)
@@ -310,17 +312,28 @@ def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, 
 # checks to see if specific ex works
 def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     # adjusting to accept 2|3 layers of operators
-    
+    print "in get-tshape print ishape"
+    for j in ishape:
+        print "-", j.name
+    print "in get tshape1 ",tshape1.name
     opr_inner = oprs[0]
     opr_outer = oprs[1]
     #print "****************************************  get_tshape2 ************************************"
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
-    (tf2, tshape2) = get_tshape(opr_outer,[tshape1]+fty)
-    #print "in get tshape 2 tys",tys
+    print "tshape1", tshape1
+    print "fty", fty
+    es = [tshape1]+fty
+    xy = get_tshape(opr_outer,es)
+    print "xy",xy
+    (tf2, tshape2) =xy
+    print "tshape2", tshape2
+    print "tf2", tf2
+
     if(tf2==true):# if it works continue
         #create app object
+        print "in get tshape2 ",tshape2.name
         (app, coeffs) = create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame)
         # how many layers do we have here?
         # refer to testing frame

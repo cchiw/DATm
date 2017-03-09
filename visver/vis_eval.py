@@ -198,8 +198,11 @@ def eval_sample(observed_sphere):
         v3 = (probe_3-mean)
         variance=((v0*v0)+(v1*v1)+(v2*v2)+(v3*v3))/ num
         stdev = sqrt(variance)
-        coeffvar = stdev/mean
-        if(coeffvar>maxcoeffvar):
-            maxcoeffvar = coeffvar
+        coeffvar=0
+        if ((sqrt(mean*mean)>0.001)):
+            coeffvar = stdev/mean
+
+            if(coeffvar>maxcoeffvar):
+                maxcoeffvar = coeffvar
         dstr = "maxcoeffvar:"+str(maxcoeffvar)+"  mean :"+ str(mean)+"  variance:"+str( variance)+" stdev:"+str(stdev)
     return toStr(dstr, maxcoeffvar, maxdiff, sumdiff, o6, length)

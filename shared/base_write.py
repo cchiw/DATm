@@ -226,7 +226,7 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     f = open(path+"/rst.txt", 'w+')
     f.write(st)
     f.close()
-    raise Exception ("done one")
+
 
 
 
@@ -276,7 +276,7 @@ def rst_check(names, x, extraname, branch, observed_data, correct_data):
 def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "t"
     labl = dir+"__"+names
-    write_rst(names, x, extraname, "rtn:terrible")
-    #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
+    #write_rst(names, x, extraname, "rtn:terrible")
+    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
 

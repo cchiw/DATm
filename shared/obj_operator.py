@@ -114,17 +114,26 @@ op_tangent = operator(id+6, "tangent", 1, u'tan', place_left, limit_none, True)
 
 op_trig=[ op_cosine, op_sine, op_acosine, op_asine, op_sqrt]#,op_atangent, op_tangent]
 
-
+id=id+len(op_trig)
 # embed some operators
-op_zeros_add22 = operator(id+1, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
+op_zeros_add22 = operator(id, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
 # op_zeros_scale3: scalar-> [3,3]
-op_zeros_scale3 = operator(id+2, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
-op_zeros_outer2 = operator(id+3, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
-op_crossT3 = operator(id+4,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
-op_hessian = operator(id+5, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
+op_zeros_scale3 = operator(id+1, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
+op_zeros_outer2 = operator(id+2, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
+op_crossT3 = operator(id+3,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
+op_hessian = operator(id+4, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
 
-op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, op_hessian]
-op_all = op_unary+op_binary+op_trig#+op_specialized
+op_concat2 = operator(id+5,"concat2", 2,"concat", place_left, limit_none, True)
+op_concat3 = operator(id+6,"concat3", 3,"concat", place_left, limit_none, True)
+# can't implement ^ without enabling three arguments
+
+op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, op_hessian, op_concat2]
+
+
+
+
+
+op_all = op_unary+op_binary+op_trig+op_specialized
 
 
 

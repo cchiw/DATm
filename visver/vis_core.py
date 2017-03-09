@@ -44,7 +44,7 @@ def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_
         write_terrible(test_header_1)
         writesummary(test_header_0)
     else:
-        writeToRst2("p_"+opr_name, "passes/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
+        #writeToRst2("p_"+opr_name, "passes/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
         return
 
 ##################################################################################################
@@ -193,7 +193,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     print "passes"
     if(mk_choice_range(testing_frame, cnt)):
         counter.inc_cumulative(cnt)
-        
+        #return
         rtn = core2(app, coeffs, dimF, names, testing_frame, cnt)
         if(rtn==None):
 #            core2(app, coeffs, dimF, names, testing_frame, cnt)

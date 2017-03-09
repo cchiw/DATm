@@ -101,6 +101,8 @@ class frame:
         path = self.path
         if(branch == branch_vis15):
             path+= "vis15/bin/diderotc --exec "
+        elif(branch == branch_chiw17):
+            path+= "chiw17/bin/diderotc --exec "
         elif(branch == branch_ein16):
             path+= "ein16/bin/diderotc "
         elif(branch == branch_other):
@@ -127,7 +129,7 @@ class frame:
     # if so need to convert file to a text file
     def transform_isNrrd(self):
         branch = self.branch
-        if(branch == branch_vis15):
+        if(branch == branch_vis15 or branch==branch_chiw17):
             return True
         elif(branch == branch_ein16):
             return False

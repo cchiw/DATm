@@ -142,7 +142,19 @@ def get_doubledot(es, fldresult):
                 rtn.append([e1, e2])
     return rtn
 
-
+def get_concat2(es, fldresult):
+    rtn = []
+    # binary operator
+    for e1 in es:
+        for e2 in es:
+            if ((not fty.is_Field(e1)) or (not fty.is_Field(e2))):
+                continue
+            if(not check_dim(e1, e2)):
+                continue
+            # needs to have same type
+            if (fty.get_shape(e1) == fty.get_shape(e2)):
+                rtn.append([e1, e2])
+    return rtn
 
 #binary operators between flds fld (limited in some way)
 # and higher order tensor/tensor field
@@ -333,6 +345,8 @@ def oprToArgs(op1, tys):
                 return  (get_modulate)                # modulate
             elif(op1.id==op_doubledot.id) :
                 return (get_doubledot)                 # doubledot
+            elif(op1.id==op_concat2.id):
+                return (get_concat2)
             else:
                 raise Exception("no built in example of operator"+op1.name)
         return rtnArgs_all(get_eval())
@@ -344,15 +358,15 @@ def oprToEx_a(op1, rst_ty, tys):
     #print "inside oprToEx_a"
     #print "op1",op1.name
     args = getArgs(oprToArgs(op1, tys), rst_ty)
-    #print "op1", op1.name
-    #for i in args:
-    #print "opr to ex arg", i[0].name
+    print "op1", op1.name
+    for i in args:
+        print "opr to ex arg", i[0].name
     return example(op1, args)
 
 # gets a single examples
 def get_single_example(opr, ty_num, args_types):
     ex = oprToEx(opr, args_types)
-    #print "current operator "+opr.name+ "("+str(opr.id)+ ") # "+str(ty_num)+"|"+str(len(ex.tys)-1)
+    print "current operator "+opr.name+ "("+str(opr.id)+ ") # "+str(ty_num)+"|"+str(len(ex.tys)-1)
     i = 0
     for t in ex.tys:
         x=""
@@ -369,7 +383,7 @@ def get_single_example(opr, ty_num, args_types):
 
 # gets a single examples
 def get_single_exampleEx(ex, ty_num):
-    #print "inside get_single_exampleEx"
+    print "inside get_single_exampleEx"
     i = 0
     for t in ex.tys:
         x=""
@@ -379,7 +393,7 @@ def get_single_exampleEx(ex, ty_num):
         for j in t:
             x+= j.name+","
         i+=1
-        #print x
+    # print x
     name = example.toStr(ex, ty_num)
     ty = example.get_ty(ex, ty_num)
     return (name, ty)
