@@ -144,7 +144,11 @@ def readDiderot(p_out,app,pos,template):
         i0 = re.search(foo_sumfieldOut, line)
         if i0:
             #print "probe output field type"
-            foo="\n\tout += "+opfieldname1+"(pos);// update output based on last sample\n"
+            foo="\n\tout += ("+opfieldname1+"(pos)) "
+            if(app.oty.id==ty_vec3F_d3.id):
+                #foo+=u'•'+" (pos)"
+                foo+=u'•'+" [5,6,2]"
+            foo+=";// update output based on last sample\n"
             f.write(foo.encode('utf8'))
             continue
         h0 = re.search(foo_basein,line)
@@ -205,7 +209,7 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd,t_templatesize,t_t
         txfile  = p_out+".txt"
         os.system("rm "+txfile)
         # run executable
-        shape = app.oty.shape
+        shape = [] #app.oty.shape
         # print "shape",shape
         print "************** writeDiderot1 dd********************"
         product = 1

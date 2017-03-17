@@ -30,12 +30,12 @@ from vis_eval import *
 def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_data, observed_sphere, PARAMS, branch):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
     (rst_lbl,  rst_all) = rtn_1
-    #print "X", x
+    ##print "X", x
     test_header_0 = name_file+"\n\t"+name_describe+"| "+name_ty+"| "+rst_lbl
     test_header_1 =  test_header_0+rst_all
     writeall(test_header_0)
-    print "-", test_header_0
-    print "-", test_header_1
+    #print "-", test_header_0
+    #print "-", test_header_1
     # collect results
     counter.inc_locals(cnt, rtn)
     # write to file
@@ -58,7 +58,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
-    #print "############################################inside central############################################"
+    ##print "############################################inside central############################################"
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
     # get global variables from testing framework
@@ -77,22 +77,22 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     t_runtimepath = frame.transform_runtimepath(testing_frame)
     t_size = frame.transform_template_size(testing_frame)
     t_file = frame.transform_template_file(testing_frame)
-    #print "*******************************************"
+    ##print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
     name_describe = app.name
 
     # testing positions
-    print "\n ******************************   vis a"
+    #print "\n ******************************   vis a"
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     # samples
     #create synthetic field data with diderot
-    print "\n ******************************   vis b"
+    #print "\n ******************************   vis b"
     PARAMS = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
-    print "\n ******************************   pre write date "
+    #print "\n ******************************   pre write date "
     (isCompile, isRun) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd,t_size*t_size,t_file)
-    print "\n ******************************  post write data"
+    #print "\n ******************************  post write data"
     if(isRun == None):
         # did not run
         if(isCompile == None):
@@ -105,7 +105,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             return 2
     else:
         # read observed data
-        print "---------------  pre read  observed data ----------------------"
+        #print "---------------  pre read  observed data ----------------------"
         os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
         observed_data = observed(app, g_output)
         # center of spehere
@@ -117,16 +117,16 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         arg_perline = 9 # output of mip program
         # take samples of output
         
-        print "---------------  pre read diderot ----------------------"
+        #print "---------------  pre read diderot ----------------------"
         # sampling diderot file
         os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
         positions = mk_vis_files(app, positions, arg_inc, arg_positions)
         os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
-        print "--------------- pre run sample-----------------------"
+        #print "--------------- pre run sample-----------------------"
         observed_sphere =  run_sample(t_runtimepath, arg_center, arg_positions, arg_inc)
-        print "observed_eval",observed_sphere
+        #print "observed_eval",observed_sphere
         rtn  = eval_sample(observed_sphere)
-        print "--------------- pre color-----------------------"
+        #print "--------------- pre color-----------------------"
 
         #run_color(t_runtimepath, arg_center, arg_positions, arg_inc)
         
@@ -139,10 +139,10 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
 # is the input type okay for mip template
 def input_ty1(e):
-    print "input type: ",e.name
-    print "e.id=",e.id
-    print "ty_vec3F_d3.id:",ty_vec3F_d3.id
-    print "ty_scalarF_d3.id:",ty_scalarF_d3.id
+    #print "input type: ",e.name
+    #print "e.id=",e.id
+    #print "ty_vec3F_d3.id:",ty_vec3F_d3.id
+    #print "ty_scalarF_d3.id:",ty_scalarF_d3.id
     if( (e.id==ty_scalarF_d3.id)):
         return True
     elif( (e.id==ty_vec3F_d3.id)):
@@ -152,14 +152,14 @@ def input_ty1(e):
 
 def input_ty2(e):
     if(not (e.lhs==None)):
-        print "e.lhs", e.lhs
-        print "e.lhs.fldty",e.lhs.fldty
-        print "e.lhs.fldty.name",e.lhs.fldty.name
-        print "e.lhs.fldty.id",e.lhs.fldty.id
+        #print "e.lhs", e.lhs
+        #print "e.lhs.fldty",e.lhs.fldty
+        #print "e.lhs.fldty.name",e.lhs.fldty.name
+        #print "e.lhs.fldty.id",e.lhs.fldty.id
         
         if(input_ty1(e.lhs.fldty)):
             if(not (e.rhs==None)):
-                print "check rhs"
+                #print "check rhs"
                 return input_ty1(e.rhs.fldty)
             else:
                 return True
@@ -169,28 +169,28 @@ def input_ty2(e):
         return False
 
 def core(app, coeffs, dimF, names, testing_frame, cnt):
-    print "\n ****************************** vis   a"
+    #print "\n ****************************** vis   a"
     #writetys("\n\t***"+app.name)
     #writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     #counter.inc_cnt(cnt)
     #counter.inc_cumulative(cnt)
 
     if(not(app.oty.id==ty_scalarF_d3.id)):
-        print "app.oty:",app.oty," name:",app.oty.name
+        #print "app.oty:",app.oty," name:",app.oty.name
         return
     if( not (input_ty2(app.lhs))):
-    #    print "does not pass"
+    #    #print "does not pass"
     #    return
     # layer 1
     #if( not (input_ty2(app))):
-        print "does not pass"
+        #print "does not pass"
         return
     
     if(not (app.rhs==None)):
         if(not (input_ty1(app.rhs.fldty))):
-            print "does not pass"
+            #print "does not pass"
             return
-    print "passes"
+    #print "passes"
     if(mk_choice_range(testing_frame, cnt)):
         counter.inc_cumulative(cnt)
         #return
@@ -231,7 +231,7 @@ def create_single_app(opr_inner, t_num, testing_frame, cnt):
     g_rst_ty = frame.get_rst_ty(testing_frame)
     g_krn = frame.get_krn(testing_frame)
     g_template = frame.get_template(testing_frame)
-    #print "single specific ex"
+    ##print "single specific ex"
     def oprToEx(opr_inner, testing_frame, cnt):
         #get global variables
         g_in_tys  = frame.get_in_tys(testing_frame)
@@ -247,12 +247,12 @@ def create_single_app(opr_inner, t_num, testing_frame, cnt):
     (name,ishape)= get_single_exampleEx(ex, t_num)
     # get k value of tshape from kernels
     ishape = set_ks(g_krn, ishape)
-    #print "calling tshape"
+    ##print "calling tshape"
     (tf1, tshape1) = get_tshape(opr_inner,ishape)
     if(not tf1):
         write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
-    #print "after calling tshape"
+    ##print "after calling tshape"
     #create app object
 
     (app, coeffs) = mkApply_fld(name, opr, ishape, g_inputfile, tshape1, g_coeff_style, g_ucoeff, g_krn, g_template )
@@ -301,7 +301,7 @@ def generate_name(oprs, tys, s):
             title+= "_t"+str(i)
 
     title =  title+"_"+(s)
-    print "title", title
+    #print "title", title
     return title
 
 
@@ -336,7 +336,7 @@ def create_apply3_then_core(ishape, appname, opr_outer2, tshape3, ztwice, coeffs
 def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
     [opr_inner, opr_outer1, opr_outer2] = oprs
     [_, _, t_ty3] = tys
-    #print "****************************************  get_tshape3 ************************************"
+    ##print "****************************************  get_tshape3 ************************************"
     # third layer operator, and second type it is applied to (incase it is a binary)
     tmpshape = []
     s = ""
@@ -356,7 +356,7 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
     if(tf3==true):#
         writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         appname = opr_outer2.name+"("+opr_outer1.name+"("+opr_inner.name+")"+")"
-        print "appname :",appname
+        #print "appname :",appname
         title =  generate_name(oprs, tys, "_l3")
         create_apply3_then_core(ishape_all, appname, opr_outer2, tshape3, app, coeffs, title, testing_frame, cnt)
 
@@ -388,12 +388,12 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     
     opr_inner = oprs[0]
     opr_outer = oprs[1]
-    #print "****************************************  get_tshape2 ************************************"
+    ##print "****************************************  get_tshape2 ************************************"
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
     (tf2, tshape2) = get_tshape(opr_outer,[tshape1]+fty)
-    #print "in get tshape 2 tys",tys
+    ##print "in get tshape 2 tys",tys
     if(tf2==true):# if it works continue
         #create app object
         (app, coeffs) = create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame)

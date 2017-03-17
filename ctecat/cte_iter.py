@@ -37,12 +37,11 @@ from cte_core import *
 
 ##################################################################################################
 # get example from list of examples
-def single_specific_ex(ex, opr_inner, t_num, testing_frame, cnt):
+def single_specific_ex(opr_inner, t_num, testing_frame, cnt):
     # increment total
-    print "single_specific_ex"
     counter.inc_total(cnt)
     # main
-    rtn = create_single_app(ex, opr_inner, t_num, testing_frame, cnt)
+    rtn = create_single_app(opr_inner, t_num, testing_frame, cnt)
 
     return
 
@@ -126,12 +125,9 @@ def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_
 # get tshape of get_tshape
 def pre_get_tshape1(ex, t_num, opr_inner, testing_frame):
     (name, ishape) = get_single_exampleEx(ex, t_num)
-    print "***pre getstape ishape:", len(ishape), "op1:", opr_inner.name
     g_krn = frame.get_krn(testing_frame)
     ishape0 = set_ks(g_krn, ishape)
     (tf1, tshape1) = get_tshape(opr_inner, ishape0)
-    
-    print "***pre getstape ishape0:", len(ishape0)
     return (name, tf1, tshape1, ishape0)
 
 
@@ -167,19 +163,14 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
             return (tf, None, None)
     def call(t_num, t_ty2, ty_ty2):
         tys = [t_num, t_ty2]
-        print "***pre getstape ishape call():", len(ishape0)
         embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_frame, cnt)
-    
     # core
     n_num = len(ex.tys)
     (tf, ty2s, n_ty2) = f()
     for t_num  in range(n_num):
         # current example
         if(mk_choice_limit(testing_frame,cnt)):
-  
             (name, tf1, tshape1, ishape0) = pre_get_tshape1(ex, t_num, opr_inner, testing_frame)
-            print "***embed base iter ty2:", len(ishape0)
-              
             if(tf1==true):
                 if(tf):
                     for t_ty2 in range(n_ty2):  #extra type
@@ -283,21 +274,6 @@ def embed_base_iter_ty2_wihty1(ex, oprs, t_num, testing_frame, cnt):
         return
 
 #iterating ex_outer from 0...length(potential outer_operators)
-def embed_base_iter_outerSingle(ex, opr_inner, testing_frame, cnt):
-    writeTitle_inner(opr_inner)
-    #have ex_opr iterating over ex_outer
-    n_outer = getN()
-    for  t_outer in range(n_outer):
-        #zero counters
-        counter.zero_locals(cnt)
-        counter.zero_total(cnt)
-        opr_outer = id_toOpr(t_outer)
-        writeTitle_outer(opr_inner, opr_outer)
-        oprs = [opr_inner, opr_outer]
-        embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
-        writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
-    return
-
 def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
     writeTitle_inner(opr_inner)
     #have ex_opr iterating over ex_outer
@@ -311,22 +287,7 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
         oprs = [opr_inner, opr_outer]
         embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
         writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
-    #switch
-#    writeall("\nswitch")
-#    opr_outer=opr_inner
-#    for  t_inner in range(n_outer):
-#        #zero counters
-#        counter.zero_locals(cnt)
-#        counter.zero_total(cnt)
-#        opr_inner = id_toOpr(t_inner)
-#        ex = oprToEx(opr_inner, testing_frame, cnt)
-#        writeTitle_outer(opr_inner, opr_outer)
-#        oprs = [opr_inner, opr_outer]
-#        embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
-#        writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
     return
-
-
 
 #run all possible examples from 0...n
 def embed2_iter_inner(testing_frame, cnt):
@@ -340,23 +301,8 @@ def embed2_iter_inner(testing_frame, cnt):
 
     return
 
-#run all possible examples from 0...n
-def embed2_iter_inner_setrange(t_start, t_range, testing_frame, cnt):
-    n_opr = getN()
-    for t_opr in range(t_range):
-        t_opr+=t_start
-        startx = time.time()
-        opr_inner = (id_toOpr(t_opr))
-        ex = oprToEx(opr_inner, testing_frame, cnt)
-        embed_base_iter_outer(ex, opr_inner, testing_frame, cnt)
-    
-    return
-
-
-
 #specify outer operator
 def embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt):
-    print "embed2_iter_inner_gotouter"
     counter.zero_total(cnt)  #zero counters
     n_opr = getN()
     
@@ -375,7 +321,6 @@ def embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt):
 
 #run all examples for a specific operator
 def single_all_ops(opr_inner, testing_frame, cnt):
-    print "single all ops"
     # get built-in example
     ex = oprToEx(opr_inner, testing_frame, cnt)
     n_num = len(ex.tys)
@@ -385,5 +330,5 @@ def single_all_ops(opr_inner, testing_frame, cnt):
     #zero counters
     counter.zero_locals(cnt)
     for t_num  in range(n_num):
-        single_specific_ex(ex, opr_inner, t_num, testing_frame, cnt)
+        single_specific_ex(opr_inner, t_num, testing_frame, cnt)
     return
