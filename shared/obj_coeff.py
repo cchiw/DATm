@@ -118,8 +118,8 @@ def get_coeffs(dim, coeff_style, ucoeff):
 # unravel pack of coeffs
 def toExp_cubic(coeff):
     # digest coefficients
-    #print "inside to exp coeff",coeff
-    #print "len",len(coeff)
+    ##print "inside to exp coeff",coeff
+    ##print "len",len(coeff)
     [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p] = coeff
     # transform to expression
     tA = a + b*y + c*x*y+ d*x;
@@ -132,7 +132,7 @@ def toExp_cubic(coeff):
 # unravel pack of coeffs
 def toExp_quad(coeff, zvalue):
     # digest coefficients
-    #print "inside to exp coeff",coeff
+    ##print "inside to exp coeff",coeff
     [a,b,c,d,e,f,g,h,i] = coeff
     # transform to expression
     t0 = b*x + c*y
@@ -143,8 +143,8 @@ def toExp_quad(coeff, zvalue):
     return exp
 
 def coeffToExp(coeff, dim):
-    #print "coeff",coeff
-    #print "dim",dim
+    ##print "coeff",coeff
+    ##print "dim",dim
     if (dim==0):
         zvalue = 1 # no z is use
         return toExp_quad(coeff, zvalue)
@@ -161,38 +161,38 @@ def coeffToExp(coeff, dim):
         e1 = toExp_cubic(z1) * z # multiply with one z
         e2 = toExp_cubic(z2) * z*z #z^2
         exp = e0+e1+e2
-        #print "\n ******* exp\n e0:",e0,"\n e1:", e1,"\n e2:",e2
+        ##print "\n ******* exp\n e0:",e0,"\n e1:", e1,"\n e2:",e2
         return exp
     else :
         raise "unsupported field dimension"
 
 def mk_exp(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
-        print "using regular template"
+        #print "using regular template"
         coeff1= get_coeffs(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
         return (coeff1,exp1)
     else:
-        print "using mip template"
+        #print "using mip template"
         return (0,[]) # does not get used
 
 
 def mk_exp_debug1(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
-        print "using regular template"
+        #print "using regular template"
         coeff1= get_coeffs_debug1(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
         return (coeff1,exp1)
     else:
-        print "using mip template"
+        #print "using mip template"
         return (0,[]) # does not get used
 
 def mk_exp_debug2(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
-        print "using regular template"
+        #print "using regular template"
         coeff1= get_coeffs_debug2(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
         return (coeff1,exp1)
     else:
-        print "using mip template"
+        #print "using mip template"
         return (0,[]) # does not get used

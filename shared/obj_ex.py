@@ -147,13 +147,15 @@ def get_concat2(es, fldresult):
     # binary operator
     for e1 in es:
         for e2 in es:
+
             if ((not fty.is_Field(e1)) or (not fty.is_Field(e2))):
                 continue
-            if(not check_dim(e1, e2)):
+            if(not (e1.dim==e2.dim)):
                 continue
             # needs to have same type
             if (fty.get_shape(e1) == fty.get_shape(e2)):
                 rtn.append([e1, e2])
+                print "testing ",e1.name, "-",e2.name,"-adding"
     return rtn
 
 #binary operators between flds fld (limited in some way)
@@ -355,12 +357,12 @@ def oprToArgs(op1, tys):
 
 # returns example object
 def oprToEx_a(op1, rst_ty, tys):
-    #print "inside oprToEx_a"
+    print "inside oprToEx_a"
     #print "op1",op1.name
     args = getArgs(oprToArgs(op1, tys), rst_ty)
-    print "op1", op1.name
-    for i in args:
-        print "opr to ex arg", i[0].name
+    #print "op1", op1.name
+    #for i in args:
+    #print "returning opr to ex arg", i[0].name
     return example(op1, args)
 
 # gets a single examples

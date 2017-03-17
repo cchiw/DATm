@@ -27,10 +27,10 @@ from cte_compare import compare
 # results from testing
 def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
-    #print "X", x
-    x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
+    ##print "X", x
+    x = name_file+"\n\t"+name_describe+"| "+name_ty+"| "+rtn_1
     writeall(x)
-    print  x
+    print "-", x
 
     
     # collect results
@@ -40,8 +40,7 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-        raise Fail 
-    elif (rst_NA_1==9):
+    elif (rst_NA_1==1):
          rst_NA(name_file, x, name_describe,  branch)
     return
 
@@ -56,7 +55,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
-    #print "############################################inside central############################################"
+    ##print "############################################inside central############################################"
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
     # get global variables from testing framework
@@ -73,7 +72,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     t_nrrdbranch = frame.transform_nrrdpath(testing_frame)
     t_runtimepath = frame.transform_runtimepath(testing_frame)
     
-    #print "*******************************************"
+    ##print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
 
@@ -94,7 +93,6 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
-            raise Fail("compile")
             return 1
         else:
             counter.inc_run(cnt)
@@ -105,8 +103,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         observed_data = observed(app, g_output)
         if(check(app, observed_data)):
             correct_data = eval(app , positions)
-            #print "observed data:", observed_data
-            #print "correct data:", correct_data
+            ##print "observed data:", observed_data
+            ##print "correct data:", correct_data
             rtn = compare(app, observed_data, correct_data)
             analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             return 3 
@@ -150,7 +148,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
 ##################################################################################################
 # functions create app objects
 # get example from list of examples
-def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
+def create_single_app(opr_inner, t_num, testing_frame, cnt):
     # global variables needed from testing framework
     g_inputfile = frame.get_inputfile(testing_frame)
     g_ucoeff = frame.g_ucoeff(testing_frame)
@@ -158,21 +156,28 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     g_rst_ty = frame.get_rst_ty(testing_frame)
     g_krn = frame.get_krn(testing_frame)
     g_template = frame.get_template(testing_frame)
+    ##print "single specific ex"
+    def oprToEx(opr_inner, testing_frame, cnt):
+        #get global variables
+        g_in_tys  = frame.get_in_tys(testing_frame)
+        g_rst_ty = frame.get_rst_ty(testing_frame)
+        #using s variables get global variables
+        tys = transform_tys(g_in_tys)  # use global var to get list of types
+        #(l_all_T, l_all_F, l_all) = tys
+        ex = oprToEx_a(opr_inner, g_rst_ty, tys)
+        return ex
     
     opr = opr_inner
-    #ex = oprToEx(opr_inner, testing_frame, cnt)
+    ex = oprToEx(opr_inner, testing_frame, cnt)
     (name,ishape)= get_single_exampleEx(ex, t_num)
     # get k value of tshape from kernels
     ishape = set_ks(g_krn, ishape)
-    #print "calling tshape"
-    #print opr_inner.name,ishape[0].name
+    ##print "calling tshape"
     (tf1, tshape1) = get_tshape(opr_inner,ishape)
-    #print "post get-tshape"
-    #print tf1, tshape1
     if(not tf1):
         write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
-    #print "after calling tshape"
+    ##print "after calling tshape"
     #create app object
 
     (app, coeffs) = mkApply_fld(name, opr, ishape, g_inputfile, tshape1, g_coeff_style, g_ucoeff, g_krn,g_template)
@@ -256,7 +261,7 @@ def create_apply3_then_core(ishape, appname, opr_outer2, tshape3, ztwice, coeffs
 def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
     [opr_inner, opr_outer1, opr_outer2] = oprs
     [_, _, t_ty3] = tys
-    #print "****************************************  get_tshape3 ************************************"
+    ##print "****************************************  get_tshape3 ************************************"
     # third layer operator, and second type it is applied to (incase it is a binary)
     tmpshape = []
     s = ""
@@ -305,28 +310,17 @@ def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, 
 # checks to see if specific ex works
 def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     # adjusting to accept 2|3 layers of operators
-    #print "in get-tshape print ishape"
-    #for j in ishape:
-    #    print "-", j.name
-    #print "in get tshape1 ",tshape1.name
+    
     opr_inner = oprs[0]
     opr_outer = oprs[1]
-    #print "****************************************  get_tshape2 ************************************"
+    ##print "****************************************  get_tshape2 ************************************"
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
-    #print "tshape1", tshape1
-    #print "fty", fty
-    es = [tshape1]+fty
-    xy = get_tshape(opr_outer,es)
-    #print "xy",xy
-    (tf2, tshape2) =xy
-    #print "tshape2", tshape2
-    #print "tf2", tf2
-
+    (tf2, tshape2) = get_tshape(opr_outer,[tshape1]+fty)
+    ##print "in get tshape 2 tys",tys
     if(tf2==true):# if it works continue
         #create app object
-        #print "in get tshape2 ",tshape2.name
         (app, coeffs) = create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame)
         # how many layers do we have here?
         # refer to testing frame

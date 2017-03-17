@@ -609,6 +609,7 @@ def nToshape(shapeout):
 #shape to type
 #shape to type
 def shapeToTyhelper2(shapeout, dim):
+    #print "got dim",dim
     if (dim==nonefield_dim):
         if (shapeout==[]):
             return (True, ty_scalarFT)
