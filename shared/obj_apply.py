@@ -157,8 +157,8 @@ class apply:
 
 # isShapeOk()  is the shape ok? Is it supported?
 def isShapeOk(a,b):
-    return shapeToTyhelper(a,b)#check if nrrd output for vis ver
-    #return shapeToTyhelper2(a,b)
+    #return shapeToTyhelper(a,b)#check if nrrd output for vis ver
+    return shapeToTyhelper2(a,b)
 
 
 #------------------------------ helpers -----------------------------------------------------
