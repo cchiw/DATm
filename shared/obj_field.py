@@ -144,8 +144,8 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
     input1 = inputfile+tag
     def get_vec(n):
         if (n==2):
-            (coeff1, exp1)= mk_exp_debug1(dim, coeff_style, ucoeff, t_template)
-            (coeff2, exp2)= mk_exp_debug2(dim, coeff_style, ucoeff, t_template)
+            (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff2, exp2)= mk_exp(dim, coeff_style, ucoeff, t_template)
             coeffs= [ coeff1,coeff2]
             exps = [exp1,exp2]
    

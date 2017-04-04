@@ -92,7 +92,8 @@ def cmd(layer, testing_frame, cnt, shift, args):
             writeTitle_outer(opr_inner, opr_outer)
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer]
-            embed_base_iter_ty2_wihty1(ex, oprs, t_num, testing_frame, cnt)
+            (name, ishape) = get_single_exampleEx(ex, t_num)
+            embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, testing_frame, cnt)
             writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
         elif (layer==3):
             # given ids for inner, outer1, and outer2 operators
@@ -121,7 +122,8 @@ def cmd(layer, testing_frame, cnt, shift, args):
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer1]
             tys = [t_num, t_ty2]
-            embed_base_iter_ty2_wihty2(ex, oprs, tys, testing_frame, cnt)
+            (name, ishape) = get_single_exampleEx(ex, t_num)
+            embed_base_iter_ty2_wihty2(ex, name, ishape, oprs, tys, testing_frame, cnt)
             writeResults_outer(opr_inner, opr_outer1, testing_frame, cnt)
         elif (layer==3):
             #  run a specific iterate over double layer with unary operator
@@ -137,7 +139,8 @@ def cmd(layer, testing_frame, cnt, shift, args):
 
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer1, opr_outer2]
-            embed_base_iter_ty2_wihty1(ex, oprs, t_num, testing_frame, cnt)
+            (name, ishape) = get_single_exampleEx(ex, t_num)
+            embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, testing_frame, cnt)
             writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         else:
             raise "unsupported"
@@ -156,7 +159,8 @@ def cmd(layer, testing_frame, cnt, shift, args):
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer1, opr_outer2]
             tys = [t_num, t_ty2]
-            embed_base_iter_ty2_wihty2(ex, oprs, tys, testing_frame, cnt)
+            (name, ishape) = get_single_exampleEx(ex, t_num)
+            embed_base_iter_ty2_wihty2(ex, name, ishape, oprs, tys, testing_frame, cnt)
             writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         else:
             raise "unsupported"
@@ -176,7 +180,8 @@ def cmd(layer, testing_frame, cnt, shift, args):
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer1, opr_outer2]
             tys = [t_num, t_ty2, t_ty3]
-            embed_base_iter_ty2_wihty2(ex, oprs, tys, testing_frame, cnt)
+            (name, ishape) = get_single_exampleEx(ex, t_num)
+            embed_base_iter_ty2_wihty2(ex, name, ishape, oprs, tys, testing_frame, cnt)
             writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         else:
             raise "unsupported"
@@ -195,6 +200,7 @@ def cmd(layer, testing_frame, cnt, shift, args):
 #        t_num = int(sys.argv[shift+2])
 #        opr_inner = id_toOpr(t_inner)
 #        writeTitle_inner(opr_inner)
+#        (name, ishape) = get_single_exampleEx(ex, t_num)
 #        embed_base_iter_outer2(opr_inner, t_num, testing_frame, cnt)
 #        writeResults_inner(opr_inner, testing_frame, cnt)
     else:

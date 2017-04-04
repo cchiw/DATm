@@ -127,7 +127,9 @@ op_concat2 = operator(id+5,"concat2", 2,"concat", place_left, limit_none, True)
 op_concat3 = operator(id+6,"concat3", 3,"concat", place_left, limit_none, True)
 # can't implement ^ without enabling three arguments
 
-op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, op_hessian, op_concat2]
+op_comp = operator(id+6,"compose", 2,"comp", place_left, limit_none, True)
+
+op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, op_hessian, op_concat2,op_comp]
 
 
 

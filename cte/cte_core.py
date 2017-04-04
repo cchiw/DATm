@@ -35,12 +35,13 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
     
     # collect results
     counter.inc_locals(cnt, rtn)
+    writeCumulative(cnt)
     # check results
     if (rst_check_1==7):
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-        raise Fail 
+        #raise Exception("terrible")
     elif (rst_NA_1==9):
          rst_NA(name_file, x, name_describe,  branch)
     return
@@ -56,6 +57,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
+    print "inside core"
     #print "############################################inside central############################################"
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
@@ -86,22 +88,24 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     PARAMS = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
 
+    print "about to write diderot"
+    print "going to call writeDiderot"
     (isCompile, isRun) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd)
     
     
     if(isRun == None):
-        # did not run
+        print "did not run"
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
-            raise Fail("compile")
+            raise Exception ("did not compile")
             return 1
         else:
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
             return 2
     else:
-        # read observed data
+        print "read observed data"
         observed_data = observed(app, g_output)
         if(check(app, observed_data)):
             correct_data = eval(app , positions)
@@ -311,7 +315,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     #print "in get tshape1 ",tshape1.name
     opr_inner = oprs[0]
     opr_outer = oprs[1]
-    #print "****************************************  get_tshape2 ************************************"
+    print "get_tshape2()"
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
@@ -319,26 +323,29 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     #print "fty", fty
     es = [tshape1]+fty
     xy = get_tshape(opr_outer,es)
-    #print "xy",xy
+    print "return from get_tshape:",xy
     (tf2, tshape2) =xy
     #print "tshape2", tshape2
     #print "tf2", tf2
 
     if(tf2==true):# if it works continue
         #create app object
-        #print "in get tshape2 ",tshape2.name
+        print "about to create_apply 2"
         (app, coeffs) = create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame)
+        print "past creating apply2"
         # how many layers do we have here?
         # refer to testing frame
         layer = frame.get_layer(testing_frame)
         if(layer==2):
+            print "inside layer2"
             dimF = tshape2.dim
             # done creating app. continute to main part
             title =  generate_name(oprs, tys, "_l2")
+            print "post generating title"
             return core(app, coeffs, dimF, title, testing_frame, cnt)
         elif(layer==3):
             # first did the user specify 3 operators in the command line?
-
+            print "inside layer 3"
             if(len(oprs)==3):
 
                 # user specified 3 operators

@@ -36,10 +36,10 @@ def update_method(f, pos, app):
     if(fty.is_Field(oty)):
         # index field at random positions
         index_field_at_positions(f, pos, app)
-        #check_inside(f, opfieldname1, app)
+        check_inside(f, opfieldname1, app)
         #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
-        #       f.write(foo.encode('utf8'))
-        check_conditional(f,  opfieldname1, app)
+        #f.write(foo.encode('utf8'))
+        #check_conditional(f,  opfieldname1, app)
     else:
         # get conditional for tensor argument
         check_conditional(f,  foo_out, app)
@@ -98,29 +98,32 @@ def readDiderot(p_out,app,pos):
 
 # execute new diderot program
 def runDiderot(p_out, app, pos, output, runtimepath, isNrrd):
+    print "app-oty", app.oty, app.oty.name
     shape = app.oty.shape
-    # print "shape",shape
+    print "oty shape",shape
     product = 1
     for x in shape:
         product *= x
-    #print "runtimepath:", runtimepath
-    #print "app:", app.name
-    #print "shape: ", shape
+    print "runtimepath:", runtimepath
+    print "app:", app.name
+    print "shape: ", shape
     if(isNrrd):
-        #print "write diderot-isnrrd-true"
+        print "write diderot-isnrrd-true"
         m2 = len(pos)+1
         w_shape=" -s "+str(product)+" "+str(m2)
-        #print("./"+p_out+" -o tmp.nrrd")
+        print("./"+p_out+" -o tmp.nrrd")
         os.system("./"+p_out+" -o tmp")
         os.system("./"+p_out+" -o tmp.nrrd")
-        #print ("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
+        print ("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
+        os.system("unu head tmp.nrrd")
         os.system("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
     else:
-        #print "write diderot-isnrrd-false"
+        print "write diderot-isnrrd-false"
         # print "not is vis"
         executable = "./"+p_out
         #print executable
         os.system(executable)
+        print "inside else",executable
 
 
 
@@ -134,6 +137,7 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd):
     os.system("cp "+p_out+".diderot "+output+".diderot")
     os.system("rm "+p_out) # remove existing executable
     os.system(runtimepath + " " + diderotprogram)
+    print "app output type",app.oty
     print "************ write diderot end"
     # did it compile?
     if(not(os.path.exists(p_out))):
@@ -148,7 +152,8 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd):
         runDiderot(p_out, app, pos, output, runtimepath, isNrrd)
         if(not(os.path.exists(txfile))):
             # did not execute
-            #print "did not execute"
+            print "did not execute"
+            #raise Exception ("did not execute")
             return (true, None)
         else:
             #print "compiled and execute"
@@ -158,7 +163,3 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd):
             os.system("rm "+p_out+"*")
             return (true, true)
     
-    
-
-
-

@@ -155,7 +155,24 @@ def get_concat2(es, fldresult):
             # needs to have same type
             if (fty.get_shape(e1) == fty.get_shape(e2)):
                 rtn.append([e1, e2])
-                print "testing ",e1.name, "-",e2.name,"-adding"
+                print "concat ",e1.name, "-",e2.name,"-adding"
+    return rtn
+
+def get_compose(es, fldresult):
+    rtn = []
+    # binary operator
+    for e1 in es:
+        for e2 in es:
+            if ((not fty.is_Field(e1)) or (not fty.is_Field(e2))):
+                continue
+            if(not (e1.dim==e2.dim)):
+                continue
+            # needs to have same type
+            if (e1.dim==1 and fty.is_Scalar(e2)):
+                rtn.append([e1, e2])
+            elif(fty.get_shape(e2)== [e1.dim]):
+                rtn.append([e1, e2])
+                print "compose ",e1.name, "-",e2.name,"-adding"
     return rtn
 
 #binary operators between flds fld (limited in some way)
@@ -349,6 +366,8 @@ def oprToArgs(op1, tys):
                 return (get_doubledot)                 # doubledot
             elif(op1.id==op_concat2.id):
                 return (get_concat2)
+            elif(op1.id==op_comp.id):
+                return (get_compose)
             else:
                 raise Exception("no built in example of operator"+op1.name)
         return rtnArgs_all(get_eval())
