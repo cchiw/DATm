@@ -202,16 +202,19 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
 def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, rst):
     path = rst_stash+"/"+names
     os.system("mkdir "+path)
-    print   ("cp "+rst_data+"/output5_p_observ.diderot "+path+"/"+names+".diderot")
-    os.system("cp "+rst_data+"/output5_p_observ.diderot "+path+"/"+names+".diderot")
-    os.system("cp output5_p_observ.diderot "+path+"/"+names+".diderot")
-    print ("cp "+rst_data+"/inputfile_0.nrrd "+path+"/inputfile_0.nrrd")
-    os.system("cp "+rst_data+"/inputfile_0.nrrd "+path+"/inputfile_0.nrrd")
-    os.system("cp "+rst_data+"/inputfile_1.nrrd "+path+"/inputfile_1.nrrd")
-    #os.system("cp data/inputfilecat_2.nrrd "+path+"/inputfilecat_2.nrrd")
-    os.system("cp "+rst_data+"/inputfile_2.nrrd "+path+"/inputfile_2.nrrd")
-    os.system("cp "+rst_data+"/output5_p_observ.png "+path+"/output5_p_observ.png")
-    os.system("cp "+rst_data+"/output5_p_observ.png "+path+"/"+names+".png")
+
+
+
+    nrrdNames =["inputfile_0","inputfile_1","inputfile_2","inputfile0","inputfile1","inputfile2"]
+    for i in  nrrdNames:
+        os.system("cp "+rst_data+"/"+i+".nrrd "+path+"/"+i+".nrrd")
+    
+    filetys = [".diderot",".png"]
+    for i in filetys:
+        os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/output5_p_observ"+i)
+        os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/"+names+i)
+
+
     a= names
     b= "\n\nobserved data from "+branch+" "+str(observed_data)
     # correct values from python

@@ -626,7 +626,7 @@ def check_conditional(f, ff, app):
     return
 
 def check_inside(f, ff, app):
-    # probes field at variable position
+    print " probes field at variable position"
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
     
@@ -639,7 +639,11 @@ def check_inside(f, ff, app):
             s="inside(pos, F"+str(i)+")"
             j.append(s)
         i+=1
-    if(len(j)==1):
+    if(app.opr==op_comp):
+        foo = "\t if((inside(pos,F1)) && (inside(F1(pos),F0))){\n\t"
+    elif (app.lhs.opr==op_comp and app.opr.arity==1 ):
+        foo = "\t if((inside(pos,F1)) && (inside(F1(pos),F0))){\n\t"
+    elif(len(j)==1):
         foo =  ""
         if(app.isrootlhs):
             foo += set
@@ -669,6 +673,7 @@ def check_inside(f, ff, app):
 # set positions variables
 # index field at position
 def index_field_at_positions(f, pos, app):
+    print "index at positions"
     oty = app.oty
     i=0
     foo="\t\t"
@@ -704,7 +709,7 @@ def index_field_at_positions(f, pos, app):
 
 def outLine(f, app):
     type  = app.oty
-    #print "\n outline-","type: ",type.name," app: ",app.name
+    print "\n outline-","type: ",type.name," app: ",app.name
     if (fty.is_Field(type)):
         #print "isfld-layer 1"
         outLineF(f, type)

@@ -680,7 +680,62 @@ def fn_concat3(fld1, fld2, fld3):
         raise Exception("concat of higher level is not supported")
 
 
-
+def fn_comp(fld1, fld2):
+    exp1 = field.get_data(fld1)
+    exp2 = field.get_data(fld2)
+    #print "exp1:", exp1
+    #print "exp2:", exp2
+    ityp1 = field.get_ty(fld1)
+    ityp2 = field.get_ty(fld2)
+    #print "ityp1.name",ityp1.name
+    #print ityp2, ityp2.name, ityp2.dim
+    bshape = fty.get_shape(ityp2) #  determine x, y ,z
+    def replaceX(a,b):
+        r =  a.subs(x,b)
+        #print "replace x : for ", a," with:",b,"=>", r
+        return r
+    def replaceY(a,b):
+        r=a.subs(y,b)
+        #print "replace y : for ", a," with:",b,"=>", r
+        return r
+    def replaceZ(a,b):
+        r= a.subs(z,b)
+        #print "replace z : for ", a," with:",b,"=>", r
+        return r
+    def replaceD1(a,b):
+        return replaceX(a,b)
+    def replaceD2(a,b):
+        return replaceY(replaceX(a,b[0]),b[1])
+    def replaceD3(a,b):
+        return replaceZ(replaceY(replaceX(a,b[0]),b[1]),b[2])
+    
+    def getF():
+        if(bshape ==[]):
+            return replaceD1
+        elif(bshape ==[2]):
+            return replaceD2
+        elif(bshape ==[3]):
+            return replaceD3
+    f = getF()
+    if(fty.is_Scalar(ityp1)):
+        return f(exp1,exp2)
+    elif(fty.is_Vector(ityp1)):
+        [a1] = fty.get_shape(ityp1)
+        rtn = []
+        for i in range(a1):
+            rtn.append(f(exp1[i],exp2))
+        return rtn
+    elif(fty.is_Matrix(ityp1)):
+        [a1, a2] = fty.get_shape(ityp1)
+        rtn = []
+        for i in range(a1):
+            rtnj = []
+            for j in range(a2):
+                rtnj.append(f(exp1[i][j],exp2))
+            rtn.append(rtnj)
+        return rtn
+    else:
+        raise Exception("composition is not supported")
 
 #evaluate inner product
 def fn_inner(fld1, fld2):
@@ -1124,6 +1179,10 @@ def binary(e):
         return fn_scaling(f,g)
     elif(op_concat2==fn_name):#concat 2
         return fn_concat2(f,g)
+    elif(op_comp==fn_name): # composition of functions
+        x = fn_comp(f,g)
+        print " rtn exp: ",x
+        return x
     elif (field.is_Scalar(f) and field.is_Scalar(g)): # input is a scalar field
         return applyToExp_B_S(e)
     elif (field.is_Vector(f) and field.is_Vector(g)):

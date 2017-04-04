@@ -3,7 +3,6 @@ import sys
 from base_constants import *
 sys.path.insert(0, 'objcts/')
 
-
 s_layer =  2
 s_random_range = 0
 from obj_frame import *

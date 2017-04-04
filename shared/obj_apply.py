@@ -459,6 +459,21 @@ def applyBinaryOp(op1,ityps):
                 return x
             else:
                 return err()
+    elif(op_comp==op1):
+        print "checking composition", ityp1.name, ityp2.name
+        if((not fty.is_Field(ityp1)) or (not fty.is_Field(ityp2))):
+            return err()
+        else:
+            if((ityp1.dim==1) and (fty.get_shape(ityp2)== [])):
+                x= mkTyp (ityp1.shape)
+                print "x",x
+                return x
+            elif(fty.get_shape(ityp2)== [ityp1.dim]):
+                x= mkTyp (ityp1.shape)
+                print "x",x
+                return x
+            else:
+                return err()
     else:
         # rest of operators are non scalar
         if(fty.is_Scalar(ityp1) or fty.is_Scalar(ityp2)):
@@ -624,14 +639,13 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
     elif (outer_arity==2 and inner_arity==1): # one is a unary operator
         # apply inner operator to first arg
         ishape1 = [ishape[0]]
-        prntShape ("set inner app:", ishape1)
         (z1, coeffs) =  set_innerApp(ishape1)
         #print "create another argument (tensor/field)"
         id2 = 1
         (F2, finfo2, coeff2) = set_field(id2)
         # apply outer operator to otype and second arg
         ishape3 =  [otype1, ishape[1]]
-        prntShape ("ishape3:",ishape3)
+   
         z2 = set_outerApp(z1, F2)#, ishape3
         coeffs = coeffs+[coeff2]
         return (z2, coeffs)
