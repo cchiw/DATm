@@ -57,7 +57,9 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
-    print "inside core"
+    writeTime(100,"\n\n\n\n")
+    startall = time.time()
+    writeTime(125, str(startall))
     #print "############################################inside central############################################"
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
@@ -82,23 +84,46 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     name_describe = app.name
 
     # testing positions
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime(21, tall)
+    startall=endall
+    
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     # samples
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime(22, tall)
+    startall=endall
+    
     #create synthetic field data with diderot
-    PARAMS = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
+    (PARAMS,all50,all51,all52,all53,all54,all55) = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
 
-    print "about to write diderot"
-    print "going to call writeDiderot"
-    (isCompile, isRun) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd)
-    
-    
+
+    endall = time.time()
+    tall = endall - startall
+    writeTime(100,"n\n")
+    writeTime(50, str(all50))
+    writeTime(50, str(all51))
+    writeTime(50, str(all52))
+    writeTime(50, str(all53))
+    writeTime(50, str(all54))
+    writeTime(50, str(all55))
+    writeTime(50, str(tall-(all50+all51+all52+all53+all54+all55)))
+    writeTime(100,"n\n")
+    startall=endall
+    (isCompile, isRun, startall) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime(27, tall)
+    startall=endall
     if(isRun == None):
-        print "did not run"
+        raise Exception( "failed")
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
-            raise Exception ("did not compile")
+           
             return 1
         else:
             counter.inc_run(cnt)
@@ -107,14 +132,33 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     else:
         print "read observed data"
         observed_data = observed(app, g_output)
+        endall = time.time()
+        tall = str(endall - startall)
+        writeTime(28, tall)
+        startall=endall
         if(check(app, observed_data)):
             correct_data = eval(app , positions)
+            endall = time.time()
+            tall = str(endall - startall)
+            writeTime(29, tall)
+            startall=endall
             #print "observed data:", observed_data
             #print "correct data:", correct_data
             rtn = compare(app, observed_data, correct_data)
+            endall = time.time()
+            tall = str(endall - startall)
+            writeTime(30, tall)
+            startall=endall
             analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
-            return 3 
+            endall = time.time()
+            tall = str(endall - startall)
+            writeTime(31, tall)
+            startall=endall
+            return 3
         else:
+            writeTime(29, "0")
+            writeTime(30, "0")
+            writeTime(31, "0")
             return None
 
 
@@ -122,8 +166,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     writetys("\n\t***"+app.name)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     counter.inc_cnt(cnt)
-
-    
+    #writeTime(13)
     if(mk_choice_range(testing_frame, cnt)):
         counter.inc_cumulative(cnt)
         
@@ -232,6 +275,7 @@ def generate_name(oprs, tys, s):
 
 ########################################################################
 def create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame):
+    #writeTime(11)
     # global variables needed from testing framework
     g_inputfile = frame.get_inputfile(testing_frame)
     g_ucoeff = frame.g_ucoeff(testing_frame)
@@ -308,6 +352,7 @@ def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, 
 
 # checks to see if specific ex works
 def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
+    #writeTime(9)
     # adjusting to accept 2|3 layers of operators
     #print "in get-tshape print ishape"
     #for j in ishape:
@@ -315,7 +360,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     #print "in get tshape1 ",tshape1.name
     opr_inner = oprs[0]
     opr_outer = oprs[1]
-    print "get_tshape2()"
+
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
@@ -323,29 +368,30 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     #print "fty", fty
     es = [tshape1]+fty
     xy = get_tshape(opr_outer,es)
-    print "return from get_tshape:",xy
+  
     (tf2, tshape2) =xy
     #print "tshape2", tshape2
     #print "tf2", tf2
 
     if(tf2==true):# if it works continue
         #create app object
-        print "about to create_apply 2"
+ 
+        #writeTime(10)
         (app, coeffs) = create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame)
-        print "past creating apply2"
+
         # how many layers do we have here?
         # refer to testing frame
         layer = frame.get_layer(testing_frame)
         if(layer==2):
-            print "inside layer2"
+    
             dimF = tshape2.dim
             # done creating app. continute to main part
             title =  generate_name(oprs, tys, "_l2")
-            print "post generating title"
+            #writeTime(12)
             return core(app, coeffs, dimF, title, testing_frame, cnt)
         elif(layer==3):
             # first did the user specify 3 operators in the command line?
-            print "inside layer 3"
+        
             if(len(oprs)==3):
 
                 # user specified 3 operators

@@ -135,7 +135,7 @@ op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, 
 
 
 
-op_all = op_unary+op_binary+op_trig+op_specialized
+op_all = op_unary+op_binary+op_trig#+op_specialized
 
 
 

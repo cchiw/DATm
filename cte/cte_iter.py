@@ -111,6 +111,7 @@ def embed_base_specific_ex(ex, tshape1, ishape0, oprs, tys, testing_frame, cnt):
 # transforms that type to kernel specific type
 def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_frame, cnt):
     print "inside embed_giventy2_specific_ex"
+    #writeTime(8)
     fty=[]
     if(not (ty_ty2 == None)):
         g_krn = frame.get_krn(testing_frame)
@@ -152,6 +153,8 @@ def oprToEx(opr_inner, testing_frame, cnt):
 #inter_num, and iter_ty2
 def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
     print "inside function embed_base_iter_ty2"
+    #writeTime(5)
+    
     # adjusting to accept 2|3 layers of operators
     opr_inner = oprs[0]
     opr_outer = oprs[1]
@@ -176,9 +179,11 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
     (tf, ty2s, n_ty2) = f()
     for t_num  in range(n_num):
         # current example
+        #writeTime(6)
         if(mk_choice_limit(testing_frame,cnt)):
             (name, ishape) = get_single_exampleEx(ex, t_num)
             (name, tf1, tshape1, ishape0) = pre_get_tshape1(name, ishape, opr_inner, testing_frame)
+            #writeTime(7)
             if(tf1==true):
                 if(tf):
                     for t_ty2 in range(n_ty2):  #extra type
@@ -307,6 +312,7 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
     writeTitle_inner(opr_inner)
     #have ex_opr iterating over ex_outer
     n_outer = getN()
+    #writeTime(4)
     for  t_outer in range(n_outer):
         #zero counters
         counter.zero_locals(cnt)
@@ -335,9 +341,10 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
 
 #run all possible examples from 0...n
 def embed2_iter_inner(testing_frame, cnt):
+    #writeTime(2)
     n_opr = getN()
     for t_opr in range(n_opr):
-
+        #writeTime(3)
         startx = time.time()
         opr_inner = (id_toOpr(t_opr))
         ex = oprToEx(opr_inner, testing_frame, cnt)

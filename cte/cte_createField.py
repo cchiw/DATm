@@ -2,13 +2,13 @@ import sys
 import re
 import os
 import random
-
+import time
 # shared base programs
 from obj_apply import *
 from obj_ty import *
 from obj_operator import *
 from obj_field import *
-
+from base_write import *
 
 #convert coeffs
 def llist(cmd, coeff):
@@ -304,37 +304,61 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
                 raise "shape for dimension 3 is not supported"
         else:
             raise "dim not supported:"
-    PARAMS = get_Params()
+    startall = time.time()
 
+    PARAMS = get_Params()
+    endall = time.time()
+    tall50 = (endall - startall)
+
+    startall=endall
     # range of angle
     if(space):
         PARAMS += " -angle " +str(random.randint(0, 90))
         #PARAMS += " -angle 45 "#+ str(random.randint(0, 90))
-
+    endall = time.time()
+    tall51 = (endall - startall)
+    startall=endall
     #print "params", PARAMS,"space",space
     # get program name and which command
     #print "create field A"
     (e_Orig, w_shape) = progName(itype, outSize)
+
+    endall = time.time()
+    tall52 = (endall - startall)
+    startall=endall
+    
     #print "create field B"
     p_Orig=  e_Orig+".diderot"
-    os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
+    #os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
 
 
     # remove executable
-    os.system(" rm "+e_Orig)
+    #os.system(" rm "+e_Orig)
     # compile program
-    os.system(nrrdbranch+p_Orig)
+    os.system(nrrdbranch+" --log "+p_Orig)
     # does executable exist
 
+    endall = time.time()
+    tall53 =(endall - startall)
+    startall=endall
 
     txtfile = orig+".txt"
     os.system("./"+e_Orig+PARAMS+"| unu save -f nrrd -o "+outputnrrd)
-    os.system("unu reshape -i "+outputnrrd+w_shape+" | unu save -f text -o "+txtfile)
+    os.system("grep \"compiler\" "+e_Orig+".log >> catcreateall.txt")
+    endall = time.time()
+    tall54 = (endall - startall)
+    startall=endall
+
+     #os.system("unu reshape -i "+outputnrrd+w_shape+" | unu save -f text -o "+txtfile)
+    endall = time.time()
+    tall55 = (endall - startall)
+    startall=endall
     #save nrrd file
-    os.system("rm *.o")
-    os.system("rm *.h")
-    os.system("rm *.c")
-    return PARAMS
+    #os.system("rm *.o")
+    # os.system("rm *.h")
+    #  os.system("rm *.c")
+
+    return (PARAMS,tall50,tall51,tall52,tall53,tall54,tall55)
 
 def createField(appC,outSize, coeffs, nrrdbranch, space):
     #app = apply.get_all_Fields(appC)
@@ -351,7 +375,20 @@ def createField(appC,outSize, coeffs, nrrdbranch, space):
         #print "j:",j,"itypes",itypes[j].name
     exps = flds
     PARAMS = []
+    all50=0
+    all51=0
+    all52=0
+    all53=0
+    all54=0
+    all55=0
     for (i,c,s)in zip(exps, coeffs,itypes):
         if(field.get_isField(i)): # not a tensor type
-            PARAMS.append(createSingleField(s,outSize,i.inputfile, c, nrrdbranch, space))
-    return PARAMS
+            (p,tall50,tall51,tall52,tall53,tall54,tall55) = createSingleField(s,outSize,i.inputfile, c, nrrdbranch, space)
+            PARAMS.append(p)
+            all50+=tall50
+            all51+=tall51
+            all52+=tall52
+            all53+=tall53
+            all54+=tall54
+            all55+=tall55
+    return (PARAMS,all50,all51,all52,all53,all54,all55)
