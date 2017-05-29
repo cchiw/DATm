@@ -336,22 +336,20 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     os.system("rm *.c")
     return PARAMS
 
-def createField(appC,outSize, coeffs, nrrdbranch, space):
-    #app = apply.get_all_Fields(appC)
-    #itypes = apply.get_types(app)
-    #exps =  apply.get_exps(app)
-    flds = apply.get_all_Fields(appC)
-    #print "all the fields that need to be created", flds
+def sortField(flds, outSize, coeffs, nrrdbranch, space):
     itypes = []
-    exps = []
-    # print "fields-length", len(flds)
     for j in range(len(flds)):
         i = flds[j]
         itypes.append(i.fldty)
-        #print "j:",j,"itypes",itypes[j].name
     exps = flds
     PARAMS = []
-    for (i,c,s)in zip(exps, coeffs,itypes):
+    for (i,c,s)in zip(exps, coeffs, itypes):
         if(field.get_isField(i)): # not a tensor type
-            PARAMS.append(createSingleField(s,outSize,i.inputfile, c, nrrdbranch, space))
+            PARAMS.append(createSingleField(s, outSize, i.inputfile, c, nrrdbranch, space))
     return PARAMS
+
+def createField(appC,outSize, coeffs, nrrdbranch, space):
+    flds = apply.get_all_Fields(appC)
+    return sortField(flds, outSize, coeffs, nrrdbranch, space)
+
+

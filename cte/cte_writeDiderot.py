@@ -36,7 +36,7 @@ def update_method(f, pos, app):
     if(fty.is_Field(oty)):
         # index field at random positions
         index_field_at_positions(f, pos, app)
-        check_inside(f, opfieldname1, app)
+        #check_inside(f, opfieldname1, app)
         #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
         #f.write(foo.encode('utf8'))
         #check_conditional(f,  opfieldname1, app)
@@ -51,7 +51,7 @@ def setLength(f, n):
 #itype: shape of fields
 #otype: output tensor
 #op1: unary operation involved
-def readDiderot(p_out,app,pos):
+def readDiderot(p_out, app, pos):
     #read diderot template
     ftemplate = open(template, 'r')
     ftemplate.readline()
@@ -132,13 +132,11 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd):
     # write new diderot program
     readDiderot(p_out, app, pos)
     # copy and compile diderot program
-    print "************ write diderot begin"
+    #print "************ write diderot begin"
     diderotprogram = p_out+".diderot"
     os.system("cp "+p_out+".diderot "+output+".diderot")
     os.system("rm "+p_out) # remove existing executable
     os.system(runtimepath + " " + diderotprogram)
-    print "app output type",app.oty
-    print "************ write diderot end"
     # did it compile?
     if(not(os.path.exists(p_out))):
         # did not compile

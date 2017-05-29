@@ -87,11 +87,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #create synthetic field data with diderot
     PARAMS = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
-
-    print "about to write diderot"
-    print "going to call writeDiderot"
     (isCompile, isRun) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd)
-    
     
     if(isRun == None):
         print "did not run"
