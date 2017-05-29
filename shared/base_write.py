@@ -1,6 +1,7 @@
 import sys
 import re
 import os
+import time
 
 from obj_counter import *
 from obj_frame import  *
@@ -20,6 +21,15 @@ def Title_outer2(opr_outer):
 
 def Title_num(opr_inner, opr_outer):
     return "\n"+opr_outer.name+ "("+ opr_inner.name+")|"+str(opr_inner.id)+"_"+str(opr_outer.id)
+
+
+def writeTime(n, t):
+    if (n>19):
+        e="\n"+ t
+        f = open(rst_stash+"/results_time.txt", 'a+')
+        f.write(e)
+        f.close()
+
 def write(e):
     print (e)
 def writeall(e):

@@ -51,7 +51,8 @@ def cmd(layer, testing_frame, cnt, shift, args):
             raise "unsupported"
     # assumes seconf or third later
     elif (args==0):
-            #run all the programs
+            ##writeTime(1)
+             #run all the programs
             embed2_iter_inner(testing_frame, cnt)
             writeCumulative(cnt)
     elif (args==10):

@@ -19,6 +19,17 @@ class counter:
         self.rst_cumulative = 0
         self.rst_NA = 0
         self.rst_run = 0
+        self.cnt21=0
+        self.cnt22=0
+        self.cnt23=0
+        self.cnt24=0
+        self.cnt25=0
+        self.cnt26=0
+        self.cnt27=0
+        self.cnt28=0
+        self.cnt29=0
+        self.cnt30=0
+
     def get_totals(self):
         return (self.rst_t_NA, self.rst_t_good, self.rst_t_eh, self.rst_t_check, self.rst_t_terrible, self.rst_t_compile, self.rst_t_run)
     def get_locals(self):

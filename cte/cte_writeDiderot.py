@@ -6,14 +6,14 @@ import codecs
 import sys
 import os
 import re
-
+import time
 # shared base programs
 from obj_ex import *
 from obj_apply import *
 from obj_ty import *
 from obj_operator import *
 from obj_field import *
-
+from base_write import * 
 from base_writeDiderot import *
 template="shared/template/foo.ddro"     # template
 
@@ -36,7 +36,7 @@ def update_method(f, pos, app):
     if(fty.is_Field(oty)):
         # index field at random positions
         index_field_at_positions(f, pos, app)
-        check_inside(f, opfieldname1, app)
+        #check_inside(f, opfieldname1, app)
         #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
         #f.write(foo.encode('utf8'))
         #check_conditional(f,  opfieldname1, app)
@@ -98,68 +98,81 @@ def readDiderot(p_out,app,pos):
 
 # execute new diderot program
 def runDiderot(p_out, app, pos, output, runtimepath, isNrrd):
-    print "app-oty", app.oty, app.oty.name
+
     shape = app.oty.shape
-    print "oty shape",shape
+
     product = 1
     for x in shape:
         product *= x
-    print "runtimepath:", runtimepath
-    print "app:", app.name
-    print "shape: ", shape
+
     if(isNrrd):
-        print "write diderot-isnrrd-true"
+
         m2 = len(pos)+1
         w_shape=" -s "+str(product)+" "+str(m2)
-        print("./"+p_out+" -o tmp.nrrd")
+       
         os.system("./"+p_out+" -o tmp")
         os.system("./"+p_out+" -o tmp.nrrd")
-        print ("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
-        os.system("unu head tmp.nrrd")
+    
+        #os.system("unu head tmp.nrrd")
         os.system("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
     else:
-        print "write diderot-isnrrd-false"
+
         # print "not is vis"
         executable = "./"+p_out
         #print executable
         os.system(executable)
-        print "inside else",executable
+
 
 
 
 # write, compile, and execute new diderot program
-def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd):
+def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
     # write new diderot program
     readDiderot(p_out, app, pos)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime(24, tall)
+    startall=endall
     # copy and compile diderot program
-    print "************ write diderot begin"
+
     diderotprogram = p_out+".diderot"
-    os.system("cp "+p_out+".diderot "+output+".diderot")
-    os.system("rm "+p_out) # remove existing executable
-    os.system(runtimepath + " " + diderotprogram)
-    print "app output type",app.oty
-    print "************ write diderot end"
+    #os.system("cp "+p_out+".diderot "+output+".diderot")
+    #os.system("rm "+p_out) # remove existing executable
+    os.system(runtimepath + " --log " + diderotprogram)
+    os.system("grep \"compiler\" "+p_out+".log >> catwriteall.txt")
     # did it compile?
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime(25, tall)
+    print(tall)
+    startall=endall
     if(not(os.path.exists(p_out))):
         # did not compile
         #print "did not compile"
-        return (None, None)
+        endall = time.time()
+        tall = str(endall - startall)
+        writeTime(26, tall)
+        startall=endall
+        return (None, None, startall)
     else:
         # remove txt
         txfile  = p_out+".txt"
-        os.system("rm "+txfile)
+        #os.system("rm "+txfile)
         # run executable
         runDiderot(p_out, app, pos, output, runtimepath, isNrrd)
+        endall = time.time()
+        tall = str(endall - startall)
+        writeTime(26, tall)
+        startall=endall
         if(not(os.path.exists(txfile))):
             # did not execute
-            print "did not execute"
             #raise Exception ("did not execute")
-            return (true, None)
+            return (true, None, startall)
         else:
             #print "compiled and execute"
             # copyfiles
             os.system("cp "+p_out+".txt "+output+".txt")
-            os.system("cp "+p_out+".c "+output+".c")
-            os.system("rm "+p_out+"*")
-            return (true, true)
+            #os.system("cp "+p_out+".c "+output+".c")
+            #os.system("rm "+p_out+"*")
+            return (true, true, startall)
     
