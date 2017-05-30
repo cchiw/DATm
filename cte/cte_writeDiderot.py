@@ -28,35 +28,38 @@ foo_out="out"
 foo_pos="pos"
 const_out ="7.2"
 
-
+#some functions are shared with prog* files
 
 #witten inside update method
-def update_method(f, pos, app):
+#conditionals are commented out
+def cte_update_method(f, pos, app):
     oty = app.oty
     if(fty.is_Field(oty)):
         # index field at random positions
-        index_field_at_positions(f, pos, app)
+        base_index_field_at_positions(f, pos, oty)
         #check_inside(f, opfieldname1, app)
-        #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
-        #f.write(foo.encode('utf8'))
+        foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
+        f.write(foo.encode('utf8'))
         #check_conditional(f,  opfieldname1, app)
     else:
         # get conditional for tensor argument
         check_conditional(f,  foo_out, app)
 
-def setLength(f, n):
+def cte_setLength(f, n):
     foo="int length ="+str(n)+";"
     f.write(foo.encode('utf8'))
 
 #itype: shape of fields
 #otype: output tensor
 #op1: unary operation involved
-def readDiderot(p_out,app,pos):
+def readDiderot(p_out, app, pos):
     #read diderot template
     ftemplate = open(template, 'r')
     ftemplate.readline()
     #write diderot program
     f = open(p_out+".diderot", 'w+')
+    #output type
+ 
     for line in ftemplate:
         # is it initial field line?
         a0 = re.search(foo_in, line)
@@ -81,13 +84,13 @@ def readDiderot(p_out,app,pos):
         d0 = re.search(foo_probe,line)
         if d0:
             #print "update_method"
-            update_method(f, pos, app)
+            cte_update_method(f, pos, app)
             continue
         # length number of positions
         e0=re.search(foo_length, line)
         if e0:
             #print "Set length"
-            setLength(f,len(pos))
+            cte_setLength(f,len(pos))
             continue
         # nothing is being replaced
         else:
@@ -97,16 +100,13 @@ def readDiderot(p_out,app,pos):
     f.close()
 
 # execute new diderot program
-def runDiderot(p_out, app, pos, output, runtimepath, isNrrd):
-
-    shape = app.oty.shape
+def runDiderot(p_out, shape, pos, output, runtimepath, isNrrd):
 
     product = 1
     for x in shape:
         product *= x
 
     if(isNrrd):
-
         m2 = len(pos)+1
         w_shape=" -s "+str(product)+" "+str(m2)
        
@@ -122,24 +122,14 @@ def runDiderot(p_out, app, pos, output, runtimepath, isNrrd):
         #print executable
         os.system(executable)
 
-
-
-
-# write, compile, and execute new diderot program
-def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
-    # write new diderot program
-    readDiderot(p_out, app, pos)
-    endall = time.time()
-    tall = str(endall - startall)
-    writeTime(24, tall)
-    startall=endall
-    # copy and compile diderot program
-
+def cte_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall):
     diderotprogram = p_out+".diderot"
     #os.system("cp "+p_out+".diderot "+output+".diderot")
     #os.system("rm "+p_out) # remove existing executable
     os.system(runtimepath + " --log " + diderotprogram)
-    os.system("grep \"compiler\" "+p_out+".log >> catwriteall.txt")
+    # gets come time
+    # os.system("grep \"compiler\" "+p_out+".log >> catwriteall.txt")
+
     # did it compile?
     endall = time.time()
     tall = str(endall - startall)
@@ -159,7 +149,7 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
         txfile  = p_out+".txt"
         #os.system("rm "+txfile)
         # run executable
-        runDiderot(p_out, app, pos, output, runtimepath, isNrrd)
+        runDiderot(p_out, shape, pos, output, runtimepath, isNrrd)
         endall = time.time()
         tall = str(endall - startall)
         writeTime(26, tall)
@@ -175,4 +165,17 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
             #os.system("cp "+p_out+".c "+output+".c")
             #os.system("rm "+p_out+"*")
             return (true, true, startall)
-    
+
+
+
+
+# write, compile, and execute new diderot program
+def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
+    # write new diderot program
+    readDiderot(p_out, app, pos)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime(24, tall)
+    startall=endall
+    shape = app.oty.shape
+    return cte_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall)

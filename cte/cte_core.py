@@ -57,9 +57,9 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
-    writeTime(100,"\n\n\n\n")
-    startall = time.time()
-    writeTime(125, str(startall))
+    #writeTime(100,"\n\n\n\n")
+    #startall = time.time()
+    #writeTime(125, str(startall))
     #print "############################################inside central############################################"
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
@@ -84,40 +84,43 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     name_describe = app.name
 
     # testing positions
-    endall = time.time()
-    tall = str(endall - startall)
-    writeTime(21, tall)
-    startall=endall
+    #endall = time.time()
+    #tall = str(endall - startall)
+    #writeTime(21, tall)
+    #startall=endall
     
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     # samples
-    endall = time.time()
-    tall = str(endall - startall)
-    writeTime(22, tall)
-    startall=endall
+    #endall = time.time()
+    #tall = str(endall - startall)
+    #writeTime(22, tall)
+    #startall=endall
     
     #create synthetic field data with diderot
     (PARAMS,all50,all51,all52,all53,all54,all55) = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
 
 
+
     endall = time.time()
-    tall = endall - startall
-    writeTime(100,"n\n")
-    writeTime(50, str(all50))
-    writeTime(50, str(all51))
-    writeTime(50, str(all52))
-    writeTime(50, str(all53))
-    writeTime(50, str(all54))
-    writeTime(50, str(all55))
-    writeTime(50, str(tall-(all50+all51+all52+all53+all54+all55)))
-    writeTime(100,"n\n")
+    #tall = endall - startall
+    #writeTime(100,"n\n")
+    #writeTime(50, str(all50))
+    #writeTime(50, str(all51))
+    #writeTime(50, str(all52))
+    #writeTime(50, str(all53))
+    #writeTime(50, str(all54))
+    #writeTime(50, str(all55))
+    #writeTime(50, str(tall-(all50+all51+all52+all53+all54+all55)))
+    #writeTime(100,"n\n")
     startall=endall
     (isCompile, isRun, startall) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
-    endall = time.time()
-    tall = str(endall - startall)
-    writeTime(27, tall)
-    startall=endall
+    #endall = time.time()
+    #tall = str(endall - startall)
+    #writeTime(27, tall)
+    #startall=endall
+
+
     if(isRun == None):
         raise Exception( "failed")
         if(isCompile == None):
@@ -130,35 +133,35 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
             return 2
     else:
-        print "read observed data"
+        #print "read observed data"
         observed_data = observed(app, g_output)
-        endall = time.time()
-        tall = str(endall - startall)
-        writeTime(28, tall)
-        startall=endall
+        #endall = time.time()
+        #tall = str(endall - startall)
+        #writeTime(28, tall)
+        #startall=endall
         if(check(app, observed_data)):
             correct_data = eval(app , positions)
-            endall = time.time()
-            tall = str(endall - startall)
-            writeTime(29, tall)
-            startall=endall
+            #endall = time.time()
+            #tall = str(endall - startall)
+            #writeTime(29, tall)
+            #startall=endall
             #print "observed data:", observed_data
             #print "correct data:", correct_data
             rtn = compare(app, observed_data, correct_data)
-            endall = time.time()
-            tall = str(endall - startall)
-            writeTime(30, tall)
-            startall=endall
+            #endall = time.time()
+            #tall = str(endall - startall)
+            #writeTime(30, tall)
+            #startall=endall
             analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
-            endall = time.time()
-            tall = str(endall - startall)
-            writeTime(31, tall)
-            startall=endall
+            #endall = time.time()
+            #tall = str(endall - startall)
+            #writeTime(31, tall)
+            #startall=endall
             return 3
         else:
-            writeTime(29, "0")
-            writeTime(30, "0")
-            writeTime(31, "0")
+            #writeTime(29, "0")
+            #writeTime(30, "0")
+            #writeTime(31, "0")
             return None
 
 

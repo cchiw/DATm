@@ -5,7 +5,7 @@ import time
 
 sys.path.insert(0, 'shared/')
 sys.path.insert(0, 'visver/')
-
+sys.path.insert(0, 'setTest/')
 # shared base programs
 from obj_apply import *
 from obj_ex import  *
@@ -15,6 +15,9 @@ from obj_frame import  *
 
 # specific cte programs
 from cte_iter import *
+from create_test import *
+from prog_current import *
+
 
 # unu save -f nrrd -e ascii -i out.nrrd | less
 ##################################################################################################
@@ -24,6 +27,9 @@ from cte_iter import *
 
 ##############################################################################################
 def cmd(layer, testing_frame, cnt, shift, args):
+    kappa = int(sys.argv[shift])
+    if(kappa == 10):
+        return attempt(testing_frame, cnt)
     if (layer==1):
         if(args==0):
             # iterate over single layer

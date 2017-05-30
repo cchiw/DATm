@@ -43,11 +43,9 @@ def fieldShape(f, fldty):
 #k:continuity
 #itypes: types for input field
 #inputlist: name for input data
-def inShape(f,appC):
+def inShape_base(f, exps):
     #app = apply.get_root_app(appC)
     i=0
-    #exps =  apply.get_exps(app)
-    exps = apply.get_all_Fields(appC)
     for exp in exps:
         #print "current fld",field.toStr(exp)
         dim = field.get_dim(exp)
@@ -61,6 +59,11 @@ def inShape(f,appC):
             foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
             f.write(foo.encode('utf8'))
         i+=1
+
+#inputlist: name for input data
+def inShape(f, appC):
+    exps = apply.get_all_Fields(appC)
+    inShape_base(f, exps)
 
 
 #instaniate output tensor
@@ -203,9 +206,10 @@ def outLineTF(type,s):
 def outLineF(f, type):
     otype = fty.get_tensorType(type)
     foo="\toutput "
-    #print " otype", otype
-    #print " otype", otype.name,otype.id," ty_scalarT",ty_scalarT.name,"id",ty_scalarT.id
+    print " otype", otype
+    print " otype", otype.name,otype.id," ty_scalarT",ty_scalarT.name,"id",ty_scalarT.id
     foo+="tensor "+str(otype.shape)+" "+foo_out+" = "+outLineTF(type,"0.0")+";\n\t"
+    print "foo",foo
     f.write(foo.encode('utf8'))
 
 
@@ -672,9 +676,8 @@ def check_inside(f, ff, app):
 
 # set positions variables
 # index field at position
-def index_field_at_positions(f, pos, app):
+def base_index_field_at_positions(f, pos, oty):
     print "index at positions"
-    oty = app.oty
     i=0
     foo="\t\t"
     dim=oty.dim
@@ -705,6 +708,9 @@ def index_field_at_positions(f, pos, app):
         i=i+1
     f.write(foo.encode('utf8'))
 
+def index_field_at_positions(f, pos, app):
+    oty = app.oty
+    return base_index_field_at_positions(f, pos, oty)
 
 
 def outLine(f, app):
