@@ -42,14 +42,19 @@ def getObserv_t(p_out, n):
                 obs.append(cur)
         return obs
     return []
-
 #chooose function based on number of input per line
-def observed(app, p_out):
-    ex_rtn = fty.get_tensorType(app.oty)
+def base_observed(oty, p_out):
+    ex_rtn = fty.get_tensorType(oty)
     if(ty_scalarT==ex_rtn):
-         return getObserv_1(p_out)
+        return getObserv_1(p_out)
     else:
         a=1
         for s in get_Tshape(ex_rtn):
-          a= a*s
+            a= a*s
         return getObserv_t(p_out, a)
+
+
+
+#chooose function based on number of input per line
+def observed(app, p_out):
+    return base_observed(app.oty, p_out)

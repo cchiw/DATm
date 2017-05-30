@@ -1230,11 +1230,11 @@ def applyBinaryOnce(oexp_inner,app_inner,app_outer,rhs):
     return (oty_outer, oexp_tmp)
 
 
-# operators with scalar field and vector field
-def sort(e):
 
-    #apply.toStr(e)
-    def simple_apply(app):
+# sort all applications
+def sort(e):
+    #a ssingle application
+    def simple_apply(c_layer, app):
         arity = apply.get_arity(app)
         oty = apply.get_oty (app)
         if (arity ==1):
@@ -1243,59 +1243,47 @@ def sort(e):
             return (oty, binary(app))
         else:
             raise Exception ("arity is not supported: "+str(arity_outer))
-    # apply 2 layers
-    #  gets the applications then calls above functions
-    def set_up_layer2(app_outer1):
-        arity_outer1 =  app_outer1.opr.arity
-        if(arity_outer1==1):
-
-            app_inner = apply.get_unary(app_outer1)
-            #print "app_inner",apply.toStr(app_inner,1)
-            arity_inner =  app_inner.opr.arity
-            #print "about to do a simple apply"
-            (_, oexp_inner) = simple_apply(app_inner)
-            #print "post simple apply"
-            print "oexp_inner", oexp_inner
-            (oty_outer, oexp_tmp) =  applyUnaryOnce(oexp_inner, app_inner, app_outer1)
+    #  multiple applications
+    def get_gfnc(c_layer):
+        if (c_layer==1):
+            return simple_apply
+        else:
+            # calls embed multiple times
+            return embed
+    def embed(c_layer, app_tmp):
+        print "embed",c_layer,app_tmp
+        print app_tmp.opr.name
+        arity = apply.get_arity(app_tmp)
+        gfnc = get_gfnc(c_layer)
+        if(arity==1):
+            app_inner = apply.get_unary(app_tmp)
+            (_, oexp_inner) = gfnc(c_layer-1, app_inner)
+            (oty_outer, oexp_tmp) =  applyUnaryOnce(oexp_inner, app_inner, app_tmp)
             return (oty_outer, oexp_tmp)
-        elif(arity_outer1==2):
-            (app_inner, G) = apply.get_binary(app_outer1)
-            arity_inner =  app_inner.opr.arity
-            (_, oexp_inner) = simple_apply(app_inner)
-            rhs = G
-            (oty_outer, oexp_tmp) =  applyBinaryOnce(oexp_inner, app_inner, app_outer1, rhs)
-            return (oty_outer, oexp_tmp)
-    if(e.isrootlhs): # is root
-        #print "1 layer"
-        # 1 layer
-        return simple_apply(e)
-    elif(e.lhs.isrootlhs):
-        #print "2 layer"
-        # 2 layers
-        return set_up_layer2(e)
-    else:
-        # 3 layers
-        #print "3 layer"
-        arity = apply.get_arity(e)
-        if(arity ==1):
-            app_outer2 = e
-            app_outer1 = apply.get_unary(app_outer2)
+        elif(arity==2):
+            (app_outer1, rhs) =  apply.get_binary(app_tmp)
             # apply 1st and second layer
-            (oty_outer, oexp_tmp) = set_up_layer2(app_outer1)
+            (_, oexp_tmp) = gfnc(c_layer-1, app_outer1)
             # applies third layer
-            (oty_outer, oexp_tmp) =  applyUnaryOnce(oexp_tmp, app_outer1, app_outer2)
+            (oty_outer, oexp_tmp) = applyBinaryOnce(oexp_tmp, app_outer1, app_tmp, rhs)
             return (oty_outer, oexp_tmp)
-        elif(arity ==2):
-            app_outer2 = e
-            (app_outer1, rhs) =  apply.get_binary(app_outer2)
-            # apply 1st and second layer
-            (oty_outer, oexp_tmp) = set_up_layer2(app_outer1)
-            # applies third layer
-            (oty_outer, oexp_tmp) = applyBinaryOnce(oexp_tmp, app_outer1, app_outer2, rhs)
-            return (oty_outer, oexp_tmp)
-
         else:
             raise Exception("arity is not supported:"+str(arity))
+
+    def getLayers(m):
+        if(m.isrootlhs):
+            return 0
+        else:
+            return 1+getLayers(m.lhs)
+    c_layer =  getLayers(e)
+    if(e.isrootlhs): # is root
+        # 1 layer
+        #c_layer = 1
+        return embed(1, e)
+    else:
+        # 3 layers
+        print "layers", c_layer
+        return embed(c_layer, e)
 # ***************************  evaluate at positions ***************************
 #evaluate scalar field exp
 def eval_d0(pos0, exp):

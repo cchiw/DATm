@@ -360,21 +360,14 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
 
     return (PARAMS,tall50,tall51,tall52,tall53,tall54,tall55)
 
-def createField(appC,outSize, coeffs, nrrdbranch, space):
-    #app = apply.get_all_Fields(appC)
-    #itypes = apply.get_types(app)
-    #exps =  apply.get_exps(app)
-    flds = apply.get_all_Fields(appC)
-    #print "all the fields that need to be created", flds
+def sortField(flds, outSize, coeffs, nrrdbranch, space):
     itypes = []
-    exps = []
-    # print "fields-length", len(flds)
     for j in range(len(flds)):
         i = flds[j]
         itypes.append(i.fldty)
-        #print "j:",j,"itypes",itypes[j].name
     exps = flds
     PARAMS = []
+
     all50=0
     all51=0
     all52=0
@@ -392,3 +385,10 @@ def createField(appC,outSize, coeffs, nrrdbranch, space):
             all54+=tall54
             all55+=tall55
     return (PARAMS,all50,all51,all52,all53,all54,all55)
+
+
+def createField(appC,outSize, coeffs, nrrdbranch, space):
+    flds = apply.get_all_Fields(appC)
+    return sortField(flds, outSize, coeffs, nrrdbranch, space)
+
+
