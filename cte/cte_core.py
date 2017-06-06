@@ -17,12 +17,14 @@ from base_write import *
 from base_var_ty import *
 from base_observed import observed
 
+#specific nc programs
+from nc_compare import compare
+from nc_continue import check
+from nc_createField import sortField
+
 # specific cte programs
-from cte_createField import createField
 from cte_writeDiderot import writeDiderot
 from cte_eval import eval
-from cte_continue import *
-from cte_compare import compare
 
 # results from testing
 def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
@@ -97,7 +99,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #startall=endall
     
     #create synthetic field data with diderot
-    (PARAMS,all50,all51,all52,all53,all54,all55) = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
+    flds = apply.get_all_Fields(app)
+    (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(flds, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
 
 
@@ -122,7 +125,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
 
     if(isRun == None):
-        raise Exception( "failed")
+  
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
@@ -147,7 +150,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             #startall=endall
             #print "observed data:", observed_data
             #print "correct data:", correct_data
-            rtn = compare(app, observed_data, correct_data)
+            ex_otype = fty.get_tensorType(app.oty)
+            rtn = compare(app.oty, app.name, observed_data, correct_data)
             #endall = time.time()
             #tall = str(endall - startall)
             #writeTime(30, tall)

@@ -15,8 +15,7 @@ from obj_frame import  *
 
 # specific cte programs
 from cte_iter import *
-from create_test import *
-from prog_current import *
+
 
 
 # unu save -f nrrd -e ascii -i out.nrrd | less
@@ -27,9 +26,6 @@ from prog_current import *
 
 ##############################################################################################
 def cmd(layer, testing_frame, cnt, shift, args):
-    kappa = int(sys.argv[shift])
-    if(kappa == 10):
-        return attempt(testing_frame, cnt)
     if (layer==1):
         if(args==0):
             # iterate over single layer
@@ -100,7 +96,7 @@ def cmd(layer, testing_frame, cnt, shift, args):
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer]
             (name, ishape) = get_single_exampleEx(ex, t_num)
-            embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, testing_frame, cnt)
+            embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, t_num, testing_frame, cnt)
             writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
         elif (layer==3):
             # given ids for inner, outer1, and outer2 operators

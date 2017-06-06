@@ -1,0 +1,18 @@
+int cat = 0;
+
+foo_in
+input real scale = 1;
+foo_op;
+int length =foo_length;
+
+strand f(int i) {
+
+    output foo_outTen
+    update {
+
+        foo_probe;
+   
+        stabilize;
+    }
+}
+initially [ f(i) | i in 0..length];

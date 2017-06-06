@@ -7,6 +7,7 @@ sys.path.insert(0, 'base/')
 sys.path.insert(0,'cte/')
 
 from cte_iter_cmd import main_set
+from prog_current import *
 
 # for quick use
 # assumes first framework, and iterative search of test case

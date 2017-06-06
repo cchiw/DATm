@@ -213,8 +213,9 @@ def applyUnaryOp(op1,ityps):
                 return (true, rtn1)
             else:
                 return err()
-
-    if ((op_copy==op1) or (op_negation==op1)):
+    if(op_probe==op1):
+        return (true, fty.convertToTensor(ityp1))
+    elif ((op_copy==op1) or (op_negation==op1)):
         return same() #type unaffected by operation
     elif (op_normalize==op1):
         ##print "made it to normalize"
@@ -364,9 +365,9 @@ def applyUnaryOp(op1,ityps):
 
 #type of field after operation is applied
 def applyBinaryOp(op1,ityps):
-    #print "---------------------  applyBinaryOp ---------"
+    print "---------------------  applyBinaryOp ---------"
     name =  "op1 "+op1.name
-    #print name
+    print name
     ityp1 = ityps[0]
     ityp2 = ityps[1]
     #print "ityps:",ityps
@@ -375,13 +376,15 @@ def applyBinaryOp(op1,ityps):
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
     name += "("+ityp1.name+","+ityp2.name+")"
-    #print "type name", name
+    print "type name", name
     (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
     if(not tf):
         return (false, "not the same dimension")
     k = fldty.k
+    if (fty.is_Field(ityp1) and fty.is_Field(ityp2)):
+        k = min(ityp1.k, ityp2.k)
     dim = fldty.dim
-    ##print "---------------------  continue ---------"
+    print "---------------------  continue ---------"
     def err():
         # type not supported
         return (false, name)
@@ -406,11 +409,12 @@ def applyBinaryOp(op1,ityps):
         else:
             return err()
     ##print "ityp1: ", ityp1.name, " K: ", ityp1.k
-    ##print "ityp2: ", ityp2.name, " K: ", ityp2.k
-    if (fty.is_Field(ityp1) and fty.is_Field(ityp2) and (not (ityp1.k==ityp2.k))):
-        ##print "k is not the same"
-        return err()
-    elif (op_add==op1) or (op_subtract==op1):
+    print "ityp2: ", ityp2.name, " K: ", ityp2.k
+    # K is not the same
+    #if (fty.is_Field(ityp1) and fty.is_Field(ityp2) and (not (ityp1.k==ityp2.k))):
+        #print "k is not the same"
+        #return err()
+    if (op_add==op1) or (op_subtract==op1):
         ##print "current addition "
         ##print ityp1.name, "-",ityp2.name
         ##print "fldty", fldty.name
@@ -493,7 +497,9 @@ def applyBinaryOp(op1,ityps):
             elif(op_doubledot==op1):
                 n = len(ashape)
                 if(n==2):
-                    if(ashape==bshape):
+                    if (fty.is_Field(ityp1) and fty.is_Field(ityp2) and (ityp1.k != ityp2.k)):
+                        return err()
+                    elif(ashape==bshape):
                         ##print "same shape"
                         return mkTyp([])
                     else:
@@ -502,6 +508,7 @@ def applyBinaryOp(op1,ityps):
                 else:
                     return err()
             elif(op_inner==op1):
+                print "here"
                 n1 = fty.get_last_ix(ityp1)
                 n2 = fty.get_first_ix(ityp2)
                 if(n1!=n2): #must have equal vector lengths
@@ -564,17 +571,18 @@ def applyThirdOp(op1,ityps):
 ##################################################################################################
 # apply unary and binary operator
 def get_tshape(opr1, ishape):
-    
     #print "inside getshape", opr1.name
-    arity=opr1.arity
-    if(arity==1):
-        x= applyUnaryOp(opr1,ishape)
-        #print "retn from get unary", x
+    arity = opr1.arity
+    if(arity==0):
+        return (true, ty_mat3x3F_d3)
+    elif(arity==1):
+        x = applyUnaryOp(opr1, ishape)
+        print "retn from get unary", x
         return x
     elif(arity==2):
-        ##print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
+        print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
         x = applyBinaryOp(opr1, ishape)
-        #print "rtn from get binary", x
+        print "rtn from get binary", x
         return x
     elif(arity==3):
         return applyThirdOp(op1, ishape)

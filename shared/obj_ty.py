@@ -74,7 +74,7 @@ class tty:
 class fty:
     def __init__(self, id, name, dim, shape, tensorType, k):
         self.id=id
-        self.name=name
+        self.name=name+"_k"+str(k)
         self.dim=dim
         self.shape=shape
         self.tensorType=tensorType # if we probed a field with this field type
@@ -142,8 +142,8 @@ class fty:
     #creates ty object
     def convertTy(const,k):
         return  fty(const.id,const.name, const.dim, const.shape, const.tensorType, k)
-
-
+    def convertToTensor(self):
+        return fty(200, "T", nonefield_dim, self.shape, self.tensorType, None)
 # ------------------------------ type name to other properties ------------------------------
 # shorthand used to refer to different types
 # the helper functions match shorthand to other properties and creates ty object
@@ -177,8 +177,13 @@ def mkNoneField(id, _, outputtensor):
     name = "T_"+shapeToStr(shape)
     return fty(id, name,nonefield_dim, shape, outputtensor, nonefield_k)
 
-k_init=2#null k
 
+
+
+
+
+
+k_init=2#null k
 #fields:  #id,name, dim, shape in string form,probe field type returns tensor type
 def mkField(id, dim, outputtensor):
     #print "id",str(id)

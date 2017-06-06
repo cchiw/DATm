@@ -15,15 +15,16 @@ from obj_operator import *
 from obj_field import *
 from base_write import * 
 from base_writeDiderot import *
-from cte_writeDiderot import cte_compileandRun, cte_setLength
-# ^ builds from cte but perhaps move these functions to a new shared directory
+from nc_writeDiderot import nc_compileandRun, nc_setLength
 
-template="shared/template/foo.ddro"     # template
+
+template="shared/template/prog.ddro"     # template
 
 #strings in diderot template
 foo_in="foo_in"
 foo_outTen="foo_outTen"
 foo_op ="foo_op"
+foo_opTen = "foo_Tenop"
 foo_probe ="foo_probe"
 foo_length="foo_length"
 #otherwise variables in diderot program
@@ -32,20 +33,10 @@ foo_pos="pos"
 const_out ="7.2"
 
 
-
-#decide to skip conditional for this type of program
-def prog_update_method(f, oty, pos):
-    if(fty.is_Field(oty)):
-        print "this is a field"
-        # index field at random positions
-        base_index_field_at_positions(f, pos, oty)
-        foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
-        f.write(foo.encode('utf8'))
-
 #write operation between fields
 #get output var name-lhs
-def prog_printline(f, program):
-    lines = program.lines
+def prog_printline(f, lines):
+
     for line in lines:
         print "line",line
         op1 = line.opr
@@ -56,7 +47,9 @@ def prog_printline(f, program):
         oname = output.name
         # names of lhs variables
         def rtn_rhs():
-            if (arity==1):
+            if(arity==0):
+                return op1.symb
+            elif (arity==1):
                 f0 = line.lhs.name
                 return prntUnary(op1, f0)
             elif(arity==2):
@@ -70,11 +63,27 @@ def prog_printline(f, program):
         write_shape(pre, f, oty, oname, rhs)
     return
 
+#decide to skip conditional for this type of program
+def prog_update_method(f, oty, pos, program):
+    lines1 = program.lines1
+    lines2 = program.lines2
+    if(len(lines1)>0):
+        print "this is a field"
+        # index field at random positions
+        base_index_field_at_positions(f, pos, program.dim)
+    if(len(lines2)>0):
+        prog_printline(f, lines2)
+    else:
+        foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
+        f.write(foo.encode('utf8'))
+
+
+
 def prog_outLine(f, oty):
     print "\n outline-","type: ",oty.name
-    if (fty.is_Field(oty)):
+        #if (fty.is_Field(oty)):
         #print "isfld-layer 1"
-        outLineF(f, oty)
+    outLineF(f, oty)
 #skipping tensor part for now
 #    else:
 #        if(app.isrootlhs):
@@ -113,19 +122,19 @@ def prog_readDiderot(p_out, oty, program, fields, pos):
         c0 = re.search(foo_op, line)
         if c0:
             #print "replace op"
-            prog_printline(f, program)
+            prog_printline(f, program.lines1)
             continue
         # index field at position
         d0 = re.search(foo_probe,line)
         if d0:
             #print "update_method"
-            prog_update_method(f, oty, pos)
+            prog_update_method(f, oty, pos, program)
             continue
         # length number of positions
         e0=re.search(foo_length, line)
         if e0:
             #print "Set length"
-            cte_setLength(f,len(pos))
+            nc_setLength(f,len(pos))
             continue
         # nothing is being replaced
         else:
@@ -144,5 +153,5 @@ def prog_writeDiderot(p_out, program, fields, pos, output, runtimepath, isNrrd):
 
     #needed to pass
     startall = time.time()
-    return cte_compileandRun(p_out, oty.shape, pos, output, runtimepath, isNrrd, startall)
+    return nc_compileandRun(p_out, oty.shape, pos, output, runtimepath, isNrrd, startall)
     

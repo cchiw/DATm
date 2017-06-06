@@ -654,7 +654,7 @@ def check_inside(f, ff, app):
         else: #twice embedded
             # there might be a conditional restraint
             foo += getCond(app, set)
-            foo+="\t}\n\telse {"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
+            #foo+="\t}\n\telse cat{"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
         f.write(foo.encode('utf8'))
         return
 
@@ -676,11 +676,11 @@ def check_inside(f, ff, app):
 
 # set positions variables
 # index field at position
-def base_index_field_at_positions(f, pos, oty):
+def base_index_field_at_positions(f, pos, dim):
     print "index at positions"
     i=0
     foo="\t\t"
-    dim=oty.dim
+ 
     if(dim==1):
         foo+="real  "+foo_pos+"=0;\n"
     elif(dim==2):

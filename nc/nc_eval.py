@@ -25,7 +25,10 @@ def fn_multiplication(exp_s, t):
     exp_t = field.get_data(t)
     ityp1 = field.get_ty(t)
     shape1 = fty.get_shape(ityp1)
-    #print "exp_s",exp_s,"exp_t",exp_t
+    
+    print "inside multiplication **********"
+
+    #print "shape1", shape1
     if(field.is_Scalar(t)):
         return  exp_s*  exp_t
     elif(field.is_Vector(t)):
@@ -35,7 +38,9 @@ def fn_multiplication(exp_s, t):
             rtn.append(exp_s*exp_t[i])
         return rtn
     elif(field.is_Matrix(t)):
+        print "second is a matrix as execpted"
         [n1,n2] =  shape1
+        print "shape1", shape1
         rtn = []
         for i in range(n1):
             tmp = []
@@ -66,13 +71,17 @@ def fn_scaling(fld1, fld2):
         else:
             return (fld2, fld1)
     (s, t) = get_sca()
+   
     exp_s = field.get_data(s)
     return fn_multiplication(exp_s, t)
 
 #division of a field
 def fn_division(t, s):
     if(field.is_Scalar(s)):
-        exp_s = (1/field.get_data(s))
+        #print "** should be 2:", field.get_data(s)
+        exp_s = (1.0)/field.get_data(s)
+        print "_________________________________________________________________"
+
         return fn_multiplication(exp_s, t)
     else:
         raise Exception ("err second arg in division should be a scalar")
@@ -481,7 +490,9 @@ def fn_det(fld):
         c = exp[1][0]
         b = exp[0][1]
         if(n==2):
-            return a*d-b*c
+            x= a*d-b*c
+            print x 
+            return x
         elif(n==3):
             a = exp[0][0]
             b = exp[0][1]
@@ -618,6 +629,122 @@ def fn_outer(fld1, fld2):
     else:
         raise Exception("outer product is not supported")
 
+def getConcatV(n, exp1):
+    rtn1 = []
+    for i in range(n):
+        rtn1.append(exp1[i])
+    return rtn1
+
+def getConcatM(n,m,exp1):
+    rtn1 = []
+    for i in range(n):
+        rtn2=[]
+        for j in range(m):
+            rtn2.append(exp1[i][j])
+        rtn1.append(rtn2)
+    return rtn1
+
+def fn_concat2(fld1, fld2):
+    exp1 = field.get_data(fld1)
+    exp2 = field.get_data(fld2)
+    ityp1 = field.get_ty(fld1)
+    ityp2 = field.get_ty(fld2)
+    if(fty.is_Scalar(ityp1)):
+        return [exp1,exp2]
+    elif(fty.is_Vector(ityp2)):
+        [n] = fty.get_shape(ityp2)
+        rtn1 = getConcatV(n, exp1)
+        rtn2 = getConcatV(n, exp2)
+        return [rtn1, rtn2]
+
+    elif(fty.is_Matrix(ityp2)):
+        [n, m] = fty.get_shape(ityp2)
+        rtn1 = getConcatM(n,m,exp1)
+        rtn2 = getConcatM(n,m,exp2)
+        return [rtn1, rtn2]
+
+    else:
+        raise Exception("concat of higher level is not supported")
+
+def fn_concat3(fld1, fld2, fld3):
+    exp1 = field.get_data(fld1)
+    exp2 = field.get_data(fld2)
+    exp3 = field.get_data(fld3)
+    if(fty.is_Scalar(ityp1)):
+        return [exp1,exp2, exp3]
+    elif(fty.is_Vector(ityp2)):
+        [n] = fty.get_shape(ityp2)
+        rtn1 = getConcatV(n, exp1)
+        rtn2 = getConcatV(n, exp2)
+        rtn3 = getConcatv(n, exp3)
+        return [rtn1, rtn2, rtn3]
+    
+    elif(fty.is_Matrix(ityp2)):
+        [n, m] = fty.get_shape(ityp2)
+        rtn1 = getConcatM(n,m,exp1)
+        rtn2 = getConcatM(n,m,exp2)
+        rtn3 = getConcatM(n,m,exp3)
+        return [rtn1, rtn2, rtn3]
+    else:
+        raise Exception("concat of higher level is not supported")
+
+
+def fn_comp(fld1, fld2):
+    exp1 = field.get_data(fld1)
+    exp2 = field.get_data(fld2)
+    #print "exp1:", exp1
+    #print "exp2:", exp2
+    ityp1 = field.get_ty(fld1)
+    ityp2 = field.get_ty(fld2)
+    #print "ityp1.name",ityp1.name
+    #print ityp2, ityp2.name, ityp2.dim
+    bshape = fty.get_shape(ityp2) #  determine x, y ,z
+    def replaceX(a,b):
+        r =  a.subs(x,b)
+        #print "replace x : for ", a," with:",b,"=>", r
+        return r
+    def replaceY(a,b):
+        r=a.subs(y,b)
+        #print "replace y : for ", a," with:",b,"=>", r
+        return r
+    def replaceZ(a,b):
+        r= a.subs(z,b)
+        #print "replace z : for ", a," with:",b,"=>", r
+        return r
+    def replaceD1(a,b):
+        return replaceX(a,b)
+    def replaceD2(a,b):
+        return replaceY(replaceX(a,b[0]),b[1])
+    def replaceD3(a,b):
+        return replaceZ(replaceY(replaceX(a,b[0]),b[1]),b[2])
+    
+    def getF():
+        if(bshape ==[]):
+            return replaceD1
+        elif(bshape ==[2]):
+            return replaceD2
+        elif(bshape ==[3]):
+            return replaceD3
+    f = getF()
+    if(fty.is_Scalar(ityp1)):
+        return f(exp1,exp2)
+    elif(fty.is_Vector(ityp1)):
+        [a1] = fty.get_shape(ityp1)
+        rtn = []
+        for i in range(a1):
+            rtn.append(f(exp1[i],exp2))
+        return rtn
+    elif(fty.is_Matrix(ityp1)):
+        [a1, a2] = fty.get_shape(ityp1)
+        rtn = []
+        for i in range(a1):
+            rtnj = []
+            for j in range(a2):
+                rtnj.append(f(exp1[i][j],exp2))
+            rtn.append(rtnj)
+        return rtn
+    else:
+        raise Exception("composition is not supported")
 
 #evaluate inner product
 def fn_inner(fld1, fld2):
@@ -826,9 +953,13 @@ def applyToT3s(vecA, vecB, unary):
 # exp: scalar types
 
 def applyToExp_U_S(fn_name, fld):
+    print "inside apply exp to unary"
     exp = field.get_data(fld)
     dim = field.get_dim(fld)
-    #print fn_name
+
+    print fn_name
+    print fn_name.id
+    print op_sqrt.id
     if(op_copy==fn_name): #probing
         return  exp
     elif(op_negation==fn_name): #negation
@@ -842,6 +973,7 @@ def applyToExp_U_S(fn_name, fld):
     elif(op_atangent==fn_name): #atan
         return atan(exp)
     elif(op_gradient==fn_name):
+        print "inside gradient"
         return fn_grad(exp, dim)
     elif(op_hessian == fn_name):
         return fn_hessian(exp, dim)
@@ -851,10 +983,14 @@ def applyToExp_U_S(fn_name, fld):
     elif(op_acosine==fn_name): #acos  mag(x)<=1
         frac = 0.01*exp
         return acos(frac)
-    elif(op_sqrt==fn_name): #sqrt
+    elif(op_sqrt.id==fn_name.id): #sqrt
         # gets norm first to make sure value is positive.
-        norm = sqrt(exp*exp)
-        return sqrt(norm)
+        print "exp"
+        #s = exp*exp
+        print "pow"
+        #norm = sqrt(s)
+        print "norm"
+        return sqrt(exp)
     elif(op_zeros_scale3.id ==fn_name.id):
         return build_zero(3)
     else:
@@ -986,6 +1122,7 @@ def applyToExp_B_V(e):
         return applyToVectors(exp1,exp2 ,fn_modulate)
     elif(op_cross==fn_name):
         return fn_cross(fld1, fld2)
+
     else:
        return applyToExp_B_rest(e)
 
@@ -1034,11 +1171,14 @@ def unary(e):
     elif(op_normalize==fn_name):#normalize
         x= fn_normalize(fld, dim)
         return x
-    elif (field.is_Scalar(fld)): # input is a scalar field
+    elif (field.is_Scalar(fld)):
+        print "input is a scalar field"
         return applyToExp_U_S(fn_name, fld)
-    elif(field.is_Vector(fld)): # input is a vector field
+    elif(field.is_Vector(fld)):
+        print "input is a vector field"
         return applyToExp_U_V(fn_name, fld)
-    elif(field.is_Matrix(fld)): # input is a vector field
+    elif(field.is_Matrix(fld)):
+        print "input is a matrix"
         return applyToExp_U_M(fn_name, fld)
     else:
         return applyToExp_U_T3(fn_name, fld)
@@ -1058,6 +1198,12 @@ def binary(e):
         return fn_inner(f, g)
     elif(op_scale==fn_name): #scaling
         return fn_scaling(f,g)
+    elif(op_concat2==fn_name):#concat 2
+        return fn_concat2(f,g)
+    elif(op_comp==fn_name): # composition of functions
+        x = fn_comp(f,g)
+        print " rtn exp: ",x
+        return x
     elif (field.is_Scalar(f) and field.is_Scalar(g)): # input is a scalar field
         return applyToExp_B_S(e)
     elif (field.is_Vector(f) and field.is_Vector(g)):
@@ -1069,38 +1215,11 @@ def binary(e):
     else:
          return applyToExp_B_rest(e)
 
-def applyUnaryOnce(oexp_inner,app_inner,app_outer):
-    #print "applyUnaryOnce",app_inner.opr.name,"-",app_outer.opr.name
-    #apply.toStr(app_inner)
-    oty_inner = apply.get_oty(app_inner)
-    oty_outer = apply.get_oty(app_outer)
-    opr_outer = app_outer.opr
-    #print "oexp_inner",oexp_inner,"opr_outer",opr_outer.name
-    lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "")
-    #create new apply
-    app_tmp = apply("tmp", opr_outer, lhs_tmp, None, oty_outer, true, true)
-    oexp_tmp = unary(app_tmp)
-    #print " oexp_tmp", oexp_tmp
-    return (oty_outer, oexp_tmp)
 
-def applyBinaryOnce(oexp_inner,app_inner,app_outer,rhs):
-    oty_inner = apply.get_oty(app_inner)
-    oty_outer = apply.get_oty(app_outer)
-    opr_outer = app_outer.opr
-    
-    lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "")
-    
-    app_tmp = apply("tmp", opr_outer, lhs_tmp, rhs, oty_outer, true,true)
-    oexp_tmp = binary(app_tmp)
-
-    return (oty_outer, oexp_tmp)
-
-
-# operators with scalar field and vector field
+# sort all applications
 def sort(e):
-
-    #apply.toStr(e)
-    def simple_apply(app):
+    #a ssingle application
+    def simple_apply(c_layer, app):
         arity = apply.get_arity(app)
         oty = apply.get_oty (app)
         if (arity ==1):
@@ -1109,58 +1228,47 @@ def sort(e):
             return (oty, binary(app))
         else:
             raise Exception ("arity is not supported: "+str(arity_outer))
-    # apply 2 layers
-    #  gets the applications then calls above functions
-    def set_up_layer2(app_outer1):
-        arity_outer1 =  app_outer1.opr.arity
-        if(arity_outer1==1):
-
-            app_inner = apply.get_unary(app_outer1)
-            #print "app_inner",apply.toStr(app_inner,1)
-            arity_inner =  app_inner.opr.arity
-            #print "about to do a simple apply"
-            (_, oexp_inner) = simple_apply(app_inner)
-            #print "post simple apply"
-            (oty_outer, oexp_tmp) =  applyUnaryOnce(oexp_inner, app_inner, app_outer1)
+    #  multiple applications
+    def get_gfnc(c_layer):
+        if (c_layer==1):
+            return simple_apply
+        else:
+            # calls embed multiple times
+            return embed
+    def embed(c_layer, app_tmp):
+        print "embed",c_layer,app_tmp
+        print app_tmp.opr.name
+        arity = apply.get_arity(app_tmp)
+        gfnc = get_gfnc(c_layer)
+        if(arity==1):
+            app_inner = apply.get_unary(app_tmp)
+            (_, oexp_inner) = gfnc(c_layer-1, app_inner)
+            (oty_outer, oexp_tmp) =  applyUnaryOnce(oexp_inner, app_inner, app_tmp)
             return (oty_outer, oexp_tmp)
-        elif(arity_outer1==2):
-            (app_inner, G) = apply.get_binary(app_outer1)
-            arity_inner =  app_inner.opr.arity
-            (_, oexp_inner) = simple_apply(app_inner)
-            rhs = G
-            (oty_outer, oexp_tmp) =  applyBinaryOnce(oexp_inner, app_inner, app_outer1, rhs)
-            return (oty_outer, oexp_tmp)
-    if(e.isrootlhs): # is root
-        #print "1 layer"
-        # 1 layer
-        return simple_apply(e)
-    elif(e.lhs.isrootlhs):
-        #print "2 layer"
-        # 2 layers
-        return set_up_layer2(e)
-    else:
-        # 3 layers
-        #print "3 layer"
-        arity = apply.get_arity(e)
-        if(arity ==1):
-            app_outer2 = e
-            app_outer1 = apply.get_unary(app_outer2)
+        elif(arity==2):
+            (app_outer1, rhs) =  apply.get_binary(app_tmp)
             # apply 1st and second layer
-            (oty_outer, oexp_tmp) = set_up_layer2(app_outer1)
+            (_, oexp_tmp) = gfnc(c_layer-1, app_outer1)
             # applies third layer
-            (oty_outer, oexp_tmp) =  applyUnaryOnce(oexp_tmp, app_outer1, app_outer2)
+            (oty_outer, oexp_tmp) = applyBinaryOnce(oexp_tmp, app_outer1, app_tmp, rhs)
             return (oty_outer, oexp_tmp)
-        elif(arity ==2):
-            app_outer2 = e
-            (app_outer1, rhs) =  apply.get_binary(app_outer2)
-            # apply 1st and second layer
-            (oty_outer, oexp_tmp) = set_up_layer2(app_outer1)
-            # applies third layer
-            (oty_outer, oexp_tmp) = applyBinaryOnce(oexp_tmp, app_outer1, app_outer2, rhs)
-            return (oty_outer, oexp_tmp)
-
         else:
             raise Exception("arity is not supported:"+str(arity))
+
+    def getLayers(m):
+        if(m.isrootlhs):
+            return 0
+        else:
+            return 1+getLayers(m.lhs)
+    c_layer =  getLayers(e)
+    if(e.isrootlhs): # is root
+        # 1 layer
+        #c_layer = 1
+        return embed(1, e)
+    else:
+        # 3 layers
+        print "layers", c_layer
+        return embed(c_layer, e)
 # ***************************  evaluate at positions ***************************
 #evaluate scalar field exp
 def eval_d0(pos0, exp):

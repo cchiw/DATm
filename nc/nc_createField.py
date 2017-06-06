@@ -10,6 +10,7 @@ from obj_operator import *
 from obj_field import *
 from base_write import *
 
+pathToSynFiles = "shared/symb/symb_f"
 #convert coeffs
 def llist(cmd, coeff):
     a=" -"+cmd
@@ -24,7 +25,7 @@ def progName(itype, outSize):
     # name of file to create field
     name_shape = tty.tyToStr(ten_ty)
     dim = itype.dim
-    filename = "symb_f"+name_shape+"d"+str(dim)
+    filename = pathToSynFiles+name_shape+"d"+str(dim)
     # get reshape size commmand based on tensor shape
     psize = tty.psize(ten_ty)
     for i in range(dim):
