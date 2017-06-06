@@ -6,7 +6,7 @@ import random
 
 sys.path.insert(0, 'shared/')
 sys.path.insert(0, 'cte/')
-
+sys.path.insert(0, 'nc/')
 #top-level
 from frame import  *
 
@@ -21,10 +21,7 @@ from base_write import *
 from base_var_ty import *
 
 # specific cte programs
-from cte_createField import createField
 from cte_writeDiderot import writeDiderot
-from cte_eval import eval
-from cte_compare import compare
 from cte_core import *
 
 
@@ -267,7 +264,7 @@ def embed_base_iter_ty2_wihty2(ex, name, ishape, oprs, tys, testing_frame, cnt):
 
 
 # same as embed_base_iter_ty2, except already given example number
-def embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, testing_frame, cnt):
+def embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, t_num, testing_frame, cnt):
     # adjusting to accept 2|3 layers of operators
     opr_inner = oprs[0]
     opr_outer = oprs[1]

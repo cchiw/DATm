@@ -17,21 +17,39 @@ from obj_frame import *
 from base_write import *
 from base_var_ty import *
 from base_observed import base_observed
-
-# specific cte programs
-from cte_createField import createField,sortField
-from cte_writeDiderot import writeDiderot
-from cte_eval import eval
-from cte_continue import *
-
+#specific nc programs
+from nc_compare import compare
+from nc_createField import sortField
 
 #creating a test program
 from obj_prog import *
 from prog_writeDiderot import prog_writeDiderot
 from prog_eval import prog_eval
 
+# results from testing
+def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
+    (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
+    #print "X", x
+    x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
+    writeall(x)
+    print  x
+    
+    
+    # collect results
+    counter.inc_locals(cnt, rtn)
+    writeCumulative(cnt)
+    # check results
+    if (rst_check_1==7):
+        rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
+    elif (rst_terrible_1==1):
+        rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+    #raise Exception("terrible")
+    elif (rst_NA_1==9):
+        rst_NA(name_file, x, name_describe,  branch)
+    return
+
 # changing the core to write a test from a program.
-def core3(program, fields, coeffs, dimF, testing_frame, cnt):
+def core3(program, dict, testing_frame, cnt):
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
     g_upos = frame.get_upos(testing_frame)
@@ -46,29 +64,39 @@ def core3(program, fields, coeffs, dimF, testing_frame, cnt):
     t_nrrdbranch = frame.transform_nrrdpath(testing_frame)
     t_runtimepath = frame.transform_runtimepath(testing_frame)
 
+    fields = program.fields
+    coeffs = program.coeffs
+    dimF = program.dim
+    
     # testing positions
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     # samples
     #create synthetic field data with diderot
     PARAMS = sortField(fields, g_samples, coeffs, t_nrrdbranch, g_space)
-    #create diderot program with operator
+    print "**************** write program"
+    name = program.name
+    name_ty = fields[0].fldty.name
     (isCompile, isRun, _) = prog_writeDiderot(g_p_Observ, program, fields, positions, g_output, t_runtimepath, t_isNrrd)
     if(isRun == None):
-        raise Exception( "failed")
+       
         if(isCompile == None):
             counter.inc_compile(cnt)
-            rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
+            rst_compile(name, name_ty, program.name, g_branch,  positions, PARAMS)
             return 1
         else:
             counter.inc_run(cnt)
-            rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
+            rst_execute(name, name_ty, program.name, g_branch,  positions, PARAMS)
             return 2
     else:
+        print "*****************************read observed data"
         observed_data = base_observed(program.oty, g_output)
         #if(check(app, observed_data)):
-        correct_data = prog_eval(program, positions)
-        rtn = compare(app, observed_data, correct_data)
-        analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
+        print "*****************************prog eval"
+        correct_data = prog_eval(program, positions, dict)
+        print "***************************** compare"
+        rtn = compare(program.oty, program.name, observed_data, correct_data)
+       
+        analyze(program.name, name_ty, program.name, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
         #return 3
         # else:
         #return None

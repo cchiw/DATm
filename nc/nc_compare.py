@@ -151,7 +151,9 @@ def checkdiff(name, obv, cor):
     no = len(obv)
     nc = len(cor)
     if(no!=nc):
-        raise ("different size for data- observed: "+str(n0)+"correct: "+str(nc))
+        print "obv", obv
+        print "cor", cor
+        raise ("different size for data- observed: "+str(no)+"correct: "+str(nc))
     maxdiff=0
     sumdiff = 0
     length = 0
@@ -193,9 +195,9 @@ def checkdiff(name, obv, cor):
         return toStr(name,"x0", maxdiff,avg, per ,s)
 
 #chose function based on length of output
-def compare(app, obv, cor):
-    ex_otype = fty.get_tensorType(app.oty)
-    if(ty_scalarT==ex_otype):
-        return checkdiff_1(app.name, obv, cor)
+def compare(ex_otype, name, obv, cor):
+   
+    if(fty.is_Scalar(ex_otype)):
+        return checkdiff_1(name, obv, cor)
     else:
-        return checkdiff(app.name, obv, cor)
+        return checkdiff(name, obv, cor)

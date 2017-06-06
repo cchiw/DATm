@@ -15,7 +15,7 @@ branch_chiw17 = "chiw17"
 branch_vis15 = "vis15"
 branch_ein16 = "ein16"
 branch_other = "vis15-old/"
-#branch_other = "charisee/"
+branch_other = "dev_old/"
 
 precision_double ="double"
 precision_single ="singe"
@@ -27,6 +27,7 @@ h_tent= "tent"
 h_ctmr= "ctmr"
 h_mixcbc = "mix" # [h_hex,h_bs3,h_hex]
 h_mixcbt = "mixt"
+h_bs5 = "bspln5"
 
 
 template_isPlain = "t_plain"

@@ -232,12 +232,14 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     e = "\n\n positions"+str( positions)
     d = "\n\nParams("+str(len(PARAMS))+")"
     j = 0
-    for p in PARAMS:
-        d+="\n\t"+str(j)+".)"+p
-        j+=1
+    print "Params", PARAMS
+    #for p in PARAMS:
+    #    d+="\n\t"+str(j)+".)"+p
+    #    j+=1
     st = a+b+c+e+d+"\n"+rst+"\n\n"
     f = open(path+"/rst.txt", 'w+')
     f.write(st)
+
     f.close()
 
 

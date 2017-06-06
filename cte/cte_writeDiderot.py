@@ -15,6 +15,9 @@ from obj_operator import *
 from obj_field import *
 from base_write import * 
 from base_writeDiderot import *
+from nc_writeDiderot import nc_compileandRun, nc_setLength
+
+
 template="shared/template/foo.ddro"     # template
 
 #strings in diderot template
@@ -36,18 +39,17 @@ def cte_update_method(f, pos, app):
     oty = app.oty
     if(fty.is_Field(oty)):
         # index field at random positions
-        base_index_field_at_positions(f, pos, oty)
-        #check_inside(f, opfieldname1, app)
-        foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
-        f.write(foo.encode('utf8'))
+        dim = oty.dim
+        base_index_field_at_positions(f, pos, dim)
+        check_inside(f, opfieldname1, app)
+        #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
+        #f.write(foo.encode('utf8'))
         #check_conditional(f,  opfieldname1, app)
     else:
         # get conditional for tensor argument
         check_conditional(f,  foo_out, app)
 
-def cte_setLength(f, n):
-    foo="int length ="+str(n)+";"
-    f.write(foo.encode('utf8'))
+
 
 #itype: shape of fields
 #otype: output tensor
@@ -90,7 +92,7 @@ def readDiderot(p_out, app, pos):
         e0=re.search(foo_length, line)
         if e0:
             #print "Set length"
-            cte_setLength(f,len(pos))
+            nc_setLength(f,len(pos))
             continue
         # nothing is being replaced
         else:
@@ -98,74 +100,6 @@ def readDiderot(p_out, app, pos):
 
     ftemplate.close()
     f.close()
-
-# execute new diderot program
-def runDiderot(p_out, shape, pos, output, runtimepath, isNrrd):
-
-    product = 1
-    for x in shape:
-        product *= x
-
-    if(isNrrd):
-        m2 = len(pos)+1
-        w_shape=" -s "+str(product)+" "+str(m2)
-       
-        os.system("./"+p_out+" -o tmp")
-        os.system("./"+p_out+" -o tmp.nrrd")
-    
-        #os.system("unu head tmp.nrrd")
-        os.system("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
-    else:
-
-        # print "not is vis"
-        executable = "./"+p_out
-        #print executable
-        os.system(executable)
-
-def cte_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall):
-    diderotprogram = p_out+".diderot"
-    #os.system("cp "+p_out+".diderot "+output+".diderot")
-    #os.system("rm "+p_out) # remove existing executable
-    os.system(runtimepath + " --log " + diderotprogram)
-    # gets come time
-    # os.system("grep \"compiler\" "+p_out+".log >> catwriteall.txt")
-
-    # did it compile?
-    endall = time.time()
-    tall = str(endall - startall)
-    writeTime(25, tall)
-    print(tall)
-    startall=endall
-    if(not(os.path.exists(p_out))):
-        # did not compile
-        #print "did not compile"
-        endall = time.time()
-        tall = str(endall - startall)
-        writeTime(26, tall)
-        startall=endall
-        return (None, None, startall)
-    else:
-        # remove txt
-        txfile  = p_out+".txt"
-        #os.system("rm "+txfile)
-        # run executable
-        runDiderot(p_out, shape, pos, output, runtimepath, isNrrd)
-        endall = time.time()
-        tall = str(endall - startall)
-        writeTime(26, tall)
-        startall=endall
-        if(not(os.path.exists(txfile))):
-            # did not execute
-            #raise Exception ("did not execute")
-            return (true, None, startall)
-        else:
-            #print "compiled and execute"
-            # copyfiles
-            os.system("cp "+p_out+".txt "+output+".txt")
-            #os.system("cp "+p_out+".c "+output+".c")
-            #os.system("rm "+p_out+"*")
-            return (true, true, startall)
-
 
 
 
@@ -178,4 +112,4 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
     writeTime(24, tall)
     startall=endall
     shape = app.oty.shape
-    return cte_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall)
+    return nc_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall)

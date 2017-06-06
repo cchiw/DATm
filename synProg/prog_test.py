@@ -44,14 +44,19 @@ def set_first(id,  c_ity, c_opr, c_otype, testing_frame):
 
 
 # internal typechecker
-def isValid(outname, c_opr, c_arg1, c_arg2):
-    ishape = [c_arg1.ty]
+def isValid(id, outname, c_opr, c_arg1, c_arg2):
+    ishape = []
+    if(c_arg1):
+        ishape = [c_arg1.ty]
+        if(c_arg2):
+            ishape = ishape+[c_arg2.ty]
     (tf, tshape) = get_tshape(c_opr, ishape)
     #find if it is a valid test
     if(not tf):
-        raise Exception( "\n apply blocked")
+        print tshape
+        raise Exception( "\n apply blocked: "+c_opr.name+" applied to "+c_arg1.ty.name+"-"+c_arg2.ty.name)
     # create output variable
-    c_var = varname(outname, tshape, None)
+    c_var = varname(outname+"__l"+str(id), tshape, False)
 
     #create line of operator applied to arguement
     c_line = line(c_var, c_opr, c_arg1, c_arg2)

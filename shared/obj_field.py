@@ -25,13 +25,15 @@ class kernel:
 #ctmr-quad
 #bspln3-linear
 krn_hex = kernel("c4hexic", 3, 3)
-krn_bs3 = kernel("bspln5", 3, 1)
+krn_bs3 = kernel("bspln5", 4, 1)
 krn_tent = kernel("tent", 0, 1)
 krn_ctmr = kernel("ctmr", 1, 2)
                  
 # transform kernel from input global to kernel variable
 def transform_krn(krn, id):
     if(krn == h_bs3):
+        return krn_bs3
+    elif(krn == h_bs5):
         return krn_bs3
     elif(krn == h_hex):
         return krn_hex
@@ -116,6 +118,7 @@ class field:
         shape = ty0.fldty.shape
         return  (ty0.isField and len(shape)==0)
     def is_Scalar(ty0):
+        print "ty0", ty0.name
         shape = ty0.fldty.shape
         return  (len(shape)==0)
     # is vecor field
@@ -131,6 +134,9 @@ class field:
     def is_Ten3(ty0):
         shape = ty0.fldty.shape
         return  (len(shape)==3)
+
+
+
 
 #  i_fty: field type
 def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_template):
