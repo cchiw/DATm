@@ -37,7 +37,7 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
     
     # collect results
     counter.inc_locals(cnt, rtn)
-    writeCumulative(cnt)
+    #writeCumulative(cnt)
     # check results
     if (rst_check_1==7):
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
@@ -63,6 +63,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #startall = time.time()
     #writeTime(125, str(startall))
     #print "############################################inside central############################################"
+    print("current", names)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
     # get global variables from testing framework
@@ -134,6 +135,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         else:
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
+            raise Exception("stop after 1")
             return 2
     else:
         #print "read observed data"
@@ -142,6 +144,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         #tall = str(endall - startall)
         #writeTime(28, tall)
         #startall=endall
+        #correct_data = eval(app , positions)
         if(check(app, observed_data)):
             correct_data = eval(app , positions)
             #endall = time.time()
@@ -166,6 +169,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             #writeTime(29, "0")
             #writeTime(30, "0")
             #writeTime(31, "0")
+            
             return None
 
 
@@ -193,6 +197,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
             g_branch = frame.get_branch(testing_frame)
             counter.inc_NA(cnt)
             rst_NA(names, x, name_describe, g_branch)
+
     else:
         return
 
@@ -290,6 +295,8 @@ def create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame
     g_krn = frame.get_krn(testing_frame)
     g_template = frame.get_template(testing_frame)
     (app, coeffs) = mkApply_twice(opr_inner,opr_outer, ishape, g_inputfile, tshape1, tshape2, g_coeff_style, g_ucoeff, g_krn, g_template )
+    print "___________________", app.oty.name
+    print "___________________", app.lhs.oty.name
     return (app, coeffs)
 
 

@@ -36,7 +36,7 @@ from cte_core import *
 # get example from list of examples
 def single_specific_ex(ex, opr_inner, t_num, testing_frame, cnt):
     # increment total
-    print "single_specific_ex"
+    #print "single_specific_ex"
     counter.inc_total(cnt)
     # main
     rtn = create_single_app(ex, opr_inner, t_num, testing_frame, cnt)
@@ -61,9 +61,9 @@ def get_extra(ex_ty2, testing_frame, cnt):
     #j = 0
     #for i in l:
     #    if(j==ex_ty2):
-    #        print "-->"+str(j)+"."+i.name+","
+    #        #print "-->"+str(j)+"."+i.name+","
     #    else:
-    #        print str(j)+"."+i.name+","
+    #        #print str(j)+"."+i.name+","
     #    j+=1
     return (len(l), l[ex_ty2])
 
@@ -107,7 +107,7 @@ def embed_base_specific_ex(ex, tshape1, ishape0, oprs, tys, testing_frame, cnt):
 # already given type for extra argument
 # transforms that type to kernel specific type
 def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_frame, cnt):
-    print "inside embed_giventy2_specific_ex"
+    #print "inside embed_giventy2_specific_ex"
     #writeTime(8)
     fty=[]
     if(not (ty_ty2 == None)):
@@ -149,7 +149,7 @@ def oprToEx(opr_inner, testing_frame, cnt):
 #iterates over extra type
 #inter_num, and iter_ty2
 def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
-    print "inside function embed_base_iter_ty2"
+    #print "inside function embed_base_iter_ty2"
     #writeTime(5)
     
     # adjusting to accept 2|3 layers of operators
@@ -168,7 +168,7 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
             return (tf, None, None)
     def call(t_num, t_ty2, ty_ty2):
         tys = [t_num, t_ty2]
-        print "call: ",t_num, t_ty2,ty_ty2
+        #print "call: ",t_num, t_ty2,ty_ty2
         embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_frame, cnt)
     
     # core
@@ -188,12 +188,12 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
                             ty_ty2 = ty2s[t_ty2]
                             #call(t_num, t_ty2,ty_ty2)
                             tys = [t_num, t_ty2]
-                            print "***************\n call extra: ",t_num, t_ty2,ty_ty2.name
+                            #print "***************\n call extra: ",t_num, t_ty2,ty_ty2.name
                             embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_frame, cnt)
                 else:# do not need extra type
                     #call(t_num, None, None)
                     tys = [t_num, None]
-                    print "call none: ",t_num, "none"
+                    #print "call none: ",t_num, "none"
                     embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, None, testing_frame, cnt)
             else:
                 # "tshape1 does not pass"
@@ -210,7 +210,7 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
 def embed_base_iter_outer2(ex, name, ishape, opr_inner, t_num, testing_frame, cnt):
     # set local counters to zero
     counter.zero_locals(cnt)
-    # print "\nembed_base_iter_outer: ex_opr",ex_opr
+    # #print "\nembed_base_iter_outer: ex_opr",ex_opr
     n_outer = getN()
     
     # current example
@@ -243,14 +243,14 @@ def embed_base_iter_ty2_wihty2(ex, name, ishape, oprs, tys, testing_frame, cnt):
     opr_outer = oprs[1]
     t_num = tys[0]
     t_ty2 = tys[1]
-    # print " embed_base_iter_ty2_wihty2 ts",tys
+    # #print " embed_base_iter_ty2_wihty2 ts",tys
     # current example
     (name, tf1, tshape1, ishape0) = pre_get_tshape1(name, ishape, opr_inner, testing_frame)
     # get built-in example
     if(tf1==false):
         return
     else:
-        # print "inside embed_base_iter_ty2_wihty1 tshape1:",tshape1.name, "k:",tshape1.k
+        # #print "inside embed_base_iter_ty2_wihty1 tshape1:",tshape1.name, "k:",tshape1.k
         ex_outer = oprToEx(opr_inner, testing_frame, cnt)
         if(needextratype(opr_outer)):
             # given extra type already
@@ -275,7 +275,7 @@ def embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, t_num, testing_frame, cnt
     if(tf1==false):
         return
     else:
-        # print "inside embed_base_iter_ty2_wihty1 tshape1:",tshape1.name, "k:",tshape1.k
+        # #print "inside embed_base_iter_ty2_wihty1 tshape1:",tshape1.name, "k:",tshape1.k
         ex_outer = oprToEx(opr_inner, testing_frame, cnt)
         if(needextratype(opr_outer)):
             # use all field types as extra types
@@ -320,18 +320,18 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
         embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
         writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
     #switch
-#    writeall("\nswitch")
-#    opr_outer=opr_inner
-#    for  t_inner in range(n_outer):
-#        #zero counters
-#        counter.zero_locals(cnt)
-#        counter.zero_total(cnt)
-#        opr_inner = id_toOpr(t_inner)
-#        ex = oprToEx(opr_inner, testing_frame, cnt)
-#        writeTitle_outer(opr_inner, opr_outer)
-#        oprs = [opr_inner, opr_outer]
-#        embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
-#        writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
+    writeall("\nswitch")
+    opr_outer=opr_inner
+    for  t_inner in range(n_outer):
+        #zero counters
+        counter.zero_locals(cnt)
+        counter.zero_total(cnt)
+        opr_inner = id_toOpr(t_inner)
+        ex = oprToEx(opr_inner, testing_frame, cnt)
+        writeTitle_outer(opr_inner, opr_outer)
+        oprs = [opr_inner, opr_outer]
+        embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
+        writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
     return
 
 
@@ -365,7 +365,7 @@ def embed2_iter_inner_setrange(t_start, t_range, testing_frame, cnt):
 
 #specify outer operator
 def embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt):
-    print "embed2_iter_inner_gotouter"
+    #print "embed2_iter_inner_gotouter"
     counter.zero_total(cnt)  #zero counters
     n_opr = getN()
     
@@ -384,7 +384,7 @@ def embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt):
 
 #run all examples for a specific operator
 def single_all_ops(opr_inner, testing_frame, cnt):
-    print "single all ops"
+    #print "single all ops"
     # get built-in example
     ex = oprToEx(opr_inner, testing_frame, cnt)
     n_num = len(ex.tys)

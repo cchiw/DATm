@@ -26,7 +26,7 @@ def Title_num(opr_inner, opr_outer):
 def writeTime(n, t):
     if (n>19):
         e="\n"+ t
-        f = open(rst_stash+"/results_time.txt", 'a+')
+        f = open("rst/stash/results_time.txt", 'a+')
         f.write(e)
         f.close()
 
@@ -35,41 +35,41 @@ def write(e):
 def writeall(e):
     #print (e)
     # if it works continue
-    f = open(rst_stash+"/results_final.txt", 'a+')
+    f = open("rst/stash/results_final.txt", 'a+')
     f.write(e)
     f.close()
 def writesummary(e):
     #print (e)
     # if it works continue
-    f = open(rst_stash+"/results_summary.txt", 'a+')
+    f = open("rst/stash/results_summary.txt", 'a+')
     f.write(e)
     f.close()
 
 def writetys(e):
     #print (e)
     # if it works continue
-    f = open(rst_stash+"/results_ty.txt", 'a+')
+    f = open("rst/stash/results_ty.txt", 'a+')
     f.write(e)
     f.close()
 
 def writeex(e):
     print (e)
     # if it works continue
-    f = open(rst_stash+"/results_ex.txt", 'a+')
+    f = open("rst/stash/results_ex.txt", 'a+')
     f.write(e)
     f.close()
 
 def write_outer(e):
     print (e)
     # if it works continue
-    f = open(rst_stash+"/results_outer.txt", 'a+')
+    f = open("rst/stash/results_outer.txt", 'a+')
     f.write(e)
     f.close()
 
 def write_terrible(e):
     print (e)
     # if it works continue
-    f = open(rst_stash+"/results_terrible.txt", 'a+')
+    f = open("rst/stash/results_terrible.txt", 'a+')
     f.write(e)
     f.close()
 
@@ -173,7 +173,7 @@ def write_heading(testing_frame):
 # copy programs and corresponding file to new directory
 def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere, PARAMS, branch):
     names = name_file
-    path = rst_stash+"/"+names
+    path = "rst/stash/"+names
     os.system("mkdir "+path)
     
     
@@ -210,16 +210,18 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
 
 # copy programs and corresponding file to new directory
 def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, rst):
-    path = rst_stash+"/"+names
+    path = "rst/stash/"+names
     os.system("mkdir "+path)
 
 
 
-    nrrdNames =["inputfile_0","inputfile_1","inputfile_2","inputfile0","inputfile1","inputfile2"]
+    nrrdNames =["inputfile_","inputfile", "inputfileF"]
     for i in  nrrdNames:
-        os.system("cp "+rst_data+"/"+i+".nrrd "+path+"/"+i+".nrrd")
+        for j in range(3):
+            k = i+str(j)
+            os.system("cp "+rst_data+"/"+k+".nrrd "+path+"/"+k+".nrrd")
     
-    filetys = [".diderot",".png"]
+    filetys = [".diderot",".png", ".nrrd"]
     for i in filetys:
         os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/output5_p_observ"+i)
         os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/"+names+i)
@@ -264,7 +266,7 @@ def rst_compile(names, x, extraname,  branch,  positions, PARAMS):
     write_rst(names, x, extraname, rtn1)
     labl = dir+"__"+names
     x = extraname+x
-    #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
+    writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 # does not execute
 def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
@@ -279,7 +281,7 @@ def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
 def rst_NA(names, x, extraname, branch):
     dir = "na"
     labl = dir+"__"+names
-    write_rst(names, x, extraname, "rtn:NA")
+    #write_rst(names, x, extraname, "rtn:NA")
     #writeToRst(labl, None, None, branch, x)
 
 # check results

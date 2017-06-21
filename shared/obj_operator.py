@@ -47,14 +47,13 @@ id=0
 op_negationT = operator(0,"negT", 1,"-", place_left, limit_none, False)
 
 op_negation = operator(id,"neg", 1,"-", place_left, limit_none, False)
-op_norm = operator(id+1,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
-op_normalize = operator(id+2,"normalize", 1, u'normalize', place_left, limit_none, False)
-op_trace = operator(id+3,"trace", 1, u'trace', place_left, limit_none, False)
-op_transpose = operator(id+4,"transpose", 1, u'transpose', place_left, limit_none, False)
-op_det = operator(id+5,"det", 1, u'det', place_left, limit_none, False)
-op_copy= operator(id+6,"copy", 1,"", place_left, limit_none, False)
-op_inverse = operator(id+7, "inverse", 1, u'inv', place_left, limit_det, False)
-op_reg = [op_negation, op_norm, op_normalize, op_trace, op_transpose, op_det,op_copy,op_inverse]
+
+op_trace = operator(id+1,"trace", 1, u'trace', place_left, limit_none, False)
+op_transpose = operator(id+2,"transpose", 1, u'transpose', place_left, limit_none, False)
+op_det = operator(id+3,"det", 1, u'det', place_left, limit_none, False)
+op_copy= operator(id+4,"copy", 1,"", place_left, limit_none, False)
+op_inverse = operator(id+5, "inverse", 1, u'inv', place_left, limit_det, False)
+op_reg = [op_negation, op_trace, op_transpose, op_det,op_copy,op_inverse]
 
 id=id+len(op_reg)
 #differentiation
@@ -128,17 +127,20 @@ op_concat2 = operator(id+5,"concat2", 2,"concat", place_left, limit_none, True)
 op_concat3 = operator(id+6,"concat3", 3,"concat", place_left, limit_none, True)
 # can't implement ^ without enabling three arguments
 
-op_comp = operator(id+7,"compose", 2,"comp", place_left, limit_none, True)
+#op_comp = operator(id+6,"compose", 2,"comp", place_left, limit_none, True)
+op_comp = operator(id+6,"compose", 2,(u'comp(', u'*0.01)'), place_split, limit_none, True)
 op_probe= operator(id+8,"probe", 1,"(pos)", place_right, limit_none, True)
 
+op_norm = operator(id+7,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
+op_normalize = operator(id+8,"normalize", 1, u'normalize', place_left, limit_none, False)
 
-op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, op_hessian, op_concat2,op_comp]
+op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, op_hessian, op_concat2,op_comp, op_norm, op_normalize]
 
 
 
 
 
-op_all = op_unary+op_binary+op_trig#+op_specialized
+op_all = op_unary+op_binary+op_trig+op_specialized
 
 
 

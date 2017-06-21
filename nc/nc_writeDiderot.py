@@ -35,7 +35,7 @@ def nc_setLength(f, n):
 
 # execute new diderot program
 def runDiderot(p_out, shape, pos, output, runtimepath, isNrrd):
-
+    print "insude run Diderot believe shape is ", shape
     product = 1
     for x in shape:
         product *= x
@@ -43,7 +43,7 @@ def runDiderot(p_out, shape, pos, output, runtimepath, isNrrd):
     if(isNrrd):
         m2 = len(pos)+1
         w_shape=" -s "+str(product)+" "+str(m2)
-       
+        os.system("rm tmp.nrrd")
         os.system("./"+p_out+" -o tmp")
         os.system("./"+p_out+" -o tmp.nrrd")
     

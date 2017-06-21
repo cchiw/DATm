@@ -188,8 +188,10 @@ def buildProgram(testing_frame, cnt):
     lines1 = p1.lines1
     lines2 = p1.lines2
     linesT= []
-    for i in range(len(lines1)):
-        l = lines1[i]
+    linesT = lines1[0:30]
+    
+    for i in range(len(lines1)-30):
+        l = lines1[i+31]
         linesT=linesT+[l]
         p2 = setProg("curvature_"+str(i), linesT, lines2, p1.fields, p1.dim, p1.coeffs)
         core3(p2, dict, testing_frame, cnt)
