@@ -74,7 +74,7 @@ class tty:
 class fty:
     def __init__(self, id, name, dim, shape, tensorType, k):
         self.id=id
-        self.name=name+"_k"+str(k)
+        self.name=name#+"_k"+str(k)
         self.dim=dim
         self.shape=shape
         self.tensorType=tensorType # if we probed a field with this field type

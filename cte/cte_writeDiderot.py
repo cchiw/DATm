@@ -112,4 +112,5 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
     writeTime(24, tall)
     startall=endall
     shape = app.oty.shape
+    print "app oty", app.oty
     return nc_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall)

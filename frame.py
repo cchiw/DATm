@@ -14,12 +14,12 @@ cpath =  "/Users/chariseechiw/diderot/"
 # go for it!
 # options are commented out
 
-name = "vis15 branch 4972"
+name = "ein16 branch"
 # branch information
-s_branch  = branch_vis15
+#s_branch  = branch_vis15
 #s_branch  = branch_ein16
 #s_branch  = branch_other
-#s_branch = branch_chiw17
+s_branch = branch_chiw17
 s_revision = "r current"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
@@ -28,8 +28,8 @@ s_path = cpath # "--whatever the path to diderot is"
 s_coeff_style = coeff_cubic
 #s_coeff_style = coeff_linear
 # kernel
-s_krn = h_bs5
-#s_krn = h_hex
+#s_krn = h_bs5
+s_krn = h_hex
 #s_krn = h_bs3
 #s_krn = h_tent
 #s_krn = h_ctmr

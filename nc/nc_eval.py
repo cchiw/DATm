@@ -1,7 +1,7 @@
 import sympy
 from sympy import *
 #symbols
-x,y,z =symbols('x y z')
+x,y,z, A, B, D =symbols('x y z A B C')
 import sys
 import re
 import math
@@ -26,9 +26,9 @@ def fn_multiplication(exp_s, t):
     ityp1 = field.get_ty(t)
     shape1 = fty.get_shape(ityp1)
     
-    print "inside multiplication **********"
+    ##print "inside multiplication **********"
 
-    #print "shape1", shape1
+    ###print "shape1", shape1
     if(field.is_Scalar(t)):
         return  exp_s*  exp_t
     elif(field.is_Vector(t)):
@@ -38,9 +38,9 @@ def fn_multiplication(exp_s, t):
             rtn.append(exp_s*exp_t[i])
         return rtn
     elif(field.is_Matrix(t)):
-        print "second is a matrix as execpted"
+        ##print "second is a matrix as execpted"
         [n1,n2] =  shape1
-        print "shape1", shape1
+        ##print "shape1", shape1
         rtn = []
         for i in range(n1):
             tmp = []
@@ -78,9 +78,9 @@ def fn_scaling(fld1, fld2):
 #division of a field
 def fn_division(t, s):
     if(field.is_Scalar(s)):
-        #print "** should be 2:", field.get_data(s)
+        ###print "** should be 2:", field.get_data(s)
         exp_s = (1.0)/field.get_data(s)
-        print "_________________________________________________________________"
+        ##print "_________________________________________________________________"
 
         return fn_multiplication(exp_s, t)
     else:
@@ -92,7 +92,7 @@ def fn_negation(exp):
     return -1*exp
 
 def fn_cross_exp(exp1, exp2, n1):
-    #print fn_cross_exp, exp1, exp2, n1
+    ###print fn_cross_exp, exp1, exp2, n1
     if(n1==2):
         return (exp1[0]*exp2[1]) -(exp1[1]*exp2[0])
     elif(n1==3):
@@ -110,7 +110,7 @@ def fn_cross(fld1, fld2):
     ityp1 = field.get_ty(fld1)
     exp2 = field.get_data(fld2)
     ityp2 = field.get_ty(fld2)
-    #print " exp1: ",exp1," exp2: ",exp2
+    ###print " exp1: ",exp1," exp2: ",exp2
     # vectors
     n1 = fty.get_vecLength(ityp1) #vector
     n2 = fty.get_vecLength(ityp2)
@@ -135,7 +135,7 @@ def fn_grad(exp, dim):
 
 #gradient of field
 def fn_hessian(exp, dim):
-    #print "inside hessian got expression:", exp
+    ###print "inside hessian got expression:", exp
     exp_x = diff(exp,x)
     exp_y = diff(exp,y)
     exp_xy = diff(exp_x,y)
@@ -156,7 +156,7 @@ def fn_hessian(exp, dim):
 def fn_divergence(fld):
     exp = field.get_data(fld)
     ityp = field.get_ty(fld)
-    #print " exp1: ",exp1," exp2: ",exp2
+    ###print " exp1: ",exp1," exp2: ",exp2
     # vectors
     n1 = fty.get_vecLength(ityp) #vector
     if(n1==2):
@@ -188,7 +188,7 @@ def fn_curl(fld):
 #evaluate jacob
 def fn_jacob(fld):
     exp = field.get_data(fld)
-    # print "inside jacob it got: ", exp
+    # ##print "inside jacob it got: ", exp
     ityp = field.get_ty(fld)
     dim = field.get_dim(fld)
     shape = fty.get_shape(ityp)
@@ -208,7 +208,7 @@ def fn_jacob(fld):
         else:
             raise (" type not supported for jacob")
     elif(field.is_Matrix (fld)):
-        #print "inside matrix"
+        ###print "inside matrix"
         [n,m] = shape #vector
         if(n!=dim and n!=m):
             raise (" type not supported for jacob")
@@ -251,26 +251,29 @@ def fn_jacob(fld):
 
 #evaluate norm
 def fn_norm(fld, dim):
+    #print "here inside norm"
     exp = field.get_data(fld)
     ityp = field.get_ty(fld)
     dim = field.get_dim(fld)
-    #print " exp1: ",exp1," exp2: ",exp2
+    ###print " exp1: ",exp1," exp2: ",exp2
     # vectors
     def iter (es):
         sum = 0
         for i in es:
             t=i*i
-            #print "t",t
+            ###print "t",t
             sum+=t
-        #print "\nsum",sum
+        ###print "\nsum",sum
         rtn  = sqrt(sum)
-        #print "\nrtn",rtn
+        ###print "\nrtn",rtn
         return rtn
     if(field.is_Scalar(fld)):
         [] = fty.get_shape(ityp)
         #print "scalar exp:",exp
-        t =(sqrt(exp*exp))
+    
+        t =sqrt(exp*exp)
         #print "t",t
+      
         return t
     elif(field.is_Vector(fld)):
         [n] = fty.get_shape(ityp)
@@ -301,17 +304,17 @@ def fn_normalize(fld, dim):
     exp = field.get_data(fld)
     ityp = field.get_ty(fld)
     dim = field.get_dim(fld)
-    #print " exp1: ",exp1," exp2: ",exp2
+    ###print " exp1: ",exp1," exp2: ",exp2
     norm = fn_norm(fld, dim)
     if(field.is_Scalar(fld)):
-        #print "scal",exp
+        ###print "scal",exp
         return exp
     elif(field.is_Vector(fld)):
         [n] = fty.get_shape(ityp)
         rtn = []
         for i in range(n):
             rtn.append(exp[i]/norm)
-        #print "vec",rtn
+        ###print "vec",rtn
         return rtn
     elif(field.is_Matrix(fld)):
         [n, m] = fty.get_shape(ityp)
@@ -321,7 +324,7 @@ def fn_normalize(fld, dim):
             for j in range(m):
                 rtni.append(exp[i][j]/norm)
             rtn.append(rtni)
-            #print "matrix:",rtn
+            ###print "matrix:",rtn
         return rtn
     elif(field.is_Ten3(fld)):
         [n, m, p] = fty.get_shape(ityp)
@@ -334,7 +337,7 @@ def fn_normalize(fld, dim):
                     rtnj.append(exp[i][j][k]/norm)
                 rtni.append( rtnj)
             rtn.append( rtni)
-#print "ten3",rtn
+###print "ten3",rtn
         return rtn
     else:
         raise "unsupported type for norm"
@@ -491,7 +494,7 @@ def fn_det(fld):
         b = exp[0][1]
         if(n==2):
             x= a*d-b*c
-            print x 
+            ##print x 
             return x
         elif(n==3):
             a = exp[0][0]
@@ -566,21 +569,26 @@ def fn_outer(fld1, fld2):
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
     x= "ashape", ashape, "bshape", bshape
-    #print "****************fn_outer:",x
-    #print "exp1",exp1,"ityp1",ityp1.name,"-length",len(exp1)
-    #print "exp2",exp2,"ityp2",ityp2.name,"-length",len(exp2)
+    ###print "****************fn_outer:",x
+    #print "exp1","ityp1",ityp1.name,"-length",len(exp1)
+    #print "exp2","ityp2",ityp2.name,"-length",len(exp2)
     rtn = [] 
     if(fty.is_Vector(ityp1)):
         [n1] = fty.get_shape(ityp1)
+        #print "ityp1 is a vector"
         if(fty.is_Vector(ityp2)):
             #both vectors
             [n2] = fty.get_shape(ityp2)
-            x= "\n outer made shape:"+(str(n1)+","+str(n2))
+            #print "\n outer made shape:"+(str(n1)+","+str(n2))
 
             for i in  range(n1):
                 tmpI = []
                 for j in range(n2):
-                    tmpI.append(exp1[i]*exp2[j])
+                    k = exp1[i]*exp2[j]
+                    ##print "i", i,"exp1[i]:", exp1[i]
+                    ##print "j", j,"exp2[j]:", exp2[j]
+                    ###print "result:",k
+                    tmpI.append(k)
                 rtn.append(tmpI)
             return rtn
         elif(fty.is_Matrix(ityp2)):
@@ -598,6 +606,7 @@ def fn_outer(fld1, fld2):
             raise Exception("outer product is not supported")
     elif(fty.is_Matrix(ityp1)):
         [n1,n2] = fty.get_shape(ityp1)
+        #print "ityp1 is a matrix "
         if(fty.is_Vector(ityp2)):
             [n3] = fty.get_shape(ityp2)
             for i in  range(n1):
@@ -688,34 +697,51 @@ def fn_concat3(fld1, fld2, fld3):
     else:
         raise Exception("concat of higher level is not supported")
 
-
+# field composition
+#note augementing by 0.01
 def fn_comp(fld1, fld2):
     exp1 = field.get_data(fld1)
     exp2 = field.get_data(fld2)
-    #print "exp1:", exp1
-    #print "exp2:", exp2
+    ##print "exp1:", exp1
+    ##print "exp2:", exp2
     ityp1 = field.get_ty(fld1)
     ityp2 = field.get_ty(fld2)
-    #print "ityp1.name",ityp1.name
-    #print ityp2, ityp2.name, ityp2.dim
+    ###print "ityp1.name",ityp1.name
+    ###print ityp2, ityp2.name, ityp2.dim
     bshape = fty.get_shape(ityp2) #  determine x, y ,z
     def replaceX(a,b):
-        r =  a.subs(x,b)
-        #print "replace x : for ", a," with:",b,"=>", r
+        r =  a.subs(A,b*0.01)
+        ##print "replace x : for ", a," with:",b,"=>", r
         return r
     def replaceY(a,b):
-        r=a.subs(y,b)
-        #print "replace y : for ", a," with:",b,"=>", r
+        r=a.subs(B,b*0.01)
+        ###print "replace y : for ", a," with:",b,"=>", r
         return r
     def replaceZ(a,b):
-        r= a.subs(z,b)
-        #print "replace z : for ", a," with:",b,"=>", r
+        r= a.subs(D,b*0.01)
+        ###print "replace z : for ", a," with:",b,"=>", r
         return r
     def replaceD1(a,b):
+        a = a.subs(x,A)
         return replaceX(a,b)
     def replaceD2(a,b):
-        return replaceY(replaceX(a,b[0]),b[1])
+        a = a.subs(x,A)
+        a = a.subs(y,B)
+        ##print "a:", a
+        ##print "b:", b
+        t1 = replaceX(a, b[0])
+        ##print "t1:", t1
+        t2 = replaceY(t1, b[1])
+        ##print "t2:", t2
+        return t2
     def replaceD3(a,b):
+        ##print "here1",a
+        a = a.subs(x, A)
+        ##print "here2", a
+        a = a.subs(y, B)
+        #print "here3", a
+        a = a.subs(z, D)
+        #print "here4", a
         return replaceZ(replaceY(replaceX(a,b[0]),b[1]),b[2])
     
     def getF():
@@ -727,12 +753,15 @@ def fn_comp(fld1, fld2):
             return replaceD3
     f = getF()
     if(fty.is_Scalar(ityp1)):
-        return f(exp1,exp2)
+        k = f(exp1,exp2)
+        #print "kSca:",k
+        return k
     elif(fty.is_Vector(ityp1)):
         [a1] = fty.get_shape(ityp1)
         rtn = []
         for i in range(a1):
             rtn.append(f(exp1[i],exp2))
+        #print "kVec:", rtn
         return rtn
     elif(fty.is_Matrix(ityp1)):
         [a1, a2] = fty.get_shape(ityp1)
@@ -742,6 +771,20 @@ def fn_comp(fld1, fld2):
             for j in range(a2):
                 rtnj.append(f(exp1[i][j],exp2))
             rtn.append(rtnj)
+        #print "kMat:", rtn
+        return rtn
+    elif(fty.is_Ten3(ityp1)):
+        [a1, a2, a3] = fty.get_shape(ityp1)
+        rtn = []
+        for i in range(a1):
+            rtnj = []
+            for j in range(a2):
+                rtnk = []
+                for k in range(a3):
+                    rtnk.append(f(exp1[i][j],exp2))
+                rtnj.append(rtnk)
+            rtn.append(rtnj)
+        #print "kTen3:", rtn
         return rtn
     else:
         raise Exception("composition is not supported")
@@ -878,11 +921,11 @@ def fn_inner(fld1, fld2):
     else:
         raise "inner product is not supported"
 
-def build_zero(n1):
+def build_zero(n1, n2):
     rtn = []
     for i in  range(n1):
         tmpI = []
-        for j in range(n1):
+        for j in range(n2):
             tmpI.append(0*x)
         rtn.append(tmpI)
     return rtn
@@ -953,13 +996,13 @@ def applyToT3s(vecA, vecB, unary):
 # exp: scalar types
 
 def applyToExp_U_S(fn_name, fld):
-    print "inside apply exp to unary"
+    ##print "inside apply exp to unary"
     exp = field.get_data(fld)
     dim = field.get_dim(fld)
 
-    print fn_name
-    print fn_name.id
-    print op_sqrt.id
+    ##print fn_name
+    ##print fn_name.id
+    ##print op_sqrt.id
     if(op_copy==fn_name): #probing
         return  exp
     elif(op_negation==fn_name): #negation
@@ -973,7 +1016,7 @@ def applyToExp_U_S(fn_name, fld):
     elif(op_atangent==fn_name): #atan
         return atan(exp)
     elif(op_gradient==fn_name):
-        print "inside gradient"
+        ##print "inside gradient"
         return fn_grad(exp, dim)
     elif(op_hessian == fn_name):
         return fn_hessian(exp, dim)
@@ -985,14 +1028,14 @@ def applyToExp_U_S(fn_name, fld):
         return acos(frac)
     elif(op_sqrt.id==fn_name.id): #sqrt
         # gets norm first to make sure value is positive.
-        print "exp"
+        ##print "exp"
         #s = exp*exp
-        print "pow"
+        ##print "pow"
         #norm = sqrt(s)
-        print "norm"
+        ##print "norm"
         return sqrt(exp)
     elif(op_zeros_scale3.id ==fn_name.id):
-        return build_zero(3)
+        return build_zero(3,3)
     else:
         raise Exception("unsupported unary operator on scalar field:"+ fn_name.name)
 
@@ -1000,7 +1043,7 @@ def applyToExp_U_S(fn_name, fld):
 # exp: vector  types
 def applyToExp_U_V(fn_name, fld):
     exp = field.get_data(fld)
-    # print "applyToExp_U_V", "fld:", fld.name, "exp:", exp
+    # ##print "applyToExp_U_V", "fld:", fld.name, "exp:", exp
     if(op_copy==fn_name): #probing
         return exp
     elif(op_negation==fn_name): #negation
@@ -1031,9 +1074,9 @@ def applyToExp_U_M(fn_name, fld):
     elif(op_negation==fn_name): #negation
         return applyToM(exp, fn_negation)
     elif(op_jacob==fn_name): #jacob
-        #print "app u-m"
+        ###print "app u-m"
         x = fn_jacob(fld)
-        #print "x", x
+        ###print "x", x
         return x
     elif(op_slicem0==fn_name) :
         return fn_slicem0(fld)
@@ -1091,7 +1134,7 @@ def applyToExp_B_S(e):
     (fld1,fld2) =  apply.get_binary(e)
     exp1 = field.get_data(fld1)
     exp2 = field.get_data(fld2)
-    #print fn_name
+    ###print fn_name
     if(op_add==fn_name):#addition
         return fn_add(exp1,exp2)
     elif(op_subtract==fn_name):#subtract
@@ -1171,14 +1214,17 @@ def unary(e):
     elif(op_normalize==fn_name):#normalize
         x= fn_normalize(fld, dim)
         return x
+    elif(op_zeros_outer2.id == fn_name.id):
+        [i,j] = e.oty.shape
+        return build_zero(2,j)
     elif (field.is_Scalar(fld)):
-        print "input is a scalar field"
+        ##print "input is a scalar field"
         return applyToExp_U_S(fn_name, fld)
     elif(field.is_Vector(fld)):
-        print "input is a vector field"
+        ##print "input is a vector field"
         return applyToExp_U_V(fn_name, fld)
     elif(field.is_Matrix(fld)):
-        print "input is a matrix"
+        ##print "input is a matrix"
         return applyToExp_U_M(fn_name, fld)
     else:
         return applyToExp_U_T3(fn_name, fld)
@@ -1202,7 +1248,7 @@ def binary(e):
         return fn_concat2(f,g)
     elif(op_comp==fn_name): # composition of functions
         x = fn_comp(f,g)
-        print " rtn exp: ",x
+        ##print " rtn exp: ",x
         return x
     elif (field.is_Scalar(f) and field.is_Scalar(g)): # input is a scalar field
         return applyToExp_B_S(e)
@@ -1236,8 +1282,8 @@ def sort(e):
             # calls embed multiple times
             return embed
     def embed(c_layer, app_tmp):
-        print "embed",c_layer,app_tmp
-        print app_tmp.opr.name
+        ##print "embed",c_layer,app_tmp
+        ##print app_tmp.opr.name
         arity = apply.get_arity(app_tmp)
         gfnc = get_gfnc(c_layer)
         if(arity==1):
@@ -1267,7 +1313,7 @@ def sort(e):
         return embed(1, e)
     else:
         # 3 layers
-        print "layers", c_layer
+        ##print "layers", c_layer
         return embed(c_layer, e)
 # ***************************  evaluate at positions ***************************
 #evaluate scalar field exp
@@ -1276,16 +1322,16 @@ def eval_d0(pos0, exp):
 
 
 def eval_d1(pos0, exp):
-    #print "eval vec d1"
-    #print "exp:",exp
-    #print "pos0",pos0
+    ###print "eval vec d1"
+    ###print "exp:",exp
+    ###print "pos0",pos0
     #evaluate field defined by coefficients at position
     exp = exp.subs(x,pos0)
-    #print "exp",exp
+    ###print "exp",exp
     return exp
 
 def eval_d2(pos0, pos1, exp):
-    #print "exp:",exp
+    ###print "exp:",exp
     #evaluate field defined by coefficients at position
     exp = exp.subs(x,pos0)
     exp = exp.subs(y,pos1)
@@ -1300,7 +1346,7 @@ def eval_d3(pos0, pos1, pos2, exp):
 
 #evaluate vector field [exp]
 def eval_vec_d1(pos0, vec):
-    #print "eval vec d1"
+    ###print "eval vec d1"
     rtn = []
     for v in vec:
         rtn.append(eval_d1(pos0, v))
@@ -1308,7 +1354,7 @@ def eval_vec_d1(pos0, vec):
 
 #evaluate vector field [exp,exp]
 def eval_vec_d2(pos0, pos1, vec):
-    #print "eval_vec_d2 vec:",vec
+    ###print "eval_vec_d2 vec:",vec
     rtn = []
     for v in vec:
         rtn.append(eval_d2(pos0, pos1, v))
@@ -1326,7 +1372,7 @@ def eval_ten3_d1(pos0,ten3):
 
 #evaluate vector field [exp,exp]
 def eval_mat_d1(pos0, mat):
-    #print "eval_vec_d2 vec:",vec
+    ###print "eval_vec_d2 vec:",vec
     rtn = []
     for i in mat:
         for v in i:
@@ -1335,16 +1381,16 @@ def eval_mat_d1(pos0, mat):
 
 #evaluate vector field [exp,exp]
 def eval_mat_d2(pos0, pos1, mat):
-    #print "eval_vec_d2 vec:",vec
+    ###print "eval_vec_d2 vec:",vec
     rtn = []
-    #print "eval_mat_d2 mat",mat
+    ###print "eval_mat_d2 mat",mat
     for i in mat:
         for v in i:
             rtn.append(eval_d2(pos0, pos1, v))
     return rtn
 
 def eval_ten3_d2(pos0, pos1, ten3):
-    #print "eval_vec_d2 vec:",vec
+    ###print "eval_vec_d2 vec:",vec
     rtn = []
     for i in ten3:
         for j in i:
@@ -1364,7 +1410,7 @@ def eval_vec_d3(pos0, pos1, pos2, vec):
 
 #evaluate vector field [exp,exp]
 def eval_mat_d3(pos0, pos1, pos2, mat):
-    #print "eval_vec_d2 vec:",vec
+    ###print "eval_vec_d2 vec:",vec
     rtn = []
     for i in mat:
         for v in i:
@@ -1393,10 +1439,10 @@ def iter_d1(k, pos, exp):
 
 def iter_d2(k, pos, exp):
     corr = []
-    #print "iter expr:", exp
-    #print "pos", pos
+    ###print "iter expr:", exp
+    ###print "pos", pos
     for p in pos:
-        #print "p", p
+        ###print "p", p
         x=p[0]
         y=p[1]
         val = k(x,y,exp)
@@ -1405,20 +1451,20 @@ def iter_d2(k, pos, exp):
 
 def iter_d3(k, pos, exp):
     corr = []
-    #print "iter exp:", exp
+    ###print "iter exp:", exp
     for p in pos:
         x=p[0]
         y=p[1]
         z=p[2]
         val = k(x,y,z, exp)
-        #print "pos: ",x,y,z, " val:", val
+        ###print "pos: ",x,y,z, " val:", val
         corr.append(val)
     return corr
 
 def probeField(otyp1,pos, ortn):
     dim = fty.get_dim(otyp1)
-    #print "output type"+otyp1.name
-    #print "inside probe field ortn", ortn
+    ###print "output type"+otyp1.name
+    ###print "inside probe field ortn", ortn
 
     if (dim==nonefield_dim):
         #still need to flatten
@@ -1441,10 +1487,10 @@ def probeField(otyp1,pos, ortn):
     elif (dim==1):
         def get_k():
             if (fty.is_ScalarField(otyp1)): # output is a scalar field
-                #print "s_d1"
+                ###print "s_d1"
                 return eval_d1
             elif (fty.is_VectorField(otyp1)):
-                #print "v_d1"
+                ###print "v_d1"
                 return eval_vec_d1
             elif (fty.is_Matrix(otyp1)):
                 return eval_mat_d1
@@ -1486,10 +1532,10 @@ def probeField(otyp1,pos, ortn):
 
 # operators with scalar field and vector field
 def eval(app, pos):
-    #print "evalname",app.name
-    #print apply.toStr(app,3)
+    ###print "evalname",app.name
+    ###print apply.toStr(app,3)
     (otyp1, ortn) = sort(app) #apply operations to expressions
-    # print "ortn|:", ortn
+    # ##print "ortn|:", ortn
     rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
-    #print "rtn", rtn
+    ###print "rtn", rtn
     return rtn

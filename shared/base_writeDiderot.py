@@ -239,6 +239,9 @@ def prntBinary(opr, e1, e2):
         return "("+e1+")"+(opr.symb)+"("+e2+")"
     elif(opr.placement == place_right):
         return  "(("+e1+"),("+e2+"))"+(opr.symb)
+    if(opr.placement == place_split):
+        return  (opr.symb[0])+"("+e1+"),("+e2+")"+(opr.symb[1])
+    
     else:
         raise Exception ("unhandled placement")
 
@@ -629,44 +632,81 @@ def check_conditional(f, ff, app):
     f.write(foo.encode('utf8'))
     return
 
+
+def getInside(exp, pos, name):
+    if (fty.is_Field(exp.fldty)):
+        return "(inside("+name+","+pos+"))"
+    else:
+        return "(true)"
+def wrap(exp):
+    return "\t if("+exp+"){\n\t"
+
 def check_inside(f, ff, app):
     print " probes field at variable position"
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
     
     exps = apply.get_all_Fields(app)
-    i=0
-    j=[]
-    foo= ""
-    for exp in exps:
-        if (field.get_isField(exp)):
-            s="inside(pos, F"+str(i)+")"
-            j.append(s)
-        i+=1
+    foo = ""
+    pos = "pos"
+    i0 = getInside(exps[0],"F0", pos)
+ 
     if(app.opr==op_comp):
-        foo = "\t if((inside(pos,F1)) && (inside(F1(pos),F0))){\n\t"
-    elif (app.lhs.opr==op_comp and app.opr.arity==1 ):
-        foo = "\t if((inside(pos,F1)) && (inside(F1(pos),F0))){\n\t"
-    elif(len(j)==1):
-        foo =  ""
+        if(app.lhs.opr == op_comp):
+            i0C = getInside(exps[0], "F0" , "F1(F2(pos)*0.01)*0.01")
+            i1C = getInside(exps[1], "F1" , "F2(pos)*0.01")
+            i2 = getInside(exps[2],"F2", pos)
+            foo = wrap(i2+"&&"+i1C+"&&"+i0C)+set
+        else:
+            arity = app.lhs.opr.arity
+            if(arity==1):
+                i0C = getInside(exps[0], "F0" , "F1(pos)*0.01")
+                i1 = getInside(exps[1],"F1", pos)
+                foo = wrap(i1+"&&"+i0C)+set
+            elif(arity==2):
+                i0C = getInside(exps[0], "F0" , "F2(pos)*0.01")
+                i1C = getInside(exps[1], "F1" , "F2(pos)*0.01")
+                i2 = getInside(exps[2],"F2", pos)
+                foo = wrap(i2+"&&"+i1C+"&&"+i0C)+set
+        #foo = "\t if((inside(pos,F1)) && (inside(F1(pos),F0))){\n\t"
+    elif (app.lhs.opr==op_comp):
+        arity = app.opr.arity
+        i0C = getInside(exps[0], "F0" , "F1(pos)*0.01")
+        i1 = getInside(exps[1],"F1", pos)
+        if(arity==1):
+            foo = wrap(i1+"&&"+i0C)+set
+            #foo = "\t if((inside(pos,F1)) && (inside(F1(pos),F0))){\n\t"
+        elif(arity==2):
+            #foo = "\t if((inside(pos,F1)) && (inside(F1(pos),F0))"
+            i2 = getInside(exps[2],"F2", pos)
+            foo= wrap(i2+"&&"+i1+"&&"+i0C)+set
+    else:
+        i=0
+        j=[]
+        for exp in exps:
+            if (field.get_isField(exp)):
+                s="inside(pos, F"+str(i)+")"
+                j.append(s)
+                i+=1
+        if(len(j)==1):
+            if(app.isrootlhs):
+                foo += set
+            else: #twice embedded
+                # there might be a conditional restraint
+                foo += getCond(app, set)
+                #foo+="\t}\n\telse cat{"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
+                f.write(foo.encode('utf8'))
+                return
+
+        elif(len(j)==2):
+            foo =  "\tif("+j[0]+" && "+j[1]+"){\n\t"
+        elif(len(j)==3):
+            foo =  "\tif("+j[0]+" && "+j[1]+" && "+j[2]+"){\n\t"
         if(app.isrootlhs):
             foo += set
         else: #twice embedded
             # there might be a conditional restraint
             foo += getCond(app, set)
-            #foo+="\t}\n\telse cat{"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
-        f.write(foo.encode('utf8'))
-        return
-
-    elif(len(j)==2):
-        foo =  "\tif("+j[0]+" && "+j[1]+"){\n\t"
-    elif(len(j)==3):
-        foo =  "\tif("+j[0]+" && "+j[1]+" && "+j[2]+"){\n\t"
-    if(app.isrootlhs):
-        foo += set
-    else: #twice embedded
-        # there might be a conditional restraint
-        foo += getCond(app, set)
     foo+="\t}\n\telse {"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
     f.write(foo.encode('utf8'))
     return
