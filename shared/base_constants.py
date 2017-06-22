@@ -39,3 +39,5 @@ template_isIso = "t_iso"
 #directory to save programs
 rst_data = "rst/data"
 rst_stash="rst/stash"
+
+opr_adj = 0.1

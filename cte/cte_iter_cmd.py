@@ -143,7 +143,7 @@ def cmd(layer, testing_frame, cnt, shift, args):
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer1, opr_outer2]
             (name, ishape) = get_single_exampleEx(ex, t_num)
-            embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, testing_frame, cnt)
+            embed_base_iter_ty2_wihty1(ex, oprs, name, ishape, t_num, testing_frame, cnt)
             writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         else:
             raise "unsupported"

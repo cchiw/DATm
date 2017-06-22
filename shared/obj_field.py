@@ -24,7 +24,7 @@ class kernel:
 #c4hexic-cubic
 #ctmr-quad
 #bspln3-linear
-krn_hex = kernel("c4hexic", 3, 3)
+krn_hex = kernel("c4hexic", 4, 3)
 krn_bs3 = kernel("bspln5", 4, 1)
 krn_tent = kernel("tent", 0, 1)
 krn_ctmr = kernel("ctmr", 1, 2)

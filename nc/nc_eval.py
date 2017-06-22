@@ -11,6 +11,8 @@ from obj_ty import *
 from obj_apply import *
 from obj_operator import *
 from obj_field import *
+from base_constants import *
+adj = (opr_adj)
 
 # ***************************  unary operators ***************************
 # binary operators
@@ -118,6 +120,7 @@ def fn_cross(fld1, fld2):
 
 #gradient of field
 def fn_grad(exp, dim):
+    print "grad is getting", exp
     exp_x = diff(exp,x)
 
     if (dim==1):
@@ -709,16 +712,18 @@ def fn_comp(fld1, fld2):
     ###print "ityp1.name",ityp1.name
     ###print ityp2, ityp2.name, ityp2.dim
     bshape = fty.get_shape(ityp2) #  determine x, y ,z
+    
+  
     def replaceX(a,b):
-        r =  a.subs(A,b*0.01)
+        r =  a.subs(A,b*adj)
         ##print "replace x : for ", a," with:",b,"=>", r
         return r
     def replaceY(a,b):
-        r=a.subs(B,b*0.01)
+        r=a.subs(B,b*adj)
         ###print "replace y : for ", a," with:",b,"=>", r
         return r
     def replaceZ(a,b):
-        r= a.subs(D,b*0.01)
+        r= a.subs(D,b*adj)
         ###print "replace z : for ", a," with:",b,"=>", r
         return r
     def replaceD1(a,b):
@@ -727,12 +732,12 @@ def fn_comp(fld1, fld2):
     def replaceD2(a,b):
         a = a.subs(x,A)
         a = a.subs(y,B)
-        ##print "a:", a
-        ##print "b:", b
+        print "a:", a
+        print "b:", b
         t1 = replaceX(a, b[0])
-        ##print "t1:", t1
+        print "t1:", t1
         t2 = replaceY(t1, b[1])
-        ##print "t2:", t2
+        print "t2:", t2
         return t2
     def replaceD3(a,b):
         ##print "here1",a
@@ -781,7 +786,7 @@ def fn_comp(fld1, fld2):
             for j in range(a2):
                 rtnk = []
                 for k in range(a3):
-                    rtnk.append(f(exp1[i][j],exp2))
+                    rtnk.append(f(exp1[i][j][k],exp2))
                 rtnj.append(rtnk)
             rtn.append(rtnj)
         #print "kTen3:", rtn

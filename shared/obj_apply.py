@@ -172,7 +172,7 @@ def checkNd(ityp1):
         return (false,"needs vector")
 
 def isDifferentiable(ityp):
-    #print "isDifferentiabl-ityp",ityp
+    ##print "isDifferentiabl-ityp",ityp
     dim = fty.get_dim(ityp)
     k=ityp.k
     return (k>0)
@@ -181,8 +181,9 @@ def isDifferentiable(ityp):
 # note need to generalize for field and tensor operators 
 # note need to check if field for correct
 def applyUnaryOp(op1,ityps):
+    #print "inside unary op"
     ityp1=ityps[0]
-    #print "itype1", ityp1.name
+    ##print "itype1", ityp1.name
     k = ityp1.k
     dim = ityp1.dim
     ashape = ityp1.shape
@@ -194,16 +195,17 @@ def applyUnaryOp(op1,ityps):
     def err():
         return (false, name)
     def mkTyp(shape):
-        #print "mark-a"
+        ##print "mark-a"
         (tf, rty1) = isShapeOk(shape, dim)
         if(tf):
-            #print "mark-b"
+            ##print "mark-b"
             rtn1 = fty.convertTy(rty1, k)
             return (true, rtn1)
         else:
             return err()
     # differentiation was used, k has a limit
     def mkTyp_deductk(k_limit, shape):
+        #print "inside mktyp dedcut k "
         if(k<k_limit or len(shape)>3):
              return err()
         else:
@@ -218,7 +220,7 @@ def applyUnaryOp(op1,ityps):
     elif ((op_copy==op1) or (op_negation==op1)):
         return same() #type unaffected by operation
     elif (op_normalize==op1):
-        #print "made it to normalize"
+        ##print "made it to normalize"
         if(fty.is_Scalar(ityp1)):
             return err()
         else:
@@ -252,11 +254,11 @@ def applyUnaryOp(op1,ityps):
         else:
             return err()
     elif(fty.is_Scalar(ityp1)):
-        #print "tshape-scalar"
+        ##print "tshape-scalar"
         if(op_sqrt==op1):
             return same()
         elif(op_cosine==op1) or (op_sine==op1)or (op_tangent==op1) or (op_acosine==op1) or (op_asine==op1)or (op_atangent==op1):
-            #print "found trig"
+            ##print "found trig"
             if(fty.is_Field(ityp1)):
                 return same()
             else:
@@ -271,9 +273,11 @@ def applyUnaryOp(op1,ityps):
             else:
                 return mkTyp_deductk(1, [dim])
         elif (op_hessian==op1):
+            #print "inside here"
             if(not fty.is_Field(ityp1)):
                 return err()
             if (dim==1):
+                #print "dim 1 "
                 # should actually  be gradient of gradient
                 return err()
             else:
@@ -365,18 +369,18 @@ def applyUnaryOp(op1,ityps):
 
 #type of field after operation is applied
 def applyBinaryOp(op1,ityps):
-    #print "---------------------  applyBinaryOp ---------"
+    ##print "---------------------  applyBinaryOp ---------"
     name =  "op1 "+op1.name
-    #print name
+    ##print name
     ityp1 = ityps[0]
     ityp2 = ityps[1]
-    #print "ityps:",ityps
-    #print "ityp1 :",ityp1
-    #print ityp1.name
+    ##print "ityps:",ityps
+    ##print "ityp1 :",ityp1
+    ##print ityp1.name
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
     name += "("+ityp1.name+","+ityp2.name+")"
-    #print "type name", name
+    ##print "type name", name
     (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
     if(not tf):
         return (false, "not the same dimension")
@@ -384,7 +388,7 @@ def applyBinaryOp(op1,ityps):
     if (fty.is_Field(ityp1) and fty.is_Field(ityp2)):
         k = min(ityp1.k, ityp2.k)
     dim = fldty.dim
-    #print "---------------------  continue ---------"
+    ##print "---------------------  continue ---------"
     def err():
         # type not supported
         return (false, name)
@@ -392,34 +396,34 @@ def applyBinaryOp(op1,ityps):
         if (len(shape)>3):
             return err()
         else:
-            #print "in mk type"
-            #print shape, dim
+            ##print "in mk type"
+            ##print shape, dim
             #NTS if we are creating visver
             (tf, rty1) = isShapeOk(shape, dim)
-            #print tf, rty1
+            ##print tf, rty1
             if(tf):
                 rtn1 = fty.convertTy(rty1, k)
                 return (true, rtn1)
             else:
                 return err()
     def sameshape(ty3):
-        #print "---------------------  same shape ---------"
+        ##print "---------------------  same shape ---------"
         if(ashape==bshape):
             return (true, ty3) #type unaffected by operation
         else:
             return err()
-    #print "ityp1: ", ityp1.name, " K: ", ityp1.k
-    #print "ityp2: ", ityp2.name, " K: ", ityp2.k
+    ##print "ityp1: ", ityp1.name, " K: ", ityp1.k
+    ##print "ityp2: ", ityp2.name, " K: ", ityp2.k
     # K is not the same
     #if (fty.is_Field(ityp1) and fty.is_Field(ityp2) and (not (ityp1.k==ityp2.k))):
-        #print "k is not the same"
+        ##print "k is not the same"
         #return err()
     if (op_add==op1) or (op_subtract==op1):
-        #print "current addition "
-        #print ityp1.name, "-",ityp2.name
-        #print "fldty", fldty.name
+        ##print "current addition "
+        ##print ityp1.name, "-",ityp2.name
+        ##print "fldty", fldty.name
         x = sameshape(fldty)
-        #print x
+        ##print x
         return x
     elif(op_division==op1):
         if(fty.is_Scalar(ityp2)):
@@ -449,22 +453,22 @@ def applyBinaryOp(op1,ityps):
         else:
             return err()
     elif(op_concat2==op1):
-        #print "concat 2 ********  here "
+        ##print "concat 2 ********  here "
         if((not fty.is_Field(ityp1)) or (not fty.is_Field(ityp2))):
             return err()
         else:
             ashape = ityp1.shape
             bshape = ityp2.shape
-            #print "ashape",ashape
+            ##print "ashape",ashape
             if(ashape==bshape):
-                #print "here"
+                ##print "here"
                 x= mkTyp ([2]+ashape)
-                #print "x",x
+                ##print "x",x
                 return x
             else:
                 return err()
     elif(op_comp==op1):
-        #print "checking composition", ityp1.name, ityp2.name
+        ##print "checking composition", ityp1.name, ityp2.name
         if((not fty.is_Field(ityp1)) or (not fty.is_Field(ityp2))):
             return err()
         else:
@@ -472,11 +476,11 @@ def applyBinaryOp(op1,ityps):
                 return err()
             elif((ityp1.dim==1) and (fty.get_shape(ityp2)== [])):
                 x= mkTyp (ityp1.shape)
-                #print "x",x
+                ##print "x",x
                 return x
             elif(fty.get_shape(ityp2)==[ityp1.dim]):
                 x= mkTyp (ityp1.shape)
-                #print "x",x
+                ##print "x",x
                 return x
             else:
                 return err()
@@ -502,15 +506,15 @@ def applyBinaryOp(op1,ityps):
                     if (fty.is_Field(ityp1) and fty.is_Field(ityp2) and (ityp1.k != ityp2.k)):
                         return err()
                     elif(ashape==bshape):
-                        #print "same shape"
+                        ##print "same shape"
                         return mkTyp([])
                     else:
-                        #print "not the same shape"
+                        ##print "not the same shape"
                         return err()
                 else:
                     return err()
             elif(op_inner==op1):
-                #print "here"
+                ##print "here"
                 n1 = fty.get_last_ix(ityp1)
                 n2 = fty.get_first_ix(ityp2)
                 if(n1!=n2): #must have equal vector lengths
@@ -524,40 +528,40 @@ def applyBinaryOp(op1,ityps):
 
 #type of field after operation is applied
 def applyThirdOp(op1,ityps):
-    #print "---------------------  applyBinaryOp ---------"
+    ##print "---------------------  applyBinaryOp ---------"
     name =  "op1 "+op1.name
-    #print name
+    ##print name
     ityp1 = ityps[0]
     ityp2 = ityps[1]
     ityp3 = ityps[2]
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
     name += "("+ityp1.name+","+ityp2.name+","+ityp3.name+")"
-    #print "type name", name
+    ##print "type name", name
     (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
     if(not tf):
         return (false, "not the same dimension")
     k = fldty.k
     dim = fldty.dim
-    #print "---------------------  continue ---------"
+    ##print "---------------------  continue ---------"
     def err():
         # type not supported
         return (false, name)
     def mkTyp(shape):
-        #print "mkTyp ", shape.name
+        ##print "mkTyp ", shape.name
         if (len(shape)>3):
             return err()
         else:
-            #print "shape",shape, "dim",dim
+            ##print "shape",shape, "dim",dim
             (tf, rty1) = isShapeOk(shape, dim)
-            #print "mark d "
+            ##print "mark d "
             if(tf):
                 rtn1 = fty.convertTy(rty1, k)
                 return (true, rtn1)
             else:
                 return err()
     if(op_concat3==op1):
-        #print "concat 3 ********  here "
+        ##print "concat 3 ********  here "
         if((not fty.is_Field(ityp1)) or (not fty.is_Field(ityp2)) or (not fty.is_Field(ityp3))):
             return err()
         else:
@@ -573,18 +577,20 @@ def applyThirdOp(op1,ityps):
 ##################################################################################################
 # apply unary and binary operator
 def get_tshape(opr1, ishape):
-    print "inside getshape", opr1.name
+    #print "inside getshape", opr1.name
     arity = opr1.arity
     if(arity==0):
+        #print "arity 0"
         return (true, ty_mat3x3F_d3)
     elif(arity==1):
+        #print "artity 1"
         x = applyUnaryOp(opr1, ishape)
         #print "retn from get unary", x
         return x
     elif(arity==2):
-        print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
+        #print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
         x = applyBinaryOp(opr1, ishape)
-        print "rtn from get binary", x
+        #print "rtn from get binary", x
         return x
     elif(arity==3):
         return applyThirdOp(op1, ishape)
@@ -593,7 +599,7 @@ def get_tshape(opr1, ishape):
 # from an example opr number, type number, and input file
 #Apply to two field expressions
 def mkApply_fld(name, opr, ishape, inputfile, otype1, i_coeff_style, i_ucoeff, g_krn,t_template):
-    #print "t_template:",t_template
+    ##print "t_template:",t_template
     # arity
     arity = opr.arity
     def set_App(lhs, rhs):
@@ -604,7 +610,7 @@ def mkApply_fld(name, opr, ishape, inputfile, otype1, i_coeff_style, i_ucoeff, g
         # get kernel
         c_krn = transform_krn(g_krn,  id)
         c_continuity = c_krn.continuity
-        #print "t_template:",t_template
+        ##print "t_template:",t_template
         return mk_Field(id, c_ity, c_continuity, inputfile, c_dim, i_coeff_style, i_ucoeff, c_krn,t_template)
     # first argument
     index1 = 0
@@ -628,8 +634,8 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
     inner_arity = opr_inner.arity
     
 
-    #print "otype1:", otype1.name
-    #print "tshape2:", tshape2.name
+    ##print "otype1:", otype1.name
+    ##print "tshape2:", tshape2.name
     def set_innerApp(shape):
         return mkApply_fld(name, opr_inner, shape, inputfile, otype1, coeff_style, ucoeff, g_krn,t_template)
     def set_outerApp(lhs, rhs):
@@ -642,7 +648,7 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
         c_dim = fty.get_dim( c_fty)
         return mk_Field(id, c_fty, c_k, inputfile, c_dim, coeff_style, ucoeff, c_krn,t_template)
     if (outer_arity==1):
-        #print "outer arity=1"
+        ##print "outer arity=1"
         (z1, coeffs) =  set_innerApp(ishape)
         z2 = set_outerApp(z1, None)#[otype1]
         return (z2, coeffs)
@@ -650,7 +656,7 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
         # apply inner operator to first arg
         ishape1 = [ishape[0]]
         (z1, coeffs) =  set_innerApp(ishape1)
-        #print "create another argument (tensor/field)"
+        ##print "create another argument (tensor/field)"
         id2 = 1
         (F2, finfo2, coeff2) = set_field(id2)
         # apply outer operator to otype and second arg
@@ -678,11 +684,11 @@ def mkApply_third(ztwice, coeffstwice, ishape, tshape3, name, opr_outer2, inputf
     outer2_arity = opr_outer2.arity
     cnt = 0
     for i in ishape:
-        #print cnt,":",i.name, len(ishape)
+        ##print cnt,":",i.name, len(ishape)
         cnt+=1
     
     def set_outer2App(lhs, rhs):
-        #print "set_outer2App, tshape3: ", tshape3.name
+        ##print "set_outer2App, tshape3: ", tshape3.name
         return apply(name, opr_outer2, lhs, rhs, tshape3, false, true)
     def set_field(id):
         # get kernel
@@ -696,7 +702,7 @@ def mkApply_third(ztwice, coeffstwice, ishape, tshape3, name, opr_outer2, inputf
     if(outer2_arity==1):
         # just place in 2nd layer app in  left hand side
         z2 = set_outer2App(ztwice, None)
-        #print "z2-oty:", z2.oty
+        ##print "z2-oty:", z2.oty
         return (z2, coeffstwice)
     elif(outer2_arity==2):
         # create another argument (tensor/field)
