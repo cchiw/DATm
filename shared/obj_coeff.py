@@ -62,7 +62,7 @@ def get_coeffs_debug2(dim, coeff_style, ucoeff):
     if (dim==1):
         return [2, 0, 0, 0]
     if (dim==2):
-        return [2,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        return [2,random.randint(lcoeff, ucoeff),0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     if (dim==3):
         coeffs=[]
         for i in range(dim):
@@ -169,7 +169,7 @@ def coeffToExp(coeff, dim):
 def mk_exp(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
         #print "using regular template"
-        coeff1= get_coeffs(dim, coeff_style, ucoeff)
+        coeff1= get_coeffs_debug2(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
         return (coeff1,exp1)
     else:

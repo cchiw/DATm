@@ -1,6 +1,8 @@
  # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from base_constants import *
+adj = (opr_adj)
 
 class operator:
     def __init__(self, id, name, arity, symb, placement, limit, fieldop):
@@ -128,7 +130,7 @@ op_concat3 = operator(id+6,"concat3", 3,"concat", place_left, limit_none, True)
 # can't implement ^ without enabling three arguments
 
 #op_comp = operator(id+6,"compose", 2,"comp", place_left, limit_none, True)
-op_comp = operator(id+6,"compose", 2,(u'comp(', u'*0.01)'), place_split, limit_none, True)
+op_comp = operator(id+6,"compose", 2,(u'comp(', u'*'+str(adj)+')'), place_split, limit_none, True)
 op_probe= operator(id+8,"probe", 1,"(pos)", place_right, limit_none, True)
 
 op_norm = operator(id+7,"norm", 1, (u'|',u'|'), place_split, limit_none, False)

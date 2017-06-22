@@ -25,9 +25,10 @@ def applyUnaryOnce(oexp_inner,app_inner,app_outer, pos):
     #create new apply
     app_tmp = apply("tmp", opr_outer, lhs_tmp, None, oty_outer, true, true)
     oexp_tmp = unary(app_tmp)
-    ##print " oexp_tmp", oexp_tmp
+    print "after applying: ",app_tmp.opr.name
+    print " oexp_tmp", oexp_tmp
     rtn = probeField(app_tmp.oty, pos, oexp_tmp)
-    #print "after applying: ",app_tmp.opr.name," rtn:", rtn
+    print "after applying: ",app_tmp.opr.name," rtn:", rtn
     return (oty_outer, oexp_tmp)
 
 def applyBinaryOnce(oexp_inner,app_inner,app_outer,rhs, pos):
@@ -39,8 +40,15 @@ def applyBinaryOnce(oexp_inner,app_inner,app_outer,rhs, pos):
     
     app_tmp = apply("tmp", opr_outer, lhs_tmp, rhs, oty_outer, true,true)
     oexp_tmp = binary(app_tmp)
+    
+    print " before applying: ",app_tmp.opr.name
+    print " lhs_tmp", oexp_inner
+    print "rhs tmp", rhs.data
+
+    print "after applying: ",app_tmp.opr.name
+    print " oexp_tmp", oexp_tmp
     rtn = probeField(app_tmp.oty, pos, oexp_tmp)
-    #print "after applying: ",app_tmp.opr.name," rtn:", rtn
+    print "after applying: ",app_tmp.opr.name," rtn:", rtn
     return (oty_outer, oexp_tmp)
 
 
@@ -54,13 +62,20 @@ def sort(e, pos):
         if (arity ==1):
             b = unary(app)
             rtn = probeField(app.oty, pos, b)
-            #print "after applying: ",app.opr.name," rtn:", rtn
+            print "after applying: ",app.opr.name," rtn:", rtn
             return (oty, b)
         elif (arity ==2):
+            print " before applying: ",app.opr.name
+            print " lhs_tmp",  probeField(app.lhs.fldty, pos, app.lhs.data)
+            print "rhs tmp",  probeField(app.rhs.fldty, pos, app.rhs.data)
+            
+            
             b = binary(app)
             otyp1 = ty_vec3F_d3
+            print "after applying: ",app.opr.name
+            print " oexp_tmp", otyp1
             rtn = probeField(app.oty, pos, b)
-            #print "after applying: ",app.opr.name," rtn:", rtn
+            print "after applying: ",app.opr.name," rtn:", rtn
             return (oty, b)
         else:
             raise Exception ("arity is not supported: "+str(arity_outer))
