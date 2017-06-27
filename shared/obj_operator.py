@@ -47,15 +47,15 @@ limit_nonzero = "positive" # |x|>0
 id=0
 #op_none= operator(id,"none", 1,"", place_left, limit_none, False)
 op_negationT = operator(0,"negT", 1,"-", place_left, limit_none, False)
-
 op_negation = operator(id,"neg", 1,"-", place_left, limit_none, False)
-
 op_trace = operator(id+1,"trace", 1, u'trace', place_left, limit_none, False)
 op_transpose = operator(id+2,"transpose", 1, u'transpose', place_left, limit_none, False)
 op_det = operator(id+3,"det", 1, u'det', place_left, limit_none, False)
 op_copy= operator(id+4,"copy", 1,"", place_left, limit_none, False)
 op_inverse = operator(id+5, "inverse", 1, u'inv', place_left, limit_det, False)
-op_reg = [op_negation, op_trace, op_transpose, op_det,op_copy,op_inverse]
+op_norm = operator(id+6,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
+op_normalize = operator(id+7,"normalize", 1, u'normalize', place_left, limit_none, False)
+op_reg = [op_negation, op_trace, op_transpose, op_det,op_copy,op_inverse, op_norm, op_normalize]
 
 id=id+len(op_reg)
 #differentiation
@@ -80,6 +80,8 @@ op_unary= op_reg+ op_diff#+op_slice
 #binary operators
 #id=id+len(op_slice )
 #print"addition id",id
+
+
 op_add = operator(id,"addition", 2,"+", place_middle, limit_none, False)
 op_subtract = operator(id+1,"subtraction", 2, "-", place_middle, limit_none, False)
 op_cross = operator(id+2,"cross_product", 2, u'×', place_middle, limit_none, False)
@@ -118,25 +120,25 @@ op_trig=[ op_cosine, op_sine, op_acosine, op_asine, op_sqrt]#,op_atangent, op_ta
 
 id=id+len(op_trig)
 # embed some operators
-op_zeros_add22 = operator(id, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
+
+
+op_comp = operator(id,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
+op_zeros_add22 = operator(id+1, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
 # op_zeros_scale3: scalar-> [3,3]
-op_zeros_scale3 = operator(id+1, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
-op_zeros_outer2 = operator(id+2, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
-op_crossT3 = operator(id+3,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
-op_hessian = operator(id+4, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
+op_zeros_scale3 = operator(id+2, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
+op_zeros_outer2 = operator(id+3, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
+op_concat2 = operator(id+4,"concat2", 2,"concat", place_left, limit_none, True)
+op_specialized = [op_comp, op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_concat2]
 
-op_concat2 = operator(id+5,"concat2", 2,"concat", place_left, limit_none, True)
-op_concat3 = operator(id+6,"concat3", 3,"concat", place_left, limit_none, True)
+
+
+#### more than one operator or unsupported operation 
+op_concat3 = operator(id+5,"concat3", 3,"concat", place_left, limit_none, True)
 # can't implement ^ without enabling three arguments
-
-#op_comp = operator(id+6,"compose", 2,"comp", place_left, limit_none, True)
-op_comp = operator(id+6,"compose", 2,(u'comp(', u'*'+str(adj)+')'), place_split, limit_none, True)
 op_probe= operator(id+8,"probe", 1,"(pos)", place_right, limit_none, True)
+op_crossT3 = operator(id+6,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
+op_hessian = operator(id+7, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
 
-op_norm = operator(id+7,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
-op_normalize = operator(id+8,"normalize", 1, u'normalize', place_left, limit_none, False)
-
-op_specialized = [op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_crossT3, op_hessian, op_concat2,op_comp, op_norm, op_normalize]
 
 
 

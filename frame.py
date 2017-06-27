@@ -4,7 +4,7 @@ from base_constants import *
 
 
 
-s_layer = 2
+s_layer = 3
 s_random_range = 0
 from obj_frame import *
 
@@ -14,7 +14,7 @@ cpath =  "/Users/chariseechiw/diderot/"
 # go for it!
 # options are commented out
 
-name = "ein16 branch"
+name = "chiw branch"
 # branch information
 #s_branch  = branch_vis15
 #s_branch  = branch_ein16

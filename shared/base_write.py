@@ -266,7 +266,7 @@ def rst_compile(names, x, extraname,  branch,  positions, PARAMS):
     write_rst(names, x, extraname, rtn1)
     labl = dir+"__"+names
     x = extraname+x
-    writeToRst(labl, None, None,  positions, PARAMS, branch, x)
+    #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 # does not execute
 def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
@@ -294,6 +294,6 @@ def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  pos
     dir = "t"
     labl = dir+"__"+names
     write_rst(names, x, extraname, "rtn:terrible")
-    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
+    #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
 

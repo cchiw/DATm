@@ -229,7 +229,7 @@ def prntUnary(opr, e):
         k = "("+e+")"+(opr.symb)
         return k
     else:
-        raise Exception ("unsupported placement")
+        raise Exception ("unsupported placement"+opr.placement)
 
 def prntBinary(opr, e1, e2):
     #print "prntBinary",opr.name
@@ -550,20 +550,44 @@ def getCond(app, set):
         # there is no limit
         foo += set
     elif(not (opr_inner.limit== None)):
-
+        print "inner limit here"
         # there is a limit on inner operator
         def get_args():
             if(opr_inner.limit==limit_small):
-                #if(opr_inner.id==op_division.id):
-                return isProbe(exp1,app_inner.rhs.fldty)
+                # look for third layer
+                if(app.lhs.isrootlhs):
+                    return isProbe(exp1,app_inner.rhs.fldty)
+                else:
+                    third = app.lhs.lhs
+                    opr = third.opr
+                    print "opr", opr
+                    if(third.opr.arity == 1):
+                        z = exp1
+                        return isProbe(z, app_inner.rhs.fldty)
+                    else:
+                        z = exp2
+                        return isProbe(z, app_inner.rhs.fldty)
             else:
-                return isProbe(exp0,app_inner.oty)
+                print "look for third layer"
+                if(app.lhs.isrootlhs):
+                    return isProbe(exp0,app_inner.oty)
+                else:
+                    third = app.lhs.lhs
+                    opr = third.opr
+                    print "opr", opr
+                    if(third.opr.arity == 1):
+                        z = prntUnary(third.opr,exp0)
+                        return isProbe(z, app_inner.oty)
+                    else:
+                        z = prntBinary(third.opr,exp0, exp1)
+                        return isProbe(z, app_inner.oty)
+    
         texp = get_args()
         cond = limit(texp, opr_inner)
         foo+= ifelse(cond)
     elif(not (opr_outer.limit== None)):
 
-        # check outer operator
+        print " check outer operator"
         def get_exp1(opr):
             if(opr.arity==2):
                 return exp2
@@ -593,22 +617,26 @@ def getCond(app, set):
             else:
 
                 if((app.lhs).isrootlhs):
-                    #print "2 layers"
+                    print "2 layers"
                     # layer 2
                     pexp = get_exp2(opr_inner, exp0)
                     return isProbe(pexp, app_inner.oty)
                 else:
-                    #print "3 layers"
+                    print "3 layers"
                     # layer 3
                     app_outer2 = app
                     app_outer1 = apply.get_unary(app_outer2)
                     app_inner = apply.get_unary(app_outer1)
                     opr_outer1 = app_outer1.opr
                     opr_inner = app_inner.opr
-                    
-                    lhs = get_exp2(opr_inner, exp0)
-                    pexp = get_exp2(opr_outer1, lhs)
-                    return isProbe(pexp, app_outer1.oty)
+                    if(opr_inner.arity==2 and opr_outer1.arity==2):
+                        lhs = prntBinary(opr_inner, exp0, exp1)
+                        pexp = prntBinary(opr_outer1, lhs, exp2)
+                        return isProbe(pexp, app_outer1.oty)
+                    else:
+                        lhs = get_exp2(opr_inner, exp0)
+                        pexp = get_exp2(opr_outer1, lhs)
+                        return isProbe(pexp, app_outer1.oty)
 
         texp = get_args(app)
         cond = limit(texp, opr_outer)
@@ -656,12 +684,28 @@ def check_inside(f, ff, app):
     #either comp inspired probing or regular probing
     if(app.opr==op_comp):
         if(app.lhs.opr == op_comp):
-            i0C = getInside(exps[0], "F0" , "F1(F2(pos)*"+adjs+")*"+adjs)
-            i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-            i2 = getInside(exps[2],"F2", pos)
-            outerif = i2+i1C+i0C+"true"
+            if(not app.lhs.isrootlhs):
+                #3 layers
+                arity = app.lhs.lhs.opr.arity
+                if(arity==2):
+                    i0C = getInside(exps[0], "F0" , "F2(F3(pos)*" +adjs+")*"+adjs)
+                    i1C = getInside(exps[1], "F1" , "F2(F3(pos)*" +adjs+")*"+adjs)
+                    i2C = getInside(exps[2], "F2","F3(pos)*"+adjs)
+                    i3 = getInside(exps[3],"F3", pos)
+                    outerif = i3+i2C+i1C+i0C+"true"
+                else:
+                    i0C = getInside(exps[0], "F0" , "F1(F2(pos)*"+adjs+")*"+adjs)
+                    i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
+                    i2 = getInside(exps[2],"F2", pos)
+                    outerif = i2+i1C+i0C+"true"
+            else:
+                # 2 layers
+                i0C = getInside(exps[0], "F0" , "F1(F2(pos)*"+adjs+")*"+adjs)
+                i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
+                i2 = getInside(exps[2],"F2", pos)
+                outerif = i2+i1C+i0C+"true"
         else:
-            if(app.lhs.lhs):
+            if(not app.lhs.isrootlhs):
                 arityO = app.lhs.opr.arity
                 arityI = app.lhs.lhs.opr.arity
                 if((arityI==2) and (arityO==2)):
@@ -727,7 +771,7 @@ def check_inside(f, ff, app):
             elif(arityO==2):
                 i2 = getInside(exps[2],"F2", pos)
                 outerif= i2+i1+i0C+"true"
-    elif (app.lhs.lhs.opr==op_comp):
+    elif ((not app.lhs.isrootlhs) and (not app.lhs.lhs.isrootlhs) and app.lhs.lhs.opr==op_comp):
         arityO = app.opr.arity
         arityI = app.lhs.opr.arity
         i0C = getInside(exps[0], "F0" , "F1(pos)*"+adjs)
