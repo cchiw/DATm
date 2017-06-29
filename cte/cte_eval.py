@@ -12,7 +12,7 @@ from obj_apply import *
 from obj_operator import *
 from obj_field import *
 #specific nc programs
-from nc_eval import unary, binary, probeField
+from nc_eval import unary, binary, third, probeField
 
 def applyUnaryOnce(oexp_inner,app_inner,app_outer, pos):
     ##print "applyUnaryOnce",app_inner.opr.name,"-",app_outer.opr.name
@@ -23,7 +23,7 @@ def applyUnaryOnce(oexp_inner,app_inner,app_outer, pos):
     ##print "oexp_inner",oexp_inner,"opr_outer",opr_outer.name
     lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "")
     #create new apply
-    app_tmp = apply("tmp", opr_outer, lhs_tmp, None, oty_outer, true, true)
+    app_tmp = apply("tmp", opr_outer, lhs_tmp, None, None, oty_outer, true, true)
     oexp_tmp = unary(app_tmp)
     print "after applying: ",app_tmp.opr.name
     print " oexp_tmp", oexp_tmp
@@ -71,14 +71,17 @@ def sort(e, pos):
             
             
             b = binary(app)
-            otyp1 = ty_vec3F_d3
-            print "after applying: ",app.opr.name
-            print " oexp_tmp", otyp1
-            rtn = probeField(app.oty, pos, b)
-            print "after applying: ",app.opr.name," rtn:", rtn
+            #rtn = probeField(app.oty, pos, b)
+            #print "after applying: ",app.opr.name," rtn:", rtn
+            return (oty, b)
+        elif (arity ==3):
+            print " before applying: ",app.opr.name
+            print " lhs_tmp",  probeField(app.lhs.fldty, pos, app.lhs.data)
+            print "rhs tmp",  probeField(app.rhs.fldty, pos, app.rhs.data)
+            b = third(app)
             return (oty, b)
         else:
-            raise Exception ("arity is not supported: "+str(arity_outer))
+                raise Exception ("arity is not supported: "+str(app.opr.arity))
     #  multiple applications
     def get_gfnc(c_layer):
         if (c_layer==1):

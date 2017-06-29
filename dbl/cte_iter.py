@@ -52,7 +52,7 @@ def single_specific_ex(opr_inner, t_num, testing_frame, cnt):
 ##################################################################################################
 # do we need to create an extra field type
 def needextratype(ex_outer):
-    return (ex_outer.arity==2)
+    return (ex_outer.arity>=2)
 
 
 def get_extra(ex_ty2, testing_frame, cnt):

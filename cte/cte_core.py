@@ -62,8 +62,10 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #writeTime(100,"\n\n\n\n")
     #startall = time.time()
     #writeTime(125, str(startall))
-    #print "############################################inside central############################################"
+    print "############################################inside central############################################"
     print("current", names)
+    
+    print "len coeffs", len(coeffs)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
     # get global variables from testing framework
@@ -103,7 +105,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     flds = apply.get_all_Fields(app)
     (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(flds, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
-
+    print ("XXX; len of params:",(len(PARAMS)))
 
 
     endall = time.time()
@@ -326,7 +328,10 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
         ty3 = get_all_extra(testing_frame)
         tmpshape = [ty3[t_ty3]]
         s = "_t"+str(t_ty3)
-    
+    elif(opr_outer2.arity==3):
+        ty3 = get_all_extra(testing_frame)
+        tmpshape = [ty3[t_ty3],ty3[t_ty3]]
+        s = "_t"+str(t_ty3)+"_"+str(t_ty3)
     counter.inc_total(cnt)
     # add new shape argment
     ishape_outer2 = [tshape2] + tmpshape
