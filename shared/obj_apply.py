@@ -8,11 +8,12 @@ from obj_operator import *
 from obj_field import *
 
 class apply:
-    def __init__(self, name, opr, lhs, rhs, oty, isrootlhs, isrootrhs):
+    def __init__(self, name, opr, lhs, rhs, third, oty, isrootlhs, isrootrhs):
         self.name=name
         self.opr=opr
         self.lhs=lhs
         self.rhs=rhs
+        self.third = third
         self.oty=oty
         self.isrootlhs=isrootlhs
         self.isrootrhs=isrootrhs
@@ -149,6 +150,8 @@ class apply:
                 flds.append(rhs)
             else :
                 flds = flds + apply.get_all_Fields(rhs)
+        if(self.third!=None):
+            flds.append(self.third)
         return flds
 
     def get_oty(self):
@@ -593,7 +596,7 @@ def get_tshape(opr1, ishape):
         #print "rtn from get binary", x
         return x
     elif(arity==3):
-        return applyThirdOp(op1, ishape)
+        return applyThirdOp(opr1, ishape)
 
 # create apply, operator and field objects
 # from an example opr number, type number, and input file
@@ -603,7 +606,7 @@ def mkApply_fld(name, opr, ishape, inputfile, otype1, i_coeff_style, i_ucoeff, g
     # arity
     arity = opr.arity
     def set_App(lhs, rhs):
-        return apply(name, opr, lhs, rhs, otype1, true, true)
+        return apply(name, opr, lhs, rhs, None, otype1, true, true)
     def set_fld(id):
         c_ity = ishape[id]
         c_dim = fty.get_dim(c_ity)
@@ -614,15 +617,26 @@ def mkApply_fld(name, opr, ishape, inputfile, otype1, i_coeff_style, i_ucoeff, g
         return mk_Field(id, c_ity, c_continuity, inputfile, c_dim, i_coeff_style, i_ucoeff, c_krn,t_template)
     # first argument
     index1 = 0
-    (F1, finfo1, coeff1) = set_fld(index1)
     if (arity==1): # unary operator
+        (F1, finfo1, coeff1) = set_fld(index1)
         z = set_App(F1, None)
         return (z, [coeff1])
     elif (arity==2): # binary operator
+        (F1, finfo1, coeff1) = set_fld(index1)
         index2 = 1 # second argument
         (F2, finfo2, coeff2) = set_fld(index2)
         z = set_App(F1, F2)
         return (z, [coeff1, coeff2])
+    elif (arity==3): # n- ary operator
+        (F1, finfo1, coeff1) = set_fld(index1)
+        index2 = 1 # second argument
+        (F2, finfo2, coeff2) = set_fld(index2)
+        index3 = 2 # third argument
+        (F3, finfo3, coeff3) = set_fld(index3)
+        z = apply(name, opr, F1, F2, F3, otype1, true, true)
+        return (z, [coeff1, coeff2, coeff3])
+    
+
     else:
         raise Exception ("arity is not supported: "+str(arity))
 
@@ -639,7 +653,10 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
     def set_innerApp(shape):
         return mkApply_fld(name, opr_inner, shape, inputfile, otype1, coeff_style, ucoeff, g_krn,t_template)
     def set_outerApp(lhs, rhs):
-        return apply(name, opr_outer,lhs, rhs, tshape2, false, true)
+        return apply(name, opr_outer,lhs, rhs, None, tshape2, false, true)
+    def set_outerApp3(lhs, rhs, third):
+        return apply(name, opr_outer,lhs, rhs, third, tshape2, false, true)
+    
     def set_field(id):
         # get kernel
         c_krn = transform_krn(g_krn, id)
@@ -675,6 +692,19 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
         z2 = set_outerApp(z1, F2)#ishape3
         coeffs = coeff1+[coeff2]
         return (z2, coeffs)
+    elif (outer_arity==2 and inner_arity==3): # binary and third-arity operators
+        # apply inner operator to first arg
+        (z1, coeff1) = set_innerApp(ishape)
+        # create third field
+        id2 = 2
+        (F2, finfo2, coeff2) = set_field(id2)
+        id2 = 3
+        (F3, finfo3, coeff3) = set_field(id3)
+        ishape3 =[otype1, finfo2, finfo3]
+        z2 = set_outerApp3(z1, F2 ,F3)
+        coeffs = coeff1+[coeff2, coeff3]
+        return (z2, coeffs)
+    
     else:
         raise Exception ("arity is not supported: "+str(outer_arity))
 
@@ -689,7 +719,7 @@ def mkApply_third(ztwice, coeffstwice, ishape, tshape3, name, opr_outer2, inputf
     
     def set_outer2App(lhs, rhs):
         ##print "set_outer2App, tshape3: ", tshape3.name
-        return apply(name, opr_outer2, lhs, rhs, tshape3, false, true)
+        return apply(name, opr_outer2, lhs, rhs, None, tshape3, false, true)
     def set_field(id):
         # get kernel
         c_krn = transform_krn(g_krn, id)
@@ -698,7 +728,7 @@ def mkApply_third(ztwice, coeffstwice, ishape, tshape3, name, opr_outer2, inputf
         c_dim = fty.get_dim(c_fty)
         return mk_Field(id, c_fty, c_k, inputfile, c_dim, coeff_style, ucoeff, c_krn,t_template)
     def set_outerApp(lhs, rhs):
-        return apply(name, opr_outer2,lhs, rhs, tshape3, false, true)
+        return apply(name, opr_outer2,lhs, rhs, None, tshape3, false, true)
     if(outer2_arity==1):
         # just place in 2nd layer app in  left hand side
         z2 = set_outer2App(ztwice, None)

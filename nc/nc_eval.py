@@ -682,13 +682,15 @@ def fn_concat3(fld1, fld2, fld3):
     exp1 = field.get_data(fld1)
     exp2 = field.get_data(fld2)
     exp3 = field.get_data(fld3)
+    ityp1 = field.get_ty(fld1)
+    ityp2 = field.get_ty(fld2)
     if(fty.is_Scalar(ityp1)):
         return [exp1,exp2, exp3]
     elif(fty.is_Vector(ityp2)):
         [n] = fty.get_shape(ityp2)
         rtn1 = getConcatV(n, exp1)
         rtn2 = getConcatV(n, exp2)
-        rtn3 = getConcatv(n, exp3)
+        rtn3 = getConcatV(n, exp3)
         return [rtn1, rtn2, rtn3]
     
     elif(fty.is_Matrix(ityp2)):
@@ -1265,6 +1267,17 @@ def binary(e):
         return applyToExp_B_T3(e)
     else:
          return applyToExp_B_rest(e)
+
+
+def third(e):
+    fn_name = e.opr
+    
+    if(op_concat3==fn_name): #division
+        return fn_concat3(e.lhs, e.rhs, e.third)
+    else:
+        raise Exception("unhandled third arity")
+
+
 
 
 # sort all applications

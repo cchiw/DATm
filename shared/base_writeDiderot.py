@@ -242,9 +242,21 @@ def prntBinary(opr, e1, e2):
         return  "(("+e1+"),("+e2+"))"+(opr.symb)
     if(opr.placement == place_split):
         return  (opr.symb[0])+"("+e1+"),("+e2+")"+(opr.symb[1])
-    
     else:
         raise Exception ("unhandled placement")
+
+def prntThird(opr, e1, e2, e3):
+    if(opr.placement == place_left):
+        return  (opr.symb)+"(("+e1+"),("+e2+"),("+e3+"))"
+    elif(opr.placement == place_middle):
+        return "("+e1+")"+(opr.symb)+"("+e2+")"+(opr.symb)+"("+e3+")"
+    elif(opr.placement == place_right):
+        return  "(("+e1+"),("+e2+"),("+e3+"))"+(opr.symb)
+    if(opr.placement == place_split):
+        return  (opr.symb[0])+"("+e1+"),("+e2+"),("+e3+")"+(opr.symb[1])
+    else:
+        raise Exception ("unhandled placement")
+
 
 # writing to a line
 def write_shape(pre, f, typ, lhs, rhs):
@@ -271,6 +283,8 @@ def gotop1(f,app, pre, lhs):
             return prntUnary(op1, f0)
         elif(arity==2):
             return prntBinary(op1, f0, f1)
+        elif(arity==3):
+            return prntThird(op1, f0, f1, f2)
         else:
             raise Exception("unsupported arity")
     rhs = rtn_rhs()
@@ -294,6 +308,8 @@ def gotop2(f, app_outer, pre, lhs):
     f0 = fieldName(0)
     f1 = fieldName(1)
     f2 = fieldName(2)
+    f3 = fieldName(3)
+    f4 = fieldName(4)
     #s_inner = apply.toStr(app_inner,0)
     #s_outer = apply.toStr(app_outer,0)
 
@@ -323,6 +339,10 @@ def gotop2(f, app_outer, pre, lhs):
             line1 = prntBinary(opr_outer, e1, f1)
             write_lastline(line1)
             return
+        elif(arity_outer==3):
+            line1 = prntThird(opr_outer, e1, f1, f2)
+            write_lastline(line1)
+            return
         else:
             raise Exception("unsupported arity")
     elif(arity_inner==2):
@@ -334,6 +354,27 @@ def gotop2(f, app_outer, pre, lhs):
             return
         elif(arity_outer==2):
             line1 = prntBinary(opr_outer, e1, f2)
+            write_lastline(line1)
+            return
+        elif(arity_outer==3):
+            line1 = prntThird(opr_outer, e1, f2, f3)
+            write_lastline(line1)
+            return
+        else:
+            raise Exception("unsupported arity")
+    elif(arity_inner==3):
+        e1 = prntThird(opr_inner, f0, f1, f2)
+        if(arity_outer==1):
+            write_shape("\t", f, typ_inner, f3, e1)
+            line2 = prntUnary(opr_outer, f3)
+            write_lastline(line2)
+            return
+        elif(arity_outer==2):
+            line1 = prntBinary(opr_outer, e1, f3)
+            write_lastline(line1)
+            return
+        elif(arity_outer==3):
+            line1 = prntThird(opr_outer, e1, f3, f4)
             write_lastline(line1)
             return
         else:

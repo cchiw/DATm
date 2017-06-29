@@ -155,8 +155,25 @@ def get_concat2(es, fldresult):
             # needs to have same type
             if (fty.get_shape(e1) == fty.get_shape(e2)):
                 rtn.append([e1, e2])
-                print "concat ",e1.name, "-",e2.name,"-adding"
+                print "concat2 ",e1.name, "-",e2.name,"-adding"
     return rtn
+
+def get_concat3(es, fldresult):
+    rtn = []
+    # binary operator
+    for e1 in es:
+        for e2 in es:
+            for e3 in es:
+                if ((not fty.is_Field(e1)) or (not fty.is_Field(e2))or (not fty.is_Field(e3))):
+                    continue
+                if(not (e1.dim==e2.dim) or (not e1.dim==e3.dim)):
+                    continue
+                # needs to have same type
+                if ((fty.get_shape(e1) == fty.get_shape(e2)) and (fty.get_shape(e1) == fty.get_shape(e3))):
+                    rtn.append([e1, e2, e3])
+                    print "concat3 ",e1.name, "-",e2.name, "-", e3.name,"-adding"
+    return rtn
+
 
 def get_compose(es, fldresult):
     rtn = []
@@ -368,6 +385,13 @@ def oprToArgs(op1, tys):
                 return (get_concat2)
             elif(op1.id==op_comp.id):
                 return (get_compose)
+            else:
+                raise Exception("no built in example of operator"+op1.name)
+        return rtnArgs_all(get_eval())
+    elif(op1.arity==3):
+        def get_eval():
+            if(op1.id==op_concat3.id):
+                return (get_concat3)
             else:
                 raise Exception("no built in example of operator"+op1.name)
         return rtnArgs_all(get_eval())

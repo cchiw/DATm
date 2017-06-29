@@ -4,7 +4,7 @@ from base_constants import *
 
 
 
-s_layer = 3
+s_layer = 2
 s_random_range = 0
 from obj_frame import *
 
