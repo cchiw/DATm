@@ -31,7 +31,6 @@ foo_out="out"
 foo_pos="pos"
 const_out ="7.2"
 
-#some functions are shared with prog* files
 
 #witten inside update method
 #conditionals are commented out
@@ -49,8 +48,7 @@ def cte_update_method(f, pos, app):
         # get conditional for tensor argument
         check_conditional(f,  foo_out, app)
 
-
-
+################################ search Diderot template and replace foo variable name ################################
 #itype: shape of fields
 #otype: output tensor
 #op1: unary operation involved
@@ -61,13 +59,11 @@ def readDiderot(p_out, app, pos):
     #write diderot program
     f = open(p_out+".diderot", 'w+')
     #output type
- 
     for line in ftemplate:
         # is it initial field line?
         a0 = re.search(foo_in, line)
         if a0:
             #replace field input line
-            #print "inshape"
             inShape(f,app)
             continue
         # is it output tensor line?
@@ -101,8 +97,7 @@ def readDiderot(p_out, app, pos):
     ftemplate.close()
     f.close()
 
-
-
+################################ write annd run main function ################################
 # write, compile, and execute new diderot program
 def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
     # write new diderot program
@@ -112,5 +107,4 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
     writeTime(24, tall)
     startall=endall
     shape = app.oty.shape
-    print "app oty", app.oty
     return nc_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall)

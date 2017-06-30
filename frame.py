@@ -5,7 +5,7 @@ from base_constants import *
 
 
 s_layer = 2
-s_random_range = 0
+s_random_range = 299
 from obj_frame import *
 
 cpath =  "/Users/chariseechiw/diderot/"
