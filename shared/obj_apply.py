@@ -698,7 +698,7 @@ def mkApply_twice(opr_inner, opr_outer, ishape, inputfile, otype1, tshape2, coef
         # create third field
         id2 = 2
         (F2, finfo2, coeff2) = set_field(id2)
-        id2 = 3
+        id3 = 3
         (F3, finfo3, coeff3) = set_field(id3)
         ishape3 =[otype1, finfo2, finfo3]
         z2 = set_outerApp3(z1, F2 ,F3)
