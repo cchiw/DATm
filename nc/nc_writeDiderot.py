@@ -33,38 +33,32 @@ def nc_setLength(f, n):
     foo="int length ="+str(n)+";"
     f.write(foo.encode('utf8'))
 
+################################  compile and run a diderot program ################################
 # execute new diderot program
 def runDiderot(p_out, shape, pos, output, runtimepath, isNrrd):
-    print "insude run Diderot believe shape is ", shape
     product = 1
     for x in shape:
         product *= x
-
     if(isNrrd):
         m2 = len(pos)+1
         w_shape=" -s "+str(product)+" "+str(m2)
         os.system("rm tmp.nrrd")
         os.system("./"+p_out+" -o tmp")
         os.system("./"+p_out+" -o tmp.nrrd")
-    
         #os.system("unu head tmp.nrrd")
         os.system("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
     else:
-
-        # print "not is vis"
+        # not is vis
         executable = "./"+p_out
-        #print executable
         os.system(executable)
 
 def nc_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall):
-
     diderotprogram = p_out+".diderot"
     os.system("cp "+p_out+".diderot "+output+".diderot")
     os.system("rm "+p_out) # remove existing executable
     os.system(runtimepath + " --log " + diderotprogram)
     # gets come time
     # os.system("grep \"compiler\" "+p_out+".log >> catwriteall.txt")
-
     # did it compile?
     endall = time.time()
     tall = str(endall - startall)
@@ -100,5 +94,3 @@ def nc_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall):
             #os.system("cp "+p_out+".c "+output+".c")
             #os.system("rm "+p_out+"*")
             return (true, true, startall)
-
-

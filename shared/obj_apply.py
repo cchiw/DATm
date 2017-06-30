@@ -89,6 +89,18 @@ class apply:
             raise "not a root app"
     def get_arity(self):
         return self.opr.arity
+    
+    def getArgs(self):
+        # return three arguments exactly
+        # None for null argument 
+        arity = self.opr.arity
+        if(arity==1):
+            return [self.lhs, None, None]
+        elif(arity==2):
+            return [self.lhs, self.rhs, None]
+        elif(arity==3):
+            return [self.lhs, selh.rhs, self.third]
+    
     def get_unary(self):
         return self.lhs
 

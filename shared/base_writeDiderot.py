@@ -32,7 +32,6 @@ opfieldname1="G"
 def fieldName(i):
     return "F"+str(i)
 
-
 # type of field
 def fieldShape(f, fldty):
     #print "fldty: ",fldty
@@ -50,7 +49,6 @@ def inShape_base(f, exps):
     for exp in exps:
         #print "current fld",field.toStr(exp)
         dim = field.get_dim(exp)
-        #print ("exp:", field.toStr(exp))
         fieldShape(f, exp.fldty)
         if (field.get_isField(exp)):
             krnstr = exp.krn.str

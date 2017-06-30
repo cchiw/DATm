@@ -51,7 +51,7 @@ def cmd(layer, testing_frame, cnt, shift, args):
             writeResults_inner(opr_inner, testing_frame, cnt)
         else:
             raise "unsupported"
-    # assumes seconf or third later
+    # assumes second or third layer
     elif (args==0):
             ##writeTime(1)
              #run all the programs
@@ -63,8 +63,6 @@ def cmd(layer, testing_frame, cnt, shift, args):
             t_range = int(sys.argv[shift+2])
             embed2_iter_inner_setrange(t_start, t_range,    testing_frame, cnt)
             writeCumulative(cnt)
-    
-
     elif (args==1):
            # given operator id for inner  operator
             t_inner = int(sys.argv[shift+1])
@@ -188,24 +186,6 @@ def cmd(layer, testing_frame, cnt, shift, args):
             writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         else:
             raise "unsupported"
-
-#    elif(args==-1):
-#        # given operator id is outer1 operator
-#        t_outer = int(sys.argv[shift+1])
-#        opr_outer = id_toOpr(t_outer)
-#        writeTitle_outer2(opr_outer)
-#        embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt)
-#        writeCumulative(cnt)
-#
-#    elif (args==20):
-#        # given inner oeprator id and type example number
-#        t_inner = int(sys.argv[shift+1])
-#        t_num = int(sys.argv[shift+2])
-#        opr_inner = id_toOpr(t_inner)
-#        writeTitle_inner(opr_inner)
-#        (name, ishape) = get_single_exampleEx(ex, t_num)
-#        embed_base_iter_outer2(opr_inner, t_num, testing_frame, cnt)
-#        writeResults_inner(opr_inner, testing_frame, cnt)
     else:
       raise "unsupported"
 
@@ -251,5 +231,4 @@ def main_set(n_template, shift):
     tt_standard  = " time all _standard "+str(end_standard  - start_standard )
     writeall(tt_standard )
     print (tt_standard )
-
 
