@@ -605,7 +605,7 @@ def getCond(app, set):
                     if(third.opr.arity == 1):
                         z = exp1
                         return isProbe(z, app_inner.rhs.fldty)
-                    else:
+                    elif(third.opr.arity==2):
                         z = exp2
                         return isProbe(z, app_inner.rhs.fldty)
             else:
@@ -619,7 +619,7 @@ def getCond(app, set):
                     if(third.opr.arity == 1):
                         z = prntUnary(third.opr,exp0)
                         return isProbe(z, app_inner.oty)
-                    else:
+                    elif(third.opr.arity==2):
                         z = prntBinary(third.opr,exp0, exp1)
                         return isProbe(z, app_inner.oty)
     
@@ -637,8 +637,10 @@ def getCond(app, set):
         def get_exp2(opr, lhs):
             if(opr.arity==2):
                 return prntBinary(opr, lhs, exp1)
-            else:
+            elif(opr.arity==1):
                 return prntUnary(opr, lhs)
+            elif(opr.arity==3):
+                return prntThird(opr, lhs, exp1, exp2)
         def get_args(app):
             oty = app.oty
             app_outer = app
