@@ -64,155 +64,34 @@ def inShape(f, appC):
     exps = apply.get_all_Fields(appC)
     inShape_base(f, exps)
 
-
+##################################### output tensor/field #####################################
 #instaniate output tensor
 def outLineTF(type,s):
-    otype = fty.get_tensorType(type)
-    v2 =  " ["+s+","+s+"]"
-    v3 = " ["+s+","+s+","+s+"]"
-    v4 = " ["+s+","+s+","+s+","+s+"]"
-    def mkTen2(e):
-        return "["+e+","+e+"]"
-    def mkTen3(e):
-        return "["+e+","+e+","+e+"]"
-    def mkTen4(e):
-        return "["+e+","+e+","+e+","+e+"]"
-    
-    m22 = mkTen2(v2)
-    m23 = mkTen2(v3)
-    m24 = mkTen2(v4)
-    m32 = mkTen3(v2)
-    m33 = mkTen3(v3)
-    m34 = mkTen3(v4)
-    m42 = mkTen4(v2)
-    m43 = mkTen4(v3)
-    m44 = mkTen4(v4)
-    t222 = mkTen2(m22)
-    t223 = mkTen2(m23)
-    t224 = mkTen2(m24)
-    t232 = mkTen2(m32)
-    t233 = mkTen2(m33)
-    t234 = mkTen2(m34)
-    t242 = mkTen2(m42)
-    t243 = mkTen2(m43)
-    t244 = mkTen2(m44)
-    t322 = mkTen3(m22)
-    t323 = mkTen3(m23)
-    t324 = mkTen3(m24)
-    t332 = mkTen3(m32)
-    t333 = mkTen3(m33)
-    t334 = mkTen3(m34)
-    t342 = mkTen3(m42)
-    t343 = mkTen3(m43)
-    t344 = mkTen3(m44)
-    t422 = mkTen4(m22)
-    t423 = mkTen4(m23)
-    t424 = mkTen4(m24)
-    t432 = mkTen4(m32)
-    t433 = mkTen4(m33)
-    t434 = mkTen4(m34)
-    t442 = mkTen4(m42)
-    t443 = mkTen4(m43)
-    t444 = mkTen4(m44)
+    otype= fty.get_tensorType(type)
+    def mkMat(i, e):
+        rtn = " ["+e
+        for i in range(i-1):
+            rtn +=","+e
+        rtn+= "]"
+        return rtn
     if (ty_scalarT==otype):
         return s
-    elif(ty_vec2T==otype):
-        return v2
-    elif(ty_vec3T==otype):
-        return v3
-    elif(ty_vec4T==otype):
-        return v4
-    elif(ty_mat2x2T==otype):
-        return  m22
-    elif(ty_mat2x3T==otype):
-        return m23
-    elif(ty_mat2x4T==otype):
-        return m24
-    elif(ty_mat3x2T==otype):
-        return m32
-    elif(ty_mat3x3T==otype):
-        return m33
-    elif(ty_mat3x4T==otype):
-        return m34
-    elif(ty_mat4x2T==otype):
-        return m42
-    elif(ty_mat4x3T==otype):
-        return m43
-    elif(ty_mat4x4T==otype):
-        return m44
-    elif(ty_ten2x2x2T==otype):
-        return t222
-    elif(ty_ten2x2x3T==otype):
-        return t223
-    elif(ty_ten2x2x4T==otype):
-        return t224
-    elif(ty_ten2x3x2T==otype):
-        return t232
-    elif(ty_ten2x3x3T==otype):
-        return t233
-    elif(ty_ten2x3x4T==otype):
-        return t234
-    elif(ty_ten2x4x2T==otype):
-        return t242
-    elif(ty_ten2x4x3T==otype):
-        return t243
-    elif(ty_ten2x4x4T==otype):
-        return t244
-
-    elif(ty_ten3x2x2T==otype):
-        return t322
-    elif(ty_ten3x2x3T==otype):
-            return t323
-    elif(ty_ten3x2x4T==otype):
-        return t324
-    elif(ty_ten3x3x2T==otype):
-        return t332
-    elif(ty_ten3x3x3T==otype):
-        return t333
-    elif(ty_ten3x3x4T==otype):
-        return t334
-    elif(ty_ten3x4x2T==otype):
-        return t342
-    elif(ty_ten3x4x3T==otype):
-        return t343
-    elif(ty_ten3x4x4T==otype):
-        return t344
-    
-    elif(ty_ten4x2x2T==otype):
-        return t422
-    elif(ty_ten4x2x3T==otype):
-        return t423
-    elif(ty_ten4x2x4T==otype):
-        return t424
-    elif(ty_ten4x3x2T==otype):
-        return t432
-    elif(ty_ten4x3x3T==otype):
-        return t433
-    elif(ty_ten4x3x4T==otype):
-        return t434
-    elif(ty_ten4x4x2T==otype):
-        return t442
-    elif(ty_ten4x4x3T==otype):
-        return t443
-    elif(ty_ten4x4x4T==otype):
-        return t444
-
-    else:
-        raise Exception("unsupported input type",otype.name)
-
+    elif(tty.isVec(otype)):
+        [i] = otype.shape
+        return mkMat(i,s)
+    elif(tty.isMat(otype)):
+        [j, i] = otype.shape
+        return mkMat(j, mkMat(i,s))
+    elif(tty.isTen3(otype)):
+        [k, j, i] = otype.shape
+        return mkMat(k, mkMat(j, mkMat(i,s)))
 
 #instaniate output tensor
 def outLineF(f, type):
     otype = fty.get_tensorType(type)
     foo="\toutput "
-    print " otype", otype
-    print " otype", otype.name,otype.id," ty_scalarT",ty_scalarT.name,"id",ty_scalarT.id
     foo+="tensor "+str(otype.shape)+" "+foo_out+" = "+outLineTF(type,"0.0")+";\n\t"
-    print "foo",foo
     f.write(foo.encode('utf8'))
-
-
-
 
 # print unary operator
 def prntUnary(opr, e):
