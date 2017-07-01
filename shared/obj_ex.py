@@ -155,7 +155,7 @@ def get_concat2(es, fldresult):
             # needs to have same type
             if (fty.get_shape(e1) == fty.get_shape(e2)):
                 rtn.append([e1, e2])
-                print "concat2 ",e1.name, "-",e2.name,"-adding"
+
     return rtn
 
 def get_concat3(es, fldresult):
@@ -171,7 +171,7 @@ def get_concat3(es, fldresult):
                 # needs to have same type
                 if ((fty.get_shape(e1) == fty.get_shape(e2)) and (fty.get_shape(e1) == fty.get_shape(e3))):
                     rtn.append([e1, e2, e3])
-                    print "concat3 ",e1.name, "-",e2.name, "-", e3.name,"-adding"
+
     return rtn
 
 
@@ -189,7 +189,7 @@ def get_compose(es, fldresult):
                 rtn.append([e1, e2])
             elif(fty.get_shape(e2)== [e1.dim]):
                 rtn.append([e1, e2])
-                print "compose ",e1.name, "-",e2.name,"-adding"
+
     return rtn
 
 #binary operators between flds fld (limited in some way)
@@ -400,7 +400,7 @@ def oprToArgs(op1, tys):
 
 # returns example object
 def oprToEx_a(op1, rst_ty, tys):
-    print "inside oprToEx_a"
+
     #print "op1",op1.name
     args = getArgs(oprToArgs(op1, tys), rst_ty)
     #print "op1", op1.name
@@ -411,7 +411,7 @@ def oprToEx_a(op1, rst_ty, tys):
 # gets a single examples
 def get_single_example(opr, ty_num, args_types):
     ex = oprToEx(opr, args_types)
-    print "current operator "+opr.name+ "("+str(opr.id)+ ") # "+str(ty_num)+"|"+str(len(ex.tys)-1)
+    #print "current operator "+opr.name+ "("+str(opr.id)+ ") # "+str(ty_num)+"|"+str(len(ex.tys)-1)
     i = 0
     for t in ex.tys:
         x=""
@@ -428,7 +428,7 @@ def get_single_example(opr, ty_num, args_types):
 
 # gets a single examples
 def get_single_exampleEx(ex, ty_num):
-    print "inside get_single_exampleEx"
+
     i = 0
     for t in ex.tys:
         x=""
