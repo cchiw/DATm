@@ -75,7 +75,7 @@ op_slicev1 = operator(id+3,"slicev1", 1, u'[1]', place_right, limit_none, False)
 op_slicet0 = operator(id+4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, False)
 op_slicet1 = operator(id+5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
 op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
-op_unary= op_reg+ op_diff#+op_slice
+op_unary= op_reg+ op_diff  #+op_slice
 
 #binary operators
 #id=id+len(op_slice )
@@ -144,7 +144,7 @@ op_hessian = operator(id+7, "hessian", 1, u'∇⊗∇', place_left, limit_none, 
 
 
 
-op_all = op_unary+op_binary+op_trig+op_specialized#+[op_concat3]
+op_all = op_unary+op_binary+op_trig+op_specialized+[op_concat3]
 
 
 # print all the ops
