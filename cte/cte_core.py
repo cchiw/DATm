@@ -63,10 +63,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #startall = time.time()
     #writeTime(125, str(startall))
     print "############################################inside central############################################"
-    print("current", names)
-    
-    print "len coeffs", len(coeffs)
-    writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
+
     
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
@@ -85,7 +82,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
-
+    print (x)
+    writetys(x)
     name_describe = app.name
 
     # testing positions
@@ -93,7 +91,6 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #tall = str(endall - startall)
     #writeTime(21, tall)
     #startall=endall
-    
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     # samples
     #endall = time.time()
@@ -105,7 +102,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     flds = apply.get_all_Fields(app)
     (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(flds, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
-    print ("XXX; len of params:",(len(PARAMS)))
+   
 
 
     endall = time.time()
@@ -120,6 +117,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #writeTime(50, str(tall-(all50+all51+all52+all53+all54+all55)))
     #writeTime(100,"n\n")
     startall=endall
+
     (isCompile, isRun, startall) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
     #endall = time.time()
     #tall = str(endall - startall)

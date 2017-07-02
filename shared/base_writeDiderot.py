@@ -14,6 +14,7 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_constants import *
+
 adj = (opr_adj)
 template="shared/template/foo.ddro"     # template
 
@@ -28,16 +29,25 @@ foo_out="out"
 foo_pos="pos"
 const_out ="7.2"
 opfieldname1="G"
-
+eps = "0.01"
+##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)
-
 # type of field
 def fieldShape(f, fldty):
     #print "fldty: ",fldty
     foo = fty.toDiderot(fldty)
     f.write(foo.encode('utf8'))
-
+# writing to a line
+def write_shape(pre, f, typ, lhs, rhs):
+    f.write(pre.encode('utf8'))
+    # type of resulting field
+    fieldShape(f, typ)
+    # set expression equal to output field
+    foo = lhs+" = "+rhs+";\n"
+    # Write to file
+    f.write(foo.encode('utf8'))
+##################################### input tensor/field #####################################
 #field input line
 #f: file to write to
 #k:continuity
@@ -58,12 +68,10 @@ def inShape_base(f, exps):
             foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
             f.write(foo.encode('utf8'))
         i+=1
-
 #inputlist: name for input data
 def inShape(f, appC):
     exps = apply.get_all_Fields(appC)
     inShape_base(f, exps)
-
 ##################################### output tensor/field #####################################
 #instaniate output tensor
 def outLineTF(type,s):
@@ -85,7 +93,6 @@ def outLineTF(type,s):
     elif(tty.isTen3(otype)):
         [k, j, i] = otype.shape
         return mkMat(k, mkMat(j, mkMat(i,s)))
-
 #instaniate output tensor
 def outLineF(f, type):
     otype = fty.get_tensorType(type)
@@ -93,185 +100,117 @@ def outLineF(f, type):
     foo+="tensor "+str(otype.shape)+" "+foo_out+" = "+outLineTF(type,"0.0")+";\n\t"
     f.write(foo.encode('utf8'))
 
-# print unary operator
-def prntUnary(opr, e):
+##################################### field declaration helpers #####################################
+# checks inside a field but not inside a tensor term
+def getInside(exp, pos, name):
+    if (fty.is_Field(exp.fldty)):
+        return "(inside("+name+","+pos+")) && "
+    else:
+        return ""
+# probes field at variable position
+def isProbe(exp, fld):
+    if(fty.is_Field(fld)):
+        return "("+exp+")(pos)"
+    else:
+        return "("+exp+")"
+##################################### print unary,binary,n-arity op #####################################
+################## place operator symbol in args ##################
+# print operator between arguments
+# center is commas between args
+def prntOpr(opr, center):
     if(opr.placement == place_split):
         (symb_lhs, symb_rhs)= opr.symb
-        k = symb_lhs+"("+e+")"+ symb_rhs
-        return k
+        return symb_lhs+center+ symb_rhs
     elif(opr.placement == place_left):
-        k = (opr.symb)+"("+e+")"
-        return k
+        return (opr.symb)+center
     elif(opr.placement == place_right):
-        k = "("+e+")"+(opr.symb)
-        return k
+        return center+(opr.symb)
     else:
         raise Exception ("unsupported placement"+opr.placement)
-
+# separated here by arity
+def prntUnary(opr, e):
+    center = "("+e+")"
+    return prntOpr(opr, center)
 def prntBinary(opr, e1, e2):
-    #print "prntBinary",opr.name
-    #print "symb,",opr.symb
-    if(opr.placement == place_left):
-        return  (opr.symb)+"(("+e1+"),("+e2+"))"
-    elif(opr.placement == place_middle):
+    center = "(("+e1+"),("+e2+"))"
+    if(opr.placement == place_middle):
         return "("+e1+")"+(opr.symb)+"("+e2+")"
-    elif(opr.placement == place_right):
-        return  "(("+e1+"),("+e2+"))"+(opr.symb)
-    if(opr.placement == place_split):
-        return  (opr.symb[0])+"("+e1+"),("+e2+")"+(opr.symb[1])
+    elif(opr.placement == place_split):
+        (symb_lhs, symb_rhs)= opr.symb
+        return symb_lhs+e1+",("+e2+ symb_rhs+")"
     else:
-        raise Exception ("unhandled placement")
-
+        return prntOpr(opr, center)
 def prntThird(opr, e1, e2, e3):
-    if(opr.placement == place_left):
-        return  (opr.symb)+"(("+e1+"),("+e2+"),("+e3+"))"
-    elif(opr.placement == place_middle):
-        return "("+e1+")"+(opr.symb)+"("+e2+")"+(opr.symb)+"("+e3+")"
-    elif(opr.placement == place_right):
-        return  "(("+e1+"),("+e2+"),("+e3+"))"+(opr.symb)
-    if(opr.placement == place_split):
-        return  (opr.symb[0])+"("+e1+"),("+e2+"),("+e3+")"+(opr.symb[1])
+    center = "(("+e1+"),("+e2+"),("+e3+"))"
+    return prntOpr(opr, center)
+#op1: operator, i:argument index
+def rtn_rhs(f, op1, typ_inner, e, i):
+    arity = op1.arity
+    # names of lhs variables
+    # next arguments are [e, fi, fi+1]
+    f1 = fieldName(i)
+    f2 = fieldName(i+1)
+    if (arity==1):
+        if(op1.placement==place_right):
+            write_shape("\t", f, typ_inner, f1, e)
+            return (prntUnary(op1, f1), i+1)
+        else:
+            return (prntUnary(op1, e),i)
+    elif(arity==2):
+        return (prntBinary(op1, e, f1),i+1)
+    elif(arity==3):
+        return (prntThird(op1, e, f1, f2),i+2)
     else:
-        raise Exception ("unhandled placement")
+        raise Exception("unsupported arity")
+
+def get_exp2(opr, lhs, i):
+    exp1 = fieldName(i)
+    exp2 = fieldName(i+1)
+    arity = opr.arity
+    if(arity==1):
+        return (prntUnary(opr, lhs),i)
+    elif(arity==2):
+        return (prntBinary(opr, lhs, exp1),i+1)
+    elif(arity==3):
+        return (prntThird(opr, lhs, exp1, exp2),i+2)
 
 
-# writing to a line
-def write_shape(pre, f, typ, lhs, rhs):
-    f.write(pre.encode('utf8'))
-    # type of resulting field
-    fieldShape(f, typ)
-    # set expression equal to output field
-    foo = lhs+" = "+rhs+";\n"
-    # Write to file
-    f.write(foo.encode('utf8'))
-
-
+################## apply 1 layer of operator ##################
 #write operation between fields
 #get output var name-lhs
-def gotop1(f,app, pre, lhs):
+def gotop1(f, app, pre, lhs):
     op1 = app.opr
-    arity = op1.arity
     oty = app.oty
-    # names of lhs variables
     f0 = fieldName(0)
-    f1 = fieldName(1)
-    def rtn_rhs():
-        if (arity==1):
-            return prntUnary(op1, f0)
-        elif(arity==2):
-            return prntBinary(op1, f0, f1)
-        elif(arity==3):
-            return prntThird(op1, f0, f1, f2)
-        else:
-            raise Exception("unsupported arity")
-    rhs = rtn_rhs()
+    rhs = rtn_rhs(f, op1, oty, f0, 1)
     write_shape(pre, f, oty, lhs, rhs)
     return
-
-
+################## apply 2 layers of operators ##################
 #write operation between fields
 def gotop2(f, app_outer, pre, lhs):
     opr_outer=app_outer.opr
     app_inner=apply.get_unary(app_outer)
     opr_inner=app_inner.opr
-    # arity of each app
-    arity_inner= opr_inner.arity
-    arity_outer= opr_outer.arity
     # type of output of each app
     typ_outer = app_outer.oty
     typ_inner = app_inner.oty
-    
     # names of lhs variables
     f0 = fieldName(0)
-    f1 = fieldName(1)
-    f2 = fieldName(2)
-    f3 = fieldName(3)
-    f4 = fieldName(4)
-    #s_inner = apply.toStr(app_inner,0)
-    #s_outer = apply.toStr(app_outer,0)
-
+    #first operator
+    (e1, n) = rtn_rhs(f, opr_inner, typ_inner, f0, 1)
+    # second operator
+    (line1,_) = rtn_rhs(f, opr_outer, typ_outer, e1, n)
     # writing to a line
-    def write_inner(e):
-        write_shape("\t", f, typ_inner, f2, e)
-    def write_lastline(e):
-        write_shape(pre, f, typ_outer, lhs, e)
-
-    if (arity_inner==1):
-        # inner placement
-        e1 = prntUnary(opr_inner, f0)
-        if(arity_outer==1):
-            if(opr_outer.placement==place_right):
-                # multiple lines
-                write_inner(e1)
-                line2 = f2+(opr_outer.symb)
-                write_lastline(line2)
-                return
-            else:
-                #single line
-                line1= prntUnary(opr_outer, e1)
-                write_lastline(line1)
-                return
-        elif(arity_outer==2):
-            #assumes second arg is a field
-            line1 = prntBinary(opr_outer, e1, f1)
-            write_lastline(line1)
-            return
-        elif(arity_outer==3):
-            line1 = prntThird(opr_outer, e1, f1, f2)
-            write_lastline(line1)
-            return
-        else:
-            raise Exception("unsupported arity")
-    elif(arity_inner==2):
-        e1 = prntBinary(opr_inner, f0, f1)
-        if(arity_outer==1):
-            write_inner(e1)
-            line2 = prntUnary(opr_outer, f2)
-            write_lastline(line2)
-            return
-        elif(arity_outer==2):
-            line1 = prntBinary(opr_outer, e1, f2)
-            write_lastline(line1)
-            return
-        elif(arity_outer==3):
-            line1 = prntThird(opr_outer, e1, f2, f3)
-            write_lastline(line1)
-            return
-        else:
-            raise Exception("unsupported arity")
-    elif(arity_inner==3):
-        e1 = prntThird(opr_inner, f0, f1, f2)
-        if(arity_outer==1):
-            write_shape("\t", f, typ_inner, f3, e1)
-            line2 = prntUnary(opr_outer, f3)
-            write_lastline(line2)
-            return
-        elif(arity_outer==2):
-            line1 = prntBinary(opr_outer, e1, f3)
-            write_lastline(line1)
-            return
-        elif(arity_outer==3):
-            line1 = prntThird(opr_outer, e1, f3, f4)
-            write_lastline(line1)
-            return
-        else:
-            raise Exception("unsupported arity")
-    else:
-        raise Exception("unsupported arity")
-
-
+    write_shape(pre, f, typ_outer, lhs, line1)
+    return
+################## apply 3 layers of operators ##################
 #write operation between fields
-
 def gotop3(f, app_outer2, pre, lhs):
     opr_outer2 = app_outer2.opr
     app_outer1 = apply.get_unary(app_outer2)
     opr_outer1 = app_outer1.opr
     app_inner=apply.get_unary(app_outer1)
     opr_inner=app_inner.opr
-    # arity of each app
-    arity_inner= opr_inner.arity
-    arity_outer1= opr_outer1.arity
-    arity_outer2= opr_outer2.arity
     # type of output of each app
     typ_outer2 = app_outer2.oty
     typ_outer1 = app_outer1.oty
@@ -279,163 +218,129 @@ def gotop3(f, app_outer2, pre, lhs):
     
     # names of lhs variables
     f0 = fieldName(0)
-    f1 = fieldName(1)
-    f2 = fieldName(2)
-    f3 = fieldName(3)
-    f8 = fieldName(8)
-    f9 = fieldName(9)
-    #s_inner = apply.toStr(app_inner,0)
-    #s_outer = apply.toStr(app_outer,0)
-    
+    (e1, n) = rtn_rhs(f, opr_inner, typ_inner, f0, 1)
+    (e2, n) = rtn_rhs(f, opr_outer1, typ_inner, e1, n)
+    (line1,_) = rtn_rhs(f, opr_outer2, typ_outer1, e2, n)
     # writing to a line
-    def write_inner(fn, oty, e):
-        write_shape("\t", f, oty, fn, e)
-    def write_lastline(e):
-        write_shape(pre, f, typ_outer2, lhs, e)
-
-    if (arity_inner==1):
-        # inner placement
-        print "write diderot: inner =1"
-        e1 = prntUnary(opr_inner, f0)
-        if(arity_outer1==1):
-            print "write diderot: outer1=1"
-            if(opr_outer1.placement==place_right):
-                # multiple lines
-                write_inner(f8, typ_inner, e1)
-                e2 = f8+(opr_outer1.symb)
-                if(arity_outer2==1):
-                    print "write diderot: outer2 =1"
-                    if(opr_outer2.placement==place_right):
-                        write_inner(f9, typ_outer1, e2)
-                        line3= prntUnary(opr_outer2, f9)
-                        write_lastline(line3)
-                        return
-                
-                    else:
-                        line2= prntUnary(opr_outer2, e2)
-                        write_lastline(line2)
-                        return
-                elif(arity_outer2==2):
-                    print "write diderot: outer2=2"
-                    line2 = prntBinary(opr_outer2, e2, f1)
-                    write_lastline(line2)
-                    return
-            else:
-                e2 = prntUnary(opr_outer1, e1)
-                if(arity_outer2==1):
-                    if(opr_outer2.placement==place_right):
-                        write_inner(f8, typ_outer1, e2)
-                        line1= prntUnary(opr_outer2, f8)
-                        write_lastline(line1)
-                        return
-                    else:
-                        #single line
-                        line1= prntUnary(opr_outer2, e2)
-                        write_lastline(line1)
-                        return
-                elif(arity_outer2==2):
-                    line2 = prntBinary(opr_outer2, e2, f1)
-                    write_lastline(line2)
-                    return
-                return
-        elif(arity_outer1==2):
-            print "write diderot: outer1=2"
-            #assumes second arg is a field
-            e2 = prntBinary(opr_outer1, e1, f1)
-            if(arity_outer2==1):
-                if(opr_outer2.placement==place_right):
-                    write_inner(f8, typ_outer1, e2)
-                    line1 = prntUnary(opr_outer2, f8)
-                    write_lastline(line1)
-                    return
-                else:
-                    line1= prntUnary(opr_outer2, e2)
-                    write_lastline(line1)
-                    return
-            elif(arity_outer2==2):
-                 line1 = prntBinary(opr_outer2, e2, f2)
-                 write_lastline(line1)
-                 return
-        else:
-            raise Exception("unsupported arity")
-    elif(arity_inner==2):
-        e1 = prntBinary(opr_inner, f0, f1)
-        if(arity_outer1==1):
-            if(opr_outer1.placement==place_right):
-                write_inner(f8, typ_inner, e1)
-                e2 = prntUnary(opr_outer1, f8)
-                if(arity_outer2==1):
-                    if(opr_outer2.placement==place_right):
-                        write_inner(f9, typ_outer2, e2)
-                        e3 = prntUnary(opr_outer2, f9)
-                        write_lastline(e3)
-                    else:
-                        e3 = prntUnary(opr_outer2, e2)
-                        write_lastline(e3)
-                elif(arity_outer2==2):
-                    line1 = prntBinary(opr_outer2, e2, f2)
-                    write_lastline(line1)
-            else:
-                e2 = prntUnary(opr_outer1, e1)
-                if(arity_outer2 == 1):
-                    if(opr_outer2.placement==place_right):
-                        write_inner(f8, typ_outer1, e2)
-                        e3 = prntUnary(opr_outer2, f8)
-                        write_lastline(e3)
-                    else:
-                        line1=  prntUnary(opr_outer2, e2)
-                        write_lastline(line1)
-                elif(arity_outer2 == 2):
-                    line1 = prntBinary(opr_outer2, e2, f2)
-                    write_lastline(line1)
-            return
-        elif(arity_outer1==2):
-            e2 = prntBinary(opr_outer1, e1, f2)
-            if(arity_outer2==1):
-                if(opr_outer2.placement==place_right):
-                    write_inner(f8, typ_outer1, e2)
-                    line1 = prntUnary(opr_outer2, f8)
-                    write_lastline(line1)
-                else:
-                    line1 = prntUnary(opr_outer2, e2)
-                    write_lastline(line1)
-            elif(arity_outer2==2):
-                line1 = prntBinary(opr_outer2, e2, f3)
-                write_lastline(line1)
-            return
-        else:
-            raise Exception("unsupported arity")
+    write_shape(pre, f, typ_outer2, lhs, line1)
+################## write operator lines ##################
+# write operator lines
+# calls above functions
+def iter(f, app, lhs, name):
+    if(app.isrootlhs):
+        return gotop1(f, app, lhs, name)
+    elif((app.lhs).isrootlhs):
+        #print "twice embedded"
+        return gotop2(f ,app, lhs, name)
     else:
-        raise Exception("unsupported arity")
-
-
-                          
-
-def replaceOp(f,app):
+        #print "third layers"
+        return gotop3(f, app, lhs, name)
+#write operator stmts in field line
+def replaceOp(f, app):
     if (fty.is_Field(app.oty)):
         #field type
-        # one or two operators?
-        if(app.isrootlhs):
-            #print "going to 1"
-            return gotop1(f,app, "",opfieldname1)
-        else: #twice embedded
-            #print "goint to 2"
-            if((app.lhs).isrootlhs):
-                return gotop2(f,app, "", opfieldname1)
-            else:
-                # third layers
-                return gotop3(f, app, "", opfieldname1)
+        iter(f, app, "", opfieldname1)
     else:
         return
-
-
-# probes field at variable position
-def isProbe(exp, fld):
-    if(fty.is_Field(fld)):
-        return "("+exp+")(pos)"
+#write operator stmts in output tensor line
+def outLine(f, app):
+    type  = app.oty
+    if (fty.is_Field(type)):
+        outLineF(f, type)
     else:
-        return "("+exp+")"
+        return iter(f, app, "\toutput ", foo_out)
 
+##################################### conditionals and limits #####################################
+# limitation on operator
+def limit(e, opr):
+    eps = "0.01"
+    if(opr.limit==limit_small):
+        return "((("+e+")>"+eps+") || (("+e+")< -"+eps+"))"
+    elif(opr.limit==limit_det):
+        return "((det("+e+")>"+eps+") || (det("+e+")< -"+eps+"))"
+    elif(opr.limit ==limit_trig):
+        return "(((0.1*("+e+"))<= 1.0) && (( 0.1*("+e+"))>=  -1.0))"
+    elif(opr.limit == limit_nonzero):
+        return "((("+e+")> 0.0) || (("+e+")< 0.0))"
+    else:
+        raise Exception(opr.name,"unknown limit:",opr.limit)
+################## if else statements  ##################
+#wrape expression inside an if statement
+def wrap(exp, stmt, oty):
+    return "\n\tif("+exp+"){\n\t\t"+stmt+"\n\t}\n\t else{"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
+def ifelse(cond, set, oty):
+    return"if("+cond+")\n\t\t\t{"+set+"}"+ "\n\t\telse{"+foo_out+" = "+outLineTF(oty, const_out)+";}"
+################## get args  ##################
+def get_exp1(opr, i):
+    arity = opr.arity
+    if(arity==1):
+        return fieldName(i)
+    elif(arity==2):
+        return fieldName(i+1)
+    elif(arity==3):
+        return fieldName(i+2)
+def innerL(app, lhs, i):
+    opr = app.opr
+    oty = app.oty
+    (z, _) = get_exp2(opr, lhs , i)
+    return isProbe(z, oty)
+def innerF(app, i):
+    exp0 = fieldName(i)
+    return  innerL(app, exp0, i+1)
+def get_args2(app, app_inner, i):
+    print "get_args 2", i
+    opr_inner =app_inner.opr
+    exp0 = fieldName(i)
+    exp1 = fieldName(i+1)
+    if(opr_inner.limit==limit_small):
+        i = i+1 #looking at denominator
+        oty =  app_inner.rhs.fldty
+        z= fieldName(i)
+        if(not(app.lhs.isrootlhs)):
+            third = app.lhs.lhs
+            opr = third.opr
+            z = get_exp1(opr, i)
+        return isProbe(z, oty)
+    else:
+        if(app.lhs.isrootlhs):
+            oty  = app_inner.oty
+            return isProbe(exp0, oty)
+        else:
+            third = app.lhs.lhs
+            return innerF(third, i)
+def get_args3(app):
+    print "inside ger args 3"
+    if(app.opr.limit==limit_small):# op_division.id):
+        if((app.lhs).isrootlhs):
+            #2 layers
+            app_outer = app
+            app_inner = apply.get_unary(app_outer)
+            opr_inner = app_inner.opr
+            z = get_exp1(opr_inner,1)
+            oty = app_outer.rhs.fldty
+            return isProbe(z, oty)
+        else:
+            # one layer
+            z = app.rhs.name
+            oty = app.rhs.fldty
+            return isProbe(z, oty)
+    else:
+        if((app.lhs).isrootlhs):
+            # layer 2
+            app_outer = app
+            app_inner = apply.get_unary(app_outer)
+            return innerF(app_inner, 0)
+        else:
+            # layer 3
+            app_outer2 = app
+            app_outer1 = apply.get_unary(app_outer2)
+            app_inner = apply.get_unary(app_outer1)
+            opr_inner = app_inner.opr
+            exp0 = fieldName(0)
+            (lhs,n) = get_exp2(opr_inner, exp0, 1)
+            return innerL(app_outer1, lhs, n)
+
+################## conditional function  ##################
 # get restraint on argument to operators
 # i.e. sqrt(x), so x must be positive
 def getCond(app, set):
@@ -444,128 +349,34 @@ def getCond(app, set):
     opr_outer=app_outer.opr
     app_inner =apply.get_unary(app_outer)
     opr_inner =app_inner.opr
-    exp0 = "F0"
-    exp1 = "F1"
-    exp2 = "F2"
-    foo = ""
-    eps = "0.01"
-    def limit(e, opr):
-        if(opr.limit==limit_small):
-            return "((("+e+")>"+eps+") || (("+e+")< -"+eps+"))"
-        elif(opr.limit==limit_det):
-            return "((det("+e+")>"+eps+") || (det("+e+")< -"+eps+"))"
-        elif(opr.limit ==limit_trig):
-            return "(((0.1*("+e+"))<= 1.0) && (( 0.1*("+e+"))>=  -1.0))"
-        elif(opr.limit == limit_nonzero):
-            return "((("+e+")> 0.0) || (("+e+")< 0.0))"
-        else:
-            raise Exception(opr.name,"unknown limit:",opr.limit)
-    def ifelse(cond):
-        k= "if("+cond+")\n\t\t\t{"+set+"}"
-        k+="\n\t\telse{"+foo_out+" = "+outLineTF(oty, const_out)+";}"
-        return k
+    # checks limitations in operators
     if((opr_inner.limit== None) and (opr_outer.limit== None)):
         # there is no limit
-        foo += set
+        return set
     elif(not (opr_inner.limit== None)):
-        print "inner limit here"
         # there is a limit on inner operator
-        def get_args():
-            if(opr_inner.limit==limit_small):
-                # look for third layer
-                if(app.lhs.isrootlhs):
-                    return isProbe(exp1,app_inner.rhs.fldty)
-                else:
-                    third = app.lhs.lhs
-                    opr = third.opr
-                    print "opr", opr
-                    if(third.opr.arity == 1):
-                        z = exp1
-                        return isProbe(z, app_inner.rhs.fldty)
-                    elif(third.opr.arity==2):
-                        z = exp2
-                        return isProbe(z, app_inner.rhs.fldty)
-            else:
-                print "look for third layer"
-                if(app.lhs.isrootlhs):
-                    return isProbe(exp0,app_inner.oty)
-                else:
-                    third = app.lhs.lhs
-                    opr = third.opr
-                    print "opr", opr
-                    if(third.opr.arity == 1):
-                        z = prntUnary(third.opr,exp0)
-                        return isProbe(z, app_inner.oty)
-                    elif(third.opr.arity==2):
-                        z = prntBinary(third.opr,exp0, exp1)
-                        return isProbe(z, app_inner.oty)
-    
-        texp = get_args()
+        texp = get_args2(app, app_inner, 0)
         cond = limit(texp, opr_inner)
-        foo+= ifelse(cond)
+        return ifelse(cond, set, oty)
     elif(not (opr_outer.limit== None)):
-
-        print " check outer operator"
-        def get_exp1(opr):
-            if(opr.arity==2):
-                return exp2
-            else:
-                return exp1
-        def get_exp2(opr, lhs):
-            if(opr.arity==2):
-                return prntBinary(opr, lhs, exp1)
-            elif(opr.arity==1):
-                return prntUnary(opr, lhs)
-            elif(opr.arity==3):
-                return prntThird(opr, lhs, exp1, exp2)
-        def get_args(app):
-            oty = app.oty
-            app_outer = app
-            opr_outer=app_outer.opr
-            app_inner =apply.get_unary(app_outer)
-            opr_inner =app_inner.opr
-            if(opr_outer.limit==limit_small):# op_division.id):
-               
-                if((app.lhs).isrootlhs):
-                    #print "2 layers"
-                    pexp = get_exp1(opr_inner)
-                    return isProbe(pexp, app_outer.rhs.fldty)
-                else:
-                    pexp = app.rhs.name
-                    return isProbe(pexp, app.rhs.fldty)
-        
-            else:
-
-                if((app.lhs).isrootlhs):
-                    print "2 layers"
-                    # layer 2
-                    pexp = get_exp2(opr_inner, exp0)
-                    return isProbe(pexp, app_inner.oty)
-                else:
-                    print "3 layers"
-                    # layer 3
-                    app_outer2 = app
-                    app_outer1 = apply.get_unary(app_outer2)
-                    app_inner = apply.get_unary(app_outer1)
-                    opr_outer1 = app_outer1.opr
-                    opr_inner = app_inner.opr
-                    if(opr_inner.arity==2 and opr_outer1.arity==2):
-                        lhs = prntBinary(opr_inner, exp0, exp1)
-                        pexp = prntBinary(opr_outer1, lhs, exp2)
-                        return isProbe(pexp, app_outer1.oty)
-                    else:
-                        lhs = get_exp2(opr_inner, exp0)
-                        pexp = get_exp2(opr_outer1, lhs)
-                        return isProbe(pexp, app_outer1.oty)
-
-        texp = get_args(app)
+        texp = get_args3(app)
         cond = limit(texp, opr_outer)
-        foo+= ifelse(cond)
+        return  ifelse(cond, set, oty)
     else:
-
+        return  set
+##ff: field that is being probed or tensor variable inside if statement
+def check_conditional(f, ff, app):
+    # probes field at variable position
+    oty = app.oty
+    set = "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
+    foo = ""
+    if(app.isrootlhs or oty.dim==1):
         foo = set
-    return foo
-
+    else: #twice embedded
+        # there might be a conditional restraint
+        foo= getCond(app, set)
+    f.write(foo.encode('utf8'))
+    return
 ##ff: field that is being probed or tensor variable inside if statement
 def check_conditional(f, ff, app):
     # probes field at variable position
@@ -579,18 +390,9 @@ def check_conditional(f, ff, app):
         foo= getCond(app, set)
     f.write(foo.encode('utf8'))
     return
-
-
-def getInside(exp, pos, name):
-    if (fty.is_Field(exp.fldty)):
-        return "(inside("+name+","+pos+")) && "
-    else:
-        return ""
-def wrap(exp, stmt, oty):
-    return "\n\tif("+exp+"){\n\t\t"+stmt+"\n\t}\n\t else{"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
-
+##################################### inside field test  #####################################
+#probes field at variable position
 def check_inside(f, ff, app):
-    print " probes field at variable position"
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";"
     exps = apply.get_all_Fields(app)
@@ -598,9 +400,68 @@ def check_inside(f, ff, app):
     pos = "pos"
     i0 = getInside(exps[0],"F0", pos)
     adjs = str(adj)
-    
-    # create outer if
-    outerif = "true"
+    outerif = "true"     # create outer if
+    ################## comp term ##################
+    #number of fields we probe for composition inside test
+    def insideExpFld0(i):
+        return getInside(exps[i], fieldName(i) , pos)
+    def insideExpFld1(i, j):
+        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+pos+")*"+adjs)
+    def insideExpFld2(i, j, k):
+        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+fieldName(k)+"("+pos+")*" +adjs+")*"+adjs)
+    # inside expression for field in composition
+    def i0():
+        return insideExpFld0(0)
+    def i1():
+        return insideExpFld0(1)
+    def i2():
+        return insideExpFld0(2)
+    def i3():
+        return insideExpFld0(3)
+    def i0C2():
+        return insideExpFld1(0, 2)
+    def i1C2():
+        return insideExpFld1(1, 2)
+    def i2C3():
+        return insideExpFld1(2, 3)
+    def i0C12():
+        return insideExpFld2(0, 1, 2)
+    def termA():
+        # B(pos)+A(B(po))
+        i0C1 = insideExpFld1(0, 1)
+        return i1()+i0C1+"true"
+    def termB():
+        # C(pos)+B(pos)+A(B(pos))
+        return i2()+termA()
+    def termC():
+        # C(pos)+B(C(pos))+A(C(pos))
+        return i2()+i1C2()+i0C2()+"true"
+    def termD():
+        # D(pos)+C(D(pos))
+        return i3()+i2C3()
+    def termE():
+        # D(pos)+C(pos)+B(pos)+A(B(pos))
+        return  i3()+termB()
+    def termG():
+        # C(pos) + B(C(pos))+ A(B(C(pos)))
+        return i2()+i1C2()+i0C12()+"true"
+    def termH():
+        #C(pos)+ B(C(pos))+A(B(C(pos)))
+        return i2()+i1C2()+i0C12()+"true"
+    def termI():
+        #C(pos)+ D(pos) + B(C(pos))+A(C(pos))
+        return i2()+i3()+i1C2()+i0C2()+"true"
+    def termJ():
+        # D(pos)+C(D(pos))+ B(C(D(pos)))+ A(C(D(pos)))
+        i1C23 = insideExpFld2(1, 2, 3)
+        i0C23 = insideExpFld2(0, 2, 3)
+        return termD()+i1C23+i0C23+"true"
+    def termK():
+        # D(pos)+A(D(pos))+ B(D(pos))+ C(D(pos))
+        i1C3 = insideExpFld1(1, 3)
+        i0C3 = insideExpFld1(0, 3)
+        return i3()+i0C3+i1C3+i2C3()+"true"
+    ################## checks app for composition operator ##################
     #either comp inspired probing or regular probing
     if(app.opr==op_comp):
         if(app.lhs.opr == op_comp):
@@ -608,147 +469,77 @@ def check_inside(f, ff, app):
                 #3 layers
                 arity = app.lhs.lhs.opr.arity
                 if(arity==2):
-                    i0C = getInside(exps[0], "F0" , "F2(F3(pos)*" +adjs+")*"+adjs)
-                    i1C = getInside(exps[1], "F1" , "F2(F3(pos)*" +adjs+")*"+adjs)
-                    i2C = getInside(exps[2], "F2","F3(pos)*"+adjs)
-                    i3 = getInside(exps[3],"F3", pos)
-                    outerif = i3+i2C+i1C+i0C+"true"
+                    outerif = termJ()
                 else:
-                    i0C = getInside(exps[0], "F0" , "F1(F2(pos)*"+adjs+")*"+adjs)
-                    i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-                    i2 = getInside(exps[2],"F2", pos)
-                    outerif = i2+i1C+i0C+"true"
+                    outerif = termG()
             else:
                 # 2 layers
-                i0C = getInside(exps[0], "F0" , "F1(F2(pos)*"+adjs+")*"+adjs)
-                i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-                i2 = getInside(exps[2],"F2", pos)
-                outerif = i2+i1C+i0C+"true"
+                outerif = termH()
         else:
             if(not app.lhs.isrootlhs):
                 arityO = app.lhs.opr.arity
                 arityI = app.lhs.lhs.opr.arity
                 if((arityI==2) and (arityO==2)):
-                    i2C = getInside(exps[2],"F2", "F3(pos)*"+adjs)
-                    i1C = getInside(exps[1], "F1" , "F3(pos)*"+adjs)
-                    i0C = getInside(exps[0], "F0" , "F3(pos)*"+adjs)
-                    i3 = getInside(exps[3],"F3", pos)
-                    outerif = i3+i0C+i1C+i2C+"true"
-                elif((arityO==2)):
-                    i0C = getInside(exps[0], "F0" , "F2(pos)*"+adjs)
-                    i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-                    i2 = getInside(exps[2],"F2", pos)
-                    outerif = i2+i1C+i0C+"true"
-                elif((arityI==2)):
-                    i0C = getInside(exps[0], "F0" , "F2(pos)*"+adjs)
-                    i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-                    i2 = getInside(exps[2],"F2", pos)
-                    outerif = i2+i1C+i0C+"true"
+                    outerif = termK()
+                elif((arityO==2) or (arityI==2)):
+                    outerif = termC()
                 else:
-                    i0C = getInside(exps[0], "F0" , "F1(pos)*"+adjs)
-                    i1 = getInside(exps[1],"F1", pos)
-                    outerif = i1+i0C+"true"
+                    outerif = termA()
             else:
                 arity = app.lhs.opr.arity
                 if(arity==1):
-                    i0C = getInside(exps[0], "F0" , "F1(pos)*"+adjs)
-                    i1 = getInside(exps[1],"F1", pos)
-                    outerif = i1+i0C+"true"
+                    outerif = termA()
                 elif(arity==2):
-                    i0C = getInside(exps[0], "F0" , "F2(pos)*"+adjs)
-                    i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-                    i2 = getInside(exps[2],"F2", pos)
-                    outerif = i2+i1C+i0C+"true"
+                    outerif = termC()
     elif (app.lhs.opr==op_comp):
         arityO = app.opr.arity
         if(not app.lhs.isrootlhs):
             arityI = app.lhs.lhs.opr.arity
             if((arityI==2) and (arityO==2)):
-                i2 = getInside(exps[2],"F2", pos)
-                i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-                i0C = getInside(exps[0], "F0" , "F2(pos)*"+adjs)
-                i3 = getInside(exps[3],"F3", pos)
-                outerif = i2+i3+i1C+i0C+"true"
+                outerif = termI()
             elif((arityO==2)):
-                i0 = getInside(exps[0], "F0" , "F1(pos)*"+adjs)
-                i1C = getInside(exps[1], "F1" , pos)
-                i2 = getInside(exps[2],"F2", pos)
-                outerif = i0+i2+i1C+"true"
+                outerif = termB()
             elif((arityI==2)):
-                i0C = getInside(exps[0], "F0" , "F2(pos)*"+adjs)
-                i1C = getInside(exps[1], "F1" , "F2(pos)*"+adjs)
-                i2 = getInside(exps[2],"F2", pos)
-                outerif = i2+i1C+i0C+"true"
+                outerif = termC()
             else:
-                i0C = getInside(exps[0], "F0" , "F1(pos)*"+adjs)
-                i1 = getInside(exps[1],"F1", pos)
-                outerif = i1+i0C+"true"
+                outerif = termA()
         else:
-            i0C = getInside(exps[0], "F0" , "F1(pos)*"+adjs)
-            i1 = getInside(exps[1],"F1", pos)
             if(arityO==1):
-                outerif = i1+i0C+"true"
+                outerif = termA()
             elif(arityO==2):
-                i2 = getInside(exps[2],"F2", pos)
-                outerif= i2+i1+i0C+"true"
+                outerif= termB()
     elif ((not app.lhs.isrootlhs) and (not app.lhs.lhs.isrootlhs) and app.lhs.lhs.opr==op_comp):
         arityO = app.opr.arity
         arityI = app.lhs.opr.arity
-        i0C = getInside(exps[0], "F0" , "F1(pos)*"+adjs)
-        i1 = getInside(exps[1],"F1", pos)
         if((arityO==2) and (arityI==2)):
-            i2 = getInside(exps[2],"F2", pos)
-            i3 = getInside(exps[3],"F3", pos)
-            outerif= i3+i2+i1+i0C+"true"
+            outerif= termE()
         elif((arityO==2) or (arityI==2)):
-            i2 = getInside(exps[2],"F2", pos)
-            outerif= i2+i1+i0C+"true"
+            outerif= termB()
         else:
-            outerif = i1+i0C+"true"
+            outerif = termA()
     else:
-            #regular probing of expressions
-            j= ""
-            for i in range(len(exps)):
-                j = j+ getInside(exps[i],"F"+str(i), pos)
-            outerif = j+"true"
-    # inside if
-    # check none inside test
+        #regular probing of expressions
+        j= ""
+        for i in range(len(exps)):
+            j = j+ getInside(exps[i],"F"+str(i), pos)
+        outerif = j+"true"
+        # inside if
+        # check none inside test
     if(app.isrootlhs):
         foo = wrap(outerif,set, oty)
     else:
         t = getCond(app,set)
         foo = wrap(outerif, t, oty)
-    f.write(foo.encode('utf8'))
-#    return
-#        
-#                foo += set
-#            else: #twice embedded
-#                # there might be a conditional restraint
-#                foo += getCond(app, set)
-#                #foo+="\t}\n\telse cat{"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
-#                f.write(foo.encode('utf8'))
-#                return
-#
-#
-#        if(app.isrootlhs):
-#            foo += set
-#        else: #twice embedded
-#            # there might be a conditional restraint
-#            foo += getCond(app, set)
-#    foo+="\t}\n\telse {"+foo_out+ " = "+ outLineTF(oty, const_out)+";}"
-#    f.write(foo.encode('utf8'))
-#    return
+        f.write(foo.encode('utf8'))
 
 
-
-
+##################################### probe field at positions #####################################
 # set positions variables
 # index field at position
 def base_index_field_at_positions(f, pos, dim):
     print "index at positions"
     i=0
     foo="\t\t"
- 
     if(dim==1):
         foo+="real  "+foo_pos+"=0;\n"
     elif(dim==2):
@@ -756,13 +547,11 @@ def base_index_field_at_positions(f, pos, dim):
     elif(dim==3):
         foo+="tensor [3] "+foo_pos+"=[0,0,0];\n"
     # does first position
-    #pos.insert(0,pos[0])
     p=str(pos[0])
     foo += "\t\tif(i=="+str(i)+"){\n"
     # just sets poitions
     foo += "\t\t\t"+foo_pos+" = "+"("+p+");\n"
     # probes field at position
-    # foo += "\t\t\t"+foo_out+" = "+opfieldname1+"("+p+");\n"
     foo += "\t\t}\n"
     i=i+1
     for p1 in pos:
@@ -771,7 +560,6 @@ def base_index_field_at_positions(f, pos, dim):
         # just sets poitions
         foo += "\t\t\t"+foo_pos+" = "+"("+p+");\n"
         # probes field at current position
-        #foo += "\t\t\t"+foo_out+" = "+opfieldname1+"("+p+");\n"
         foo += "\t\t}\n"
         i=i+1
     f.write(foo.encode('utf8'))
@@ -779,21 +567,3 @@ def base_index_field_at_positions(f, pos, dim):
 def index_field_at_positions(f, pos, app):
     oty = app.oty
     return base_index_field_at_positions(f, pos, oty)
-
-
-def outLine(f, app):
-    type  = app.oty
-    print "\n outline-","type: ",type.name," app: ",app.name
-    if (fty.is_Field(type)):
-        #print "isfld-layer 1"
-        outLineF(f, type)
-    else:
-        if(app.isrootlhs):
-            return gotop1(f,app, "\toutput ", foo_out)
-        elif((app.lhs).isrootlhs):
-            #print "twice embedded"
-            return gotop2(f,app, "\toutput ", foo_out)
-        else:
-            #print "third layers"
-            return gotop3(f, app, "\toutput ", foo_out)
-
