@@ -144,7 +144,7 @@ op_hessian = operator(id+7, "hessian", 1, u'∇⊗∇', place_left, limit_none, 
 
 
 
-op_all = op_unary+op_binary+op_trig+op_specialized+[op_concat3]
+op_all = op_unary+op_binary+op_trig+op_specialized#+[op_concat3]
 
 
 # print all the ops

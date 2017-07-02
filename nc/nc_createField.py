@@ -9,8 +9,9 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_write import *
+from base_constants import *
 
-pathToSynFiles = "shared/symb/symb_f"
+pathToSynFiles = c_pathToSynFiles
 #convert coeffs
 def llist(cmd, coeff):
     a=" -"+cmd

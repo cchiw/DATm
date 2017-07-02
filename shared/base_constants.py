@@ -41,3 +41,7 @@ rst_data = "rst/data"
 rst_stash="rst/stash"
 
 opr_adj = 0.1
+
+
+c_pathToSynFiles = "symb/symb_f"
+c_template="../DATm/shared/template/foo.ddro"     # template
