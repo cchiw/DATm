@@ -17,8 +17,9 @@ from base_write import *
 from base_writeDiderot import *
 from nc_writeDiderot import nc_compileandRun, nc_setLength
 
+from base_constants import *
 
-template="shared/template/foo.ddro"     # template
+template=c_template     # template
 
 #strings in diderot template
 foo_in="foo_in"
