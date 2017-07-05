@@ -37,18 +37,13 @@ def get_unu(fall):
         #print ("["+f.name+"]")
     return rtn
 
-
 #is type represented in list of fields
 def outsupported(f, bshape):
     if (len(bshape)>4):
         return False
     dim = f.dim
-
     (tf, _) = shapeToTyhelper(bshape, dim)
-
     return tf
-
-
 
 # types for multiplication
 #one has to be a scalar, and one has to a be a field
@@ -85,7 +80,6 @@ def get_division(es, fldresult):
             if (fty.is_Scalar(e2)):
                 rtn.append([e1, e2])
     return rtn
-
 
 # types for addition, subtraction, modulate
 # one has to be a field in list nonscalarsflds
@@ -171,9 +165,7 @@ def get_concat3(es, fldresult):
                 # needs to have same type
                 if ((fty.get_shape(e1) == fty.get_shape(e2)) and (fty.get_shape(e1) == fty.get_shape(e3))):
                     rtn.append([e1, e2, e3])
-
     return rtn
-
 
 def get_compose(es, fldresult):
     rtn = []
@@ -316,7 +308,6 @@ def oprToArgs(op1, tys):
 
     if(op1.arity==1):
         if((op1.id==op_negation.id) or  (op1.id==op_copy.id)):
-   
             return (ps_unu_all)
         elif((op1.id==op_norm.id) or (op1.id==op_normalize.id)):
             return  ps_unu_all                # probe
@@ -397,17 +388,14 @@ def oprToArgs(op1, tys):
         return rtnArgs_all(get_eval())
     else:
         raise Exception("no built in example of operator"+op1.name)
-
 # returns example object
 def oprToEx_a(op1, rst_ty, tys):
-
     #print "op1",op1.name
     args = getArgs(oprToArgs(op1, tys), rst_ty)
     #print "op1", op1.name
     #for i in args:
     #print "returning opr to ex arg", i[0].name
     return example(op1, args)
-
 # gets a single examples
 def get_single_example(opr, ty_num, args_types):
     ex = oprToEx(opr, args_types)
@@ -425,10 +413,8 @@ def get_single_example(opr, ty_num, args_types):
     name = example.toStr(ex, ty_num)
     ty = example.get_ty(ex, ty_num)
     return (name, opr,ty)
-
 # gets a single examples
 def get_single_exampleEx(ex, ty_num):
-
     i = 0
     for t in ex.tys:
         x=""

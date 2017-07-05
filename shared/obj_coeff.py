@@ -10,14 +10,12 @@ from sympy import *
 #symbols
 x,y,z =symbols('x y z')
 
-
-
+#------------------------------ get coeff ------------------------------
 #-------------------- Synthetic field --------------------
 # coefficients for synthetic field
 # a, b*x + c*y
 # d*x*x, e*x*y,f*y*y
 # g*y*x*x, h*x*y*y, i*x*x*y*y
-
 #get coeffs depending on dimension and coeff_order
 def get_coeffs_debug1(dim, coeff_style, ucoeff):
     lcoeff = ucoeff*(-1)
@@ -28,24 +26,19 @@ def get_coeffs_debug1(dim, coeff_style, ucoeff):
         for i in range(c):
             coeffs.append(random.randint(lcoeff, ucoeff))
         return coeffs
-    
-
     if (dim==0): #tensor type
         return [random.randint(lcoeff, ucoeff),0,0,0,0,0,0,0,0]
-    if (dim==1):
+    elif (dim==1):
         return [1, 0, 0, 0]
-    if (dim==2):
+    elif (dim==2):
         return [1,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    if (dim==3):
+    elif (dim==3):
         coeffs=[]
         for i in range(dim):
             coeffs.append([1,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         return coeffs
-    #return [coeffs[0],zero+[0],zero+[0]]
     else:
         raise "dimension is not supported"
-
-
 def get_coeffs_debug2(dim, coeff_style, ucoeff):
     lcoeff = ucoeff*(-1)
     def mk_coeffs(c):
@@ -55,24 +48,19 @@ def get_coeffs_debug2(dim, coeff_style, ucoeff):
         for i in range(c):
             coeffs.append(random.randint(lcoeff, ucoeff))
         return coeffs
-    
-    
     if (dim==0): #tensor type
         return [random.randint(lcoeff, ucoeff),0,0,0,0,0,0,0,0]
-    if (dim==1):
+    elif (dim==1):
         return [2, 0, 0, 0]
-    if (dim==2):
+    elif (dim==2):
         return [2,random.randint(lcoeff, ucoeff),0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    if (dim==3):
+    elif (dim==3):
         coeffs=[]
         for i in range(dim):
             coeffs.append([2,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         return coeffs
-    #return [coeffs[0],zero+[0],zero+[0]]
     else:
         raise "dimension is not supported"
-
-
 def get_coeffs(dim, coeff_style, ucoeff):
     lcoeff = ucoeff*(-1)
     def mk_coeffs(c):
@@ -82,8 +70,6 @@ def get_coeffs(dim, coeff_style, ucoeff):
         for i in range(c):
             coeffs.append(random.randint(lcoeff, ucoeff))
         return coeffs
-
-
     def mk_CoeffSet_d2():
         if (coeff_style == coeff_cubic):
             return mk_coeffs(16)
@@ -114,7 +100,7 @@ def get_coeffs(dim, coeff_style, ucoeff):
         #return [coeffs[0],zero+[0],zero+[0]]
     else:
         raise "dimension is not supported"
-
+#------------------------------ coeff to expression------------------------------
 # unravel pack of coeffs
 def toExp_cubic(coeff):
     # digest coefficients
@@ -127,8 +113,6 @@ def toExp_cubic(coeff):
     tC = i*(x*x) + (j+k*x+l*(x*x))*y*y*y;
     tD = (x*x*x)*((m*y*y*y)+(n*y*y)+(o*y)+p);
     return  tA+tB+tC+tD;
-
-
 # unravel pack of coeffs
 def toExp_quad(coeff, zvalue):
     # digest coefficients
@@ -141,7 +125,6 @@ def toExp_quad(coeff, zvalue):
     t3 = a + e*x*y + i*(y*y)*(x*x)
     exp = zvalue*(t0+t1+t2+t3)
     return exp
-
 def coeffToExp(coeff, dim):
     ##print "coeff",coeff
     ##print "dim",dim
@@ -165,34 +148,31 @@ def coeffToExp(coeff, dim):
         return exp
     else :
         raise "unsupported field dimension"
-
+#------------------------------ mk exp ------------------------------
 def mk_exp(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
         #print "using regular template"
         coeff1= get_coeffs_debug2(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
-        return (coeff1,exp1)
+        return (coeff1, exp1)
     else:
         #print "using mip template"
-        return (0,[]) # does not get used
-
-
+        return (0,[]) # does not get use
 def mk_exp_debug1(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
         #print "using regular template"
         coeff1= get_coeffs_debug1(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
-        return (coeff1,exp1)
+        return (coeff1, exp1)
     else:
         #print "using mip template"
         return (0,[]) # does not get used
-
 def mk_exp_debug2(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
         #print "using regular template"
         coeff1= get_coeffs_debug2(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
-        return (coeff1,exp1)
+        return (coeff1, exp1)
     else:
         #print "using mip template"
         return (0,[]) # does not get used

@@ -43,5 +43,5 @@ rst_stash="rst/stash"
 opr_adj = 0.1
 
 
-c_pathToSynFiles = "symb/symb_f"
-c_template="../DATm/shared/template/foo.ddro"     # template
+c_pathToSynFiles = "shared/symb/symb_f"
+c_template="shared/template/foo.ddro"     # template

@@ -55,7 +55,6 @@ def transform_krn(krn, id):
             return krn_bs3
         elif(id == 2):
             return krn_tent
-
     else:
         raise Exception ("unsupported kernel type:", krn)
 
@@ -66,20 +65,15 @@ def set_k(g_krn, id, ty1):
     c_krn = transform_krn(g_krn, id)
     c_k = c_krn.continuity
     ty1.k = c_k
-    #print "set_k- kernel id:", id," g_krn :", c_krn.name, "k: ",ty1.k
     return fty(ty1.id, ty1.name, ty1.dim, ty1.shape, ty1.tensorType, c_k)
-    
 #return ty1
 def set_ks(g_krn, ishapes):
     id = 0
     rtn = []
     for i in ishapes:
         r = set_k(g_krn, id, i)
-        #print "set_ks", id, "r:", r.name,"k", r.k
         rtn.append(r)
-        #print "->k", rtn[id].k
         id+=1
-
     return rtn
 
 
@@ -118,7 +112,6 @@ class field:
         shape = ty0.fldty.shape
         return  (ty0.isField and len(shape)==0)
     def is_Scalar(ty0):
-        print "ty0", ty0.name
         shape = ty0.fldty.shape
         return  (len(shape)==0)
     # is vecor field
@@ -134,8 +127,6 @@ class field:
     def is_Ten3(ty0):
         shape = ty0.fldty.shape
         return  (len(shape)==3)
-
-
 
 
 #  i_fty: field type
@@ -154,9 +145,6 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
             (coeff2, exp2)= mk_exp(dim, coeff_style, ucoeff, t_template)
             coeffs= [ coeff1,coeff2]
             exps = [exp1,exp2]
-   
-            #print " inside get vec(): exp1", exp1
-            #print " inside get vec(): exp2", exp2
             return (coeffs, exps)
         elif (n==3):
             (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff, t_template)
@@ -183,21 +171,6 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
             (c1,e1)= get_vec(m)
             exps.append(e1)
             coeffs.append(c1)
-            # (c1,e1) = get_vec(m)
-
-        #[a, b, c]=e1
-        #e2 = [a*2,b*2,c*2]
-        #e3 = [a*3,b*3,c*3]
-        #exps = [e1, e1, e1] #each axis has fixed value
-        #coeffs = [c1, c1, c1]
-        #print "\n\n ********************** post get exp\n"
-        #print "exps-e1",e1
-        #print "coeffs-c1",c1
-        #print " exps[0][0]", exps[0][0]
-        #print " exps[0][1]", exps[0][1]
-        #print " exps[1][0]", exps[1][0]
-        #print "\n\n ---   \n"
-        #print "coeffs",coeffs
         return (coeffs, exps)
     def get_ten3(n,m,o):
         exps=[]
@@ -207,7 +180,6 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
             exps.append(e1)
             coeffs.append(c1)
         return (coeffs, exps)
-
     if (fty.is_ScalarField(finfo1)):
         (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
         F = field(true, id, finfo1 , krn, exp1, input1)
@@ -225,7 +197,6 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
         F = field(true, id, finfo1 ,krn, exps, input1)
         #print ("Fvec", field.toStr(F))
         return (F, finfo1, coeffs)
-    
     elif(fty.get_dim(finfo1)==0): #tensor
         if(fty.is_Scalar(finfo1)):
             (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
