@@ -29,29 +29,23 @@ class counter:
         self.cnt28=0
         self.cnt29=0
         self.cnt30=0
-
     def get_totals(self):
         return (self.rst_t_NA, self.rst_t_good, self.rst_t_eh, self.rst_t_check, self.rst_t_terrible, self.rst_t_compile, self.rst_t_run)
     def get_locals(self):
         return (self.rst_NA, self.rst_good, self.rst_eh, self.rst_check, self.rst_terrible, self.rst_compile, self.rst_run)
-
     def get_cnt(self):
         return self.cnt
     def get_cumulative(rst_self):
         return self.rst_cumulative
-
     def inc_compile(self):
         self.rst_compile +=1
         self.rst_t_compile +=1
-    
     def inc_run(self):
         self.rst_run +=1
         self.rst_t_run +=1
-    
     def inc_NA(self):
         self.rst_t_NA  +=1
         self.rst_NA  +=1
-    
     def inc_cnt(self):
         self.rst_cnt += 1
     def inc_cumulative(self):
@@ -72,8 +66,6 @@ class counter:
         self.rst_t_terrible += rst_terrible_1
         self.rst_NA += rst_NA_1
         self.rst_t_NA += rst_NA_1
-
-    
     def zero_locals(self):
         # zero locals
         self.rst_good =  0
@@ -84,11 +76,8 @@ class counter:
         self.rst_run = 0
         self.rst_NA = 0
         self.rst_cnt = 0
-
     def zero_total(self):
         self.rst_l = 0
-    
-
     def writeCumulativeS(self):
         rst_t_good = self.rst_t_good
         rst_t_eh = self.rst_t_eh
@@ -120,8 +109,6 @@ class counter:
         x+= " total  cumulative: "+str(rst_cumulative)
         x+= " total  cnt: "+str(rst_cnt)
         return x
-
-
     def  writeLocal(self):
         rst_cnt = self.rst_cnt
         rst_good = self.rst_good
@@ -155,11 +142,5 @@ class counter:
         x+= " cumulative: "+str(rst_cumulative)
         return x
 
-
 def get_counter():
     return counter()
-
-c=get_counter()
-print c.rst_cnt
-counter.inc_cnt(c)
-print c.rst_cnt

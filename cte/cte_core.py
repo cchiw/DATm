@@ -315,33 +315,45 @@ def create_apply3_then_core(ishape, appname, opr_outer2, tshape3, ztwice, coeffs
 
  # generate third layer
 #ztwice, coeffstwice: result of application of second layer
-def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
+def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, cnt):
     [opr_inner, opr_outer1, opr_outer2] = oprs
-    [_, _, t_ty3] = tys
     #print "****************************************  get_tshape3 ************************************"
     # third layer operator, and second type it is applied to (incase it is a binary)
     tmpshape = []
     s = ""
+    print "opr_outer2", opr_outer2.name
+    print "opr_outer1", opr_outer1.name
+    print "opr_inner:", opr_inner.name
+    print "tys", tys
     if(opr_outer2.arity==2):
         ty3 = get_all_extra(testing_frame)
-        tmpshape = [ty3[t_ty3]]
-        s = "_t"+str(t_ty3)
+        [i] = newtys
+        t_ty3 = ty3[i]
+        tmpshape = [t_ty3]
+        s = s+ "_t"+str(t_ty3)
     elif(opr_outer2.arity==3):
         ty3 = get_all_extra(testing_frame)
-        tmpshape = [ty3[t_ty3],ty3[t_ty3]]
-        s = "_t"+str(t_ty3)+"_"+str(t_ty3)
+        [i, j] = newtys
+        t_ty3 = ty3[i]
+        t_ty4 = ty3[j]
+        tmpshape = [t_ty3, t_ty4]
+        s = s+ "_t"+str(t_ty3)+ "_t"+str(t_ty4)
+
     counter.inc_total(cnt)
     # add new shape argment
     ishape_outer2 = [tshape2] + tmpshape
     ishape_all = ishape + tmpshape
     ishape_all = convert_fields(ishape_all, testing_frame)
-    
+    print "trying to match opr_outer2", opr_outer2.name ,"with ",tshape2.name
+    for j in tmpshape:
+        print "-- shape", j.name
     # ok now back to regular programming
     (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2)
     if(tf3==true):#
         writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         appname = opr_outer2.name+"("+opr_outer1.name+"("+opr_inner.name+")"+")"
         #print "appname :",appname
+        tys =tys+newtys
         title =  generate_name(oprs, tys, "_l3")
         create_apply3_then_core(ishape_all, appname, opr_outer2, tshape3, app, coeffs, title, testing_frame, cnt)
 
@@ -349,18 +361,24 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
 #iterate over extra possible type
 def iter_ty3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
     [opr_inner, opr_outer1, opr_outer2] = oprs
-    def f(t_ty3):
-         get_tshape3(app, coeffs, ishape, tshape2, oprs, tys+[t_ty3], testing_frame, cnt)
-    if(opr_outer2.arity==1):
-        f(None)
-    else:
-        ty3 = get_all_extra(testing_frame)
+    def f(newtys):
+        get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, cnt)
+    arity =opr_outer2.arity
+    ty3 = get_all_extra(testing_frame)
+    if(arity==1):
+        f([])
+    elif(arity==2):
         for t_ty3 in range(len(ty3)):  #extra type
-            f(t_ty3)
+            f([t_ty3])
+    elif(arity==3):
+        for t_ty3 in range(len(ty3)):
+            for t_ty4 in range(len(ty3)):
+                f([t_ty3, t_ty4])
     return
 
 # iterating over third operator
 def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
+    print "gettshap3-iterop3"
     for opr_outer2 in op_all:
         # next function will type check it and get type
         iter_ty3(app, coeffs, ishape, tshape2, oprs+[opr_outer2], tys, testing_frame, cnt)
@@ -369,12 +387,16 @@ def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, 
 
 # checks to see if specific ex works
 def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
+    
+    print "inside get_tshape 2"
+    print "tys:", tys
+
     #writeTime(9)
     # adjusting to accept 2|3 layers of operators
     #print "in get-tshape print ishape"
-    #for j in ishape:
-    #    print "-", j.name
-    #print "in get tshape1 ",tshape1.name
+    for j in ishape:
+        print "-ishape -", j.name
+    print "in get tshape1 ",tshape1.name
     opr_inner = oprs[0]
     opr_outer = oprs[1]
 
@@ -408,20 +430,15 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
             return core(app, coeffs, dimF, title, testing_frame, cnt)
         elif(layer==3):
             # first did the user specify 3 operators in the command line?
-        
             if(len(oprs)==3):
-
                 # user specified 3 operators
                 if(len(tys)==3):
                     #specific third argument
-
                     get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt)
                 else:
-
                     # iterate over third argument
                     iter_ty3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt)
             else:
-
                 # create third application by iterating over possible operators
                 get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt)
     else:

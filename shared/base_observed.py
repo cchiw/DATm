@@ -49,7 +49,7 @@ def base_observed(oty, p_out):
         return getObserv_1(p_out)
     else:
         a=1
-        for s in get_Tshape(ex_rtn):
+        for s in (ex_rtn.shape):
             a= a*s
         return getObserv_t(p_out, a)
 
