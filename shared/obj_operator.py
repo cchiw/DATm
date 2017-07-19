@@ -121,7 +121,7 @@ op_crossT3 = operator(id+6,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), p
 op_hessian = operator(id+7, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_unary+op_binary+op_trig+op_specialized+[op_concat3]
+op_all = op_unary+op_binary+op_trig#+op_specialized#+[op_concat3]
 #------------------------------ helpers -----------------------------------------------------
 # print all the ops names and ids
 def pnt_ops():

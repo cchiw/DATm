@@ -337,7 +337,7 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     # remove executable
     #os.system(" rm "+e_Orig)
     # compile program
-    os.system(nrrdbranch+" --log "+p_Orig)
+    #os.system(nrrdbranch+" --log "+p_Orig)
     # does executable exist
 
     endall = time.time()
