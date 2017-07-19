@@ -1,0 +1,81 @@
+Started July 18, 2017
+vis15 branch err marks
+
+__p_o13_o19_o9_t53_t2_tN__l3: done 
+__p_o7_o17_o5_t4_t18_tN__l3:done
+-p_o20_o25_o17_t14_tN_tN_t1__l3: potential false positives
+__p_o17_o17_o5_t36_t12_tN__l3: fixed by an earlier error
+__p_o17_o18_o5_t54_t6_tN__l3  fixed by an earlier error
+p_o15_o18_o5_t36_t12_tN__l3: datm needs to create another inside test.
+	(test used the inverse as a second arg) and program should check if det is a small number
+
+—————————————————————————————————————————————————————————————	
+
+***rtn:terrible__p_o18_o13_o11_t20_t23_tN__l3
+	 -: jacob(subtraction(division))
+	-
+-p_o18_o13_o11_t20_t23_tN__l3 jacob(subtraction(division))| T_m3x3,T_s,F_m3x3_d3| 
+		Rst: Z-3 RD  max diff: 3.28 sumdiff: 0.1515 100.0% c:0 o:-3.2799869
+	rtn:terrible
+
+—————————————————————————————————————————————————————————————	
+error in both branches
+———————————————————————————————							   
+
+***rtn:compile __p_o13_o19_o9_t53_t2_tN__l3
+	        -: div(modulate(subtraction))
+		-_F_v3_d3,F_v3_d3,T_v3 |p_o13_o19_o9_t53_t2_tN__l3
+		rtn:compile 
+
+works for ein16 but not vis15 or chiw17
+
+field#3(3)[]G = ∇•(modulate(((F0)-(F1)),(F2)));
+
+ expand tensor[3] op1_e3_l_10=λ(T0[3 3],T1[3 3])<(T0_{i0,i0}) - (T1_{i0,i0})>_{3}tensor[3,3]tensor[3,3]MidToLow.expand: error converting λ(T0[3 3],T1[3 3])<(T0_{i0,i0}) - (T1_{i0,i0})>_{3}(probe_l_8,probe_l_9)
+uncaught exception Fail [Fail: alphaToIdxs(_, V 0): out of bounds]
+  raised at common/phase-timer.sml:78.57-78.59
+  raised at mid-to-low/mid-to-low.sml:232.29-232.31
+  raised at mid-to-low/ein-to-vector.sml:67.35-67.105
+0.295845985413
+
+
+solution:
+when using a vector operation must make sure index being projected isn’t repeated in the tensor term.
+
+
+———————————————————————————————	
+***rtn:compile __p_o7_o17_o5_t4_t18_tN__l3
+	        -: inverse(multiplication(normalize))
+		-_T_m2x2,F_s_d3 |p_o7_o17_o5_t4_t18_tN__l3
+		rtn:compile 
+works for chiw17  but not for vis15
+
+uncaught exception Fail [Fail: too many steps]
+  raised at common/phase-timer.sml:78.57-78.59
+  raised at common/phase-timer.sml:78.57-78.59
+  raised at high-opt/normalize-ein.sml:262.58-262.79
+0.0856318473816
+
+
+***rtn:compile __p_o7_o17_o5_t4_t18__l3
+	 -: inverse(multiplication(normalize))
+	-_T_m2x2,F_s_d3 |p_o7_o17_o5_t4_t18__l3
+	rtn:compile 
+
+
+solution:
+Infinite rewrites.A rewrite was creating a product to rewrite a subterm but then wrapped it inside another product. The filter product was continuously flattening the product.
+—————————————————————————————————————————————————————————————		
+False positives
+———————————————————————
+
+***rtn:terrible__p_o20_o25_o17_t14_tN_tN_t1__l3
+	 -: multiplication(sqrt(op_doubledot))
+	 -
+-p_o20_o25_o17_t14_tN_tN_t1__l3 multiplication(sqrt(op_doubledot))
+| F_m3x3_d2,T_m3x3,T_v2| 
+								   
+ Rst: Y-3 RD  max diff: 0.0332 sumdiff: 0.0043 100.0% c:0 o:-0.033153139
+	
+
+repeated multiple times on both branches and did not find an error.
