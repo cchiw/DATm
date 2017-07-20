@@ -214,7 +214,8 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     os.system("mkdir "+path)
 
 
-
+    os.system("cp rst/tmp/correct_dbl.nrrd "+path+"/correct_dbl.nrrd")
+    os.system("cp rst/tmp/correct_sng.nrrd "+path+"/correct_sng.nrrd")
     nrrdNames =["inputfile_","inputfile", "inputfileF"]
     for i in  nrrdNames:
         for j in range(3):
@@ -234,10 +235,10 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     e = "\n\n positions"+str( positions)
     d = "\n\nParams("+str(len(PARAMS))+")"
     j = 0
-    print "Params", PARAMS
-    #for p in PARAMS:
-    #    d+="\n\t"+str(j)+".)"+p
-    #    j+=1
+    #print "Params", PARAMS
+    for p in PARAMS:
+        d+="\n\t"+str(j)+".)"+p
+        j+=1
     st = a+b+c+e+d+"\n"+rst+"\n\n"
     f = open(path+"/rst.txt", 'w+')
     f.write(st)
@@ -296,4 +297,8 @@ def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  pos
     write_rst(names, x, extraname, "rtn:terrible")
     #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
-
+def rst_good(num, names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
+    dir = "g"
+    labl = dir+"_"+str(num)#names+"_"+
+    write_rst(names, x, extraname, "rtn:good")
+    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)

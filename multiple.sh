@@ -10,7 +10,9 @@ function run {
   mkdir $1
   cd $1
   cp  -R ../shared .
-
+  cd shared
+  sh run.sh
+  cd ..
   # result files
   mkdir rst
   cp  -R ../clean/rst  .
@@ -22,7 +24,7 @@ function run {
 
   python cte_step.py 10 $2 $3
 
-  cp "$1"/rst/stash/results_summary.txt  kitten"$1"
+  cp rst/stash/results_summary.txt  kitten"$1"
 
   echo "$1 done for  operator range $2 $3 "
 
@@ -30,10 +32,10 @@ function run {
 
 
 
-run t1 0 13 &
+run t1 0 12 &
 
-run t2 13 3 &
+run t2 12 4 &
 
-run t3 16 4 &
+run t3 16 2 &
 
-run t4 20 11 &
+run t4 18 13 &

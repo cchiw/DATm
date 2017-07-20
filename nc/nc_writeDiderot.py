@@ -43,10 +43,15 @@ def runDiderot(p_out, shape, pos, output, runtimepath, isNrrd):
         m2 = len(pos)+1
         w_shape=" -s "+str(product)+" "+str(m2)
         os.system("rm tmp.nrrd")
-        os.system("./"+p_out+" -o tmp")
         os.system("./"+p_out+" -o tmp.nrrd")
-        #os.system("unu head tmp.nrrd")
         os.system("unu reshape -i tmp.nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
+        diderotprogram = p_out+".diderot"
+   
+        os.system("rm rst/tmp/*.nrrd")
+        os.system("/Users/chariseechiw/diderot/vis15/bin/diderotc --exec  " + diderotprogram)
+        os.system("./"+p_out+" -o "+ "rst/tmp/correct_sng.nrrd")
+        os.system("/Users/chariseechiw/diderot/vis15/bin/diderotc --exec --double " + diderotprogram)
+        os.system("./"+p_out+" -o "+  "rst/tmp/correct_dbl.nrrd")
     else:
         # not is vis
         executable = "./"+p_out

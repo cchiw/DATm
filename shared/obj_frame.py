@@ -30,14 +30,14 @@ class frame:
             return Exception ("Too many samples: ", samples)
         self.samples = samples
         # some hardcoded pieces
-        p_Observ = "p_observ"
+        p_Observ = "observ"
         stash  = rst_data 
         # name of diderot program testing function created
         self.p_Observ = p_Observ
         # directory to stash tmp files
         self.stash = stash
         # name of output file with observed data
-        self.output = stash+"/output5_"+p_Observ
+        self.output = stash+"/"+p_Observ
          # name of synthetic field created
         self.inputfile = stash+"/inputfile"
         self.krn = krn

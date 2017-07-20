@@ -46,6 +46,8 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         #raise Exception("terrible")
     elif (rst_NA_1==9):
          rst_NA(name_file, x, name_describe,  branch)
+    elif (rst_good_1==1):
+        rst_good(cnt.rst_t_good, name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
     return
 
 ##################################################################################################
@@ -159,6 +161,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             #tall = str(endall - startall)
             #writeTime(30, tall)
             #startall=endall
+            diderotprogram = g_p_Observ+".diderot"
+
             analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             #endall = time.time()
             #tall = str(endall - startall)
