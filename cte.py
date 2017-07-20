@@ -15,7 +15,8 @@ from cte_iter_cmd import main_set
 n_template = 0
 shift = 1 # next command number
 
-os.system("cp  -R /Users/chariseechiw/DATm/stash  /Users/chariseechiw/DATm/rst/")
+os.system("mkdir rst")
+#os.system("cp  -R clean/rst  .")
 main_set(n_template, shift)
 
 os.system("rm *.pyc ")

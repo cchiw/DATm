@@ -152,7 +152,7 @@ def coeffToExp(coeff, dim):
 def mk_exp(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
         #print "using regular template"
-        coeff1= get_coeffs_debug2(dim, coeff_style, ucoeff)
+        coeff1= get_coeffs(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
         return (coeff1, exp1)
     else:

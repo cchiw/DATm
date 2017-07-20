@@ -40,7 +40,7 @@ def fn_norm(fld, dim):
     exp = field.get_data(fld)
     ityp = field.get_ty(fld)
     dim = field.get_dim(fld)
-    ###print " exp1: ",exp1," exp2: ",exp2
+
     # vectors
     def iter (es):
         sum = 0
@@ -82,6 +82,7 @@ def fn_normalize(fld, dim):
     ityp = field.get_ty(fld)
     dim = field.get_dim(fld)
     norm = fn_norm(fld, dim)
+
     if(field.is_Scalar(fld)):
         return exp
     elif(field.is_Vector(fld)):

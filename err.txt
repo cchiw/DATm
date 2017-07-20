@@ -1,22 +1,44 @@
 Started July 18, 2017
 vis15 branch err marks
 
-__p_o13_o19_o9_t53_t2_tN__l3: done 
-__p_o7_o17_o5_t4_t18_tN__l3:done
--p_o20_o25_o17_t14_tN_tN_t1__l3: potential false positives
-__p_o17_o17_o5_t36_t12_tN__l3: fixed by an earlier error
-__p_o17_o18_o5_t54_t6_tN__l3  fixed by an earlier error
-p_o15_o18_o5_t36_t12_tN__l3: datm needs to create another inside test.
+***rtn:compile __p_o13_o19_o9_t53_t2_tN__l3 			fixed 
+***rtn:compile __p_o7_o17_o5_t4_t18_tN__l3:			fixed
+-p_o20_o25_o17_t14_tN_tN_t1__l3: 				fixed by an earlier error
+__p_o17_o17_o5_t36_t12_tN__l3: 					fixed by an earlier error
+__p_o17_o18_o5_t54_t6_tN__l3  					fixed by an earlier error
+p_o15_o18_o5_t36_t12_tN__l3:					datm needs to create another inside test.
 	(test used the inverse as a second arg) and program should check if det is a small number
+***rtn:compile __p_o12_o19_o9_t39_t13_tN__l3			fixed
+***rtn:compile __p_o0_o19_o9_t13_t13_tN__l3			fixed by an earlier error
+***rtn:compile __p_o13_o19_o9_t11_t20_tN__l3    		fixed by an earlier error
 
-—————————————————————————————————————————————————————————————	
 
-***rtn:terrible__p_o18_o13_o11_t20_t23_tN__l3
-	 -: jacob(subtraction(division))
+***rtn:terrible__p_o18_o13_o11_t20_t23_tN__l3			fixed by an earlier error	
+***rtn:compile __p_o12_o19_o9_t53_t2_tN__l3			fixed by an earlier error
+***rtn:compile __p_o12_o19_o9_t53_t20_tN__l3			fixed by an earlier error 
+***rtn:terrible__p_o13_o7_o10_t39_tN_tN__l3			fixed by an earlier error
+***rtn:terrible__p_o7_o11_o7_t20_tN_tN__l3
+——————***rtn:terrible__p_o14_o16_o7_t7_t23_tN__l3		division is very small number. floating point error. sometimes pass/fail
+——————————————————————————————————————————————————————	
+
+
+***rtn:terrible__p_o7_o11_o7_t20_tN_tN__l3
+	 -: normalize(jacob(normalize))
 	-
--p_o18_o13_o11_t20_t23_tN__l3 jacob(subtraction(division))| T_m3x3,T_s,F_m3x3_d3| 
-		Rst: Z-3 RD  max diff: 3.28 sumdiff: 0.1515 100.0% c:0 o:-3.2799869
+-p_o7_o11_o7_t20_tN_tN__l3 normalize(jacob(normalize))| F_v3_d3| 
+		Rst: Z-3 RD  max diff: 0.5774 sumdiff: 0.0608 100.0% c:0 o:0.57735026
 	rtn:terrible
+
+sometimes passes
+
+
+***rtn:terrible__p_o14_o16_o7_t7_t23_tN__l3
+	 -: normalize(inner_product(cross_product))
+	-
+-p_o14_o16_o7_t7_t23_tN__l3 normalize(inner_product(cross_product))| F_v3_d3,T_v3,F_m3x3_d3| 
+		Rst: Z-3 RD  max diff: 1.1547 sumdiff: 0.165 200.0% c:-0.333333333333333*sqrt(3) o:0.57735026
+	rtn:terrible
+
 
 —————————————————————————————————————————————————————————————	
 error in both branches
@@ -43,6 +65,16 @@ solution:
 when using a vector operation must make sure index being projected isn’t repeated in the tensor term.
 
 
+
+***rtn:compile __p_o12_o19_o9_t39_t13_tN__l3
+	 -: div(modulate(addition))
+	-_F_v2_d2,F_v2_d2,F_v2_d2 |p_o12_o19_o9_t39_t13_tN__l3
+	rtn:compile 
+
+solution:
+when using a vector operation must make sure index being projected isn’t repeated in the tensor term. (except for addition)
+
+
 ———————————————————————————————	
 ***rtn:compile __p_o7_o17_o5_t4_t18_tN__l3
 	        -: inverse(multiplication(normalize))
@@ -66,16 +98,3 @@ uncaught exception Fail [Fail: too many steps]
 solution:
 Infinite rewrites.A rewrite was creating a product to rewrite a subterm but then wrapped it inside another product. The filter product was continuously flattening the product.
 —————————————————————————————————————————————————————————————		
-False positives
-———————————————————————
-
-***rtn:terrible__p_o20_o25_o17_t14_tN_tN_t1__l3
-	 -: multiplication(sqrt(op_doubledot))
-	 -
--p_o20_o25_o17_t14_tN_tN_t1__l3 multiplication(sqrt(op_doubledot))
-| F_m3x3_d2,T_m3x3,T_v2| 
-								   
- Rst: Y-3 RD  max diff: 0.0332 sumdiff: 0.0043 100.0% c:0 o:-0.033153139
-	
-
-repeated multiple times on both branches and did not find an error.

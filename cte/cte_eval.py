@@ -16,13 +16,20 @@ from nc_eval import unary, binary, third, probeField
 
 # ***************************  applying a single operator ***************************
   #a single application
-def simple_apply(c_layer, app):
+def simple_apply(c_layer, app, pos):
     arity = apply.get_arity(app)
     oty = apply.get_oty (app)
     if (arity ==1):
         b = unary(app)
-        #rtn = probeField(app.oty, pos, b)
+        rtn = probeField(app.oty, pos, b)
         #print "after applying: ",app.opr.name," rtn:", rtn
+        #tmp = apply(app.name, op_norm, app.lhs, app.rhs, app.third, ty_scalarF_d3, app.isrootlhs, app.isrootrhs)
+        # rtn = probeField(tmp.oty, pos, unary(tmp))
+        #print "after applying: ",tmp.opr.name," rtn:", rtn
+        #tmp = apply(app.name, op_copy, app.lhs, app.rhs, app.third, app.oty, app.isrootlhs, app.isrootrhs)
+        #rtn = probeField(tmp.oty, pos, unary(tmp))
+        #print "after applying: ",tmp.opr.name," rtn:", rtn
+        
         return (oty, b)
     elif (arity ==2):
         b = binary(app)
@@ -41,7 +48,7 @@ def applyOnce(oexp_inner, app_inner, app_outer, rhs1, rhs2, pos, arity):
     lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "")
     #create new apply
     app_tmp = apply("tmp", opr_outer, lhs_tmp, rhs1, rhs2, oty_outer, true, true)
-    return simple_apply(None, app_tmp)
+    return simple_apply(None, app_tmp, pos)
 
 
 # ***************************  sorting an apply object ***************************
@@ -54,13 +61,13 @@ def sort(e, pos):
         else:
             # calls embed multiple times
             return embed
-    def embed(c_layer, app_tmp):
+    def embed(c_layer, app_tmp, _):
         arity = apply.get_arity(app_tmp)
         gfnc = get_gfnc(c_layer)
         # get arguments
         [app_inner, rhs, third] = apply.getArgs(app_tmp)
         # apply 1st and second layer
-        (_, oexp_inner) = gfnc(c_layer-1, app_inner)
+        (_, oexp_inner) = gfnc(c_layer-1, app_inner, pos)
         # applies third layer
         (oty_outer, oexp_tmp) = applyOnce(oexp_inner, app_inner, app_tmp, rhs, third, pos, arity)
         return (oty_outer, oexp_tmp)
@@ -75,12 +82,12 @@ def sort(e, pos):
         return embed(1, e)
     else:
         c_layer =  getLayers(e)
-        return embed(c_layer, e) #multipler layers
+        return embed(c_layer, e, pos) #multipler layers
 
 # ***************************  main  ***************************
 # evaluate an applicaiton at positions. returns the resulting expression.
 def eval(app, pos):
-    #"about to sort"
+    print "about to sort"
     (otyp1, ortn) = sort(app, pos) #apply operations to expressions
     rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
     return rtn
