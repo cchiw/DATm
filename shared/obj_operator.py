@@ -66,16 +66,7 @@ op_curl= operator(id+2, "curl", 1, u'∇×',place_left, limit_none, True)
 op_jacob= operator(id+3, "jacob", 1, u'∇⊗', place_left, limit_none, True)
 op_diff =[op_gradient, op_divergence, op_curl, op_jacob]
 id=id+len(op_diff)
-#----------------- slicing -----------------
-op_slicem0 = operator(id,"slicem0", 1, u'[1,:]', place_right, limit_none, False)
-op_slicem1 = operator(id+1,"slicem1", 1, u'[:,0]', place_right, limit_none, False)
-op_slicev0 = operator(id+2,"slicev0", 1, u'[0]', place_right, limit_none, False)
-op_slicev1 = operator(id+3,"slicev1", 1, u'[1]', place_right, limit_none, False)
-op_slicet0 = operator(id+4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, False)
-op_slicet1 = operator(id+5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
-op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
-op_unary= op_reg+ op_diff  #+op_slice
-#id=id+len(op_slice )
+op_unary= op_reg+ op_diff
 #----------------- binary -----------------
 op_add = operator(id,"addition", 2,"+", place_middle, limit_none, False)
 op_subtract = operator(id+1,"subtraction", 2, "-", place_middle, limit_none, False)
@@ -105,6 +96,16 @@ op_tangent = operator(id+6, "tangent", 1, u'tan', place_left, limit_none, True)
 op_trig=[ op_cosine, op_sine, op_acosine, op_asine, op_sqrt]#,op_atangent, op_tangent]
 id=id+len(op_trig)
 # embed some operators
+#----------------- slicing -----------------
+op_slicem0 = operator(id,"slicem0", 1, u'[1,:]', place_right, limit_none, False)
+op_slicem1 = operator(id+1,"slicem1", 1, u'[:,0]', place_right, limit_none, False)
+op_slicev0 = operator(id+2,"slicev0", 1, u'[0]', place_right, limit_none, False)
+op_slicev1 = operator(id+3,"slicev1", 1, u'[1]', place_right, limit_none, False)
+op_slicet0 = operator(id+4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, False)
+op_slicet1 = operator(id+5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
+op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
+op_unary= op_reg+ op_diff # +op_slice
+id=id+len(op_slice )
 #----------------- new  operators -----------------
 op_comp = operator(id,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
 op_zeros_add22 = operator(id+1, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)

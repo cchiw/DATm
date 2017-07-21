@@ -150,12 +150,14 @@ def rtn_rhs(f, op1, typ_inner, e, i):
     # next arguments are [e, fi, fi+1]
     f1 = fieldName(i)
     f2 = fieldName(i+1)
+    print "op1:", op1.name, "typ-inner", typ_inner.name
+    print "e: ", e, " i:", i
     if (arity==1):
-        if(op1.placement==place_right):
-            write_shape("\t", f, typ_inner, f1, e)
-            return (prntUnary(op1, f1), i+1)
-        else:
-            return (prntUnary(op1, e),i)
+        #if(op1.placement==place_right):
+        #    write_shape("\t", f, typ_inner, f1, e)
+        #    return (prntUnary(op1, f1), i+1)
+        #else:
+        return (prntUnary(op1, e),i)
     elif(arity==2):
         return (prntBinary(op1, e, f1),i+1)
     elif(arity==3):
@@ -182,18 +184,20 @@ def gotop1(f, app, pre, lhs):
     op1 = app.opr
     oty = app.oty
     f0 = fieldName(0)
-    rhs = rtn_rhs(f, op1, oty, f0, 1)
+    (rhs, _) = rtn_rhs(f, op1, oty, f0, 1)
     write_shape(pre, f, oty, lhs, rhs)
     return
 ################## apply 2 layers of operators ##################
 #write operation between fields
 def gotop2(f, app_outer, pre, lhs):
+    print "gotop2"
     opr_outer=app_outer.opr
     app_inner=apply.get_unary(app_outer)
     opr_inner=app_inner.opr
     # type of output of each app
     typ_outer = app_outer.oty
     typ_inner = app_inner.oty
+    print "typ_outer", typ_outer.name
     # names of lhs variables
     f0 = fieldName(0)
     #first operator
@@ -393,6 +397,7 @@ def check_conditional(f, ff, app):
 ##################################### inside field test  #####################################
 #probes field at variable position
 def check_inside(f, ff, app):
+    print "inside check inside"
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";"
     exps = apply.get_all_Fields(app)
@@ -491,7 +496,7 @@ def check_inside(f, ff, app):
                     outerif = termA()
                 elif(arity==2):
                     outerif = termC()
-    elif (app.lhs.opr==op_comp):
+    elif ((not app.isrootlhs) and  (app.lhs.opr==op_comp)):
         arityO = app.opr.arity
         if(not app.lhs.isrootlhs):
             arityI = app.lhs.lhs.opr.arity
@@ -508,7 +513,7 @@ def check_inside(f, ff, app):
                 outerif = termA()
             elif(arityO==2):
                 outerif= termB()
-    elif ((not app.lhs.isrootlhs) and (not app.lhs.lhs.isrootlhs) and app.lhs.lhs.opr==op_comp):
+    elif ((not app.isrootlhs) and (not app.lhs.isrootlhs) and (not app.lhs.lhs.isrootlhs) and app.lhs.lhs.opr==op_comp):
         arityO = app.opr.arity
         arityI = app.lhs.opr.arity
         if((arityO==2) and (arityI==2)):
@@ -526,8 +531,11 @@ def check_inside(f, ff, app):
         # inside if
         # check none inside test
     if(app.isrootlhs):
+        print "inside if"
         foo = wrap(outerif,set, oty)
+        f.write(foo.encode('utf8'))
     else:
+        print "inside else"
         t = getCond(app,set)
         foo = wrap(outerif, t, oty)
         f.write(foo.encode('utf8'))

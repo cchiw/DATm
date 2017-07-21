@@ -210,9 +210,11 @@ def applyBinaryOp(op1,ityps):
             return err()
         else:
             (tf, rty1) = isShapeOk(shape, dim)
-            ##print tf, rty1
+            print tf, rty1
             if(tf):
                 rtn1 = fty.convertTy(rty1, k)
+                print "rtnning->", rtn1
+                print rtn1.name
                 return (true, rtn1)
             else:
                 return err()
@@ -229,12 +231,14 @@ def applyBinaryOp(op1,ityps):
         else:
             return err()
     elif(op_cross==op1):
+        print "here found cross"
         if(fty.is_Vector(ityp1) and fty.is_Vector(ityp2)):
             n1 = fty.get_vecLength(ityp1)
             n2 = fty.get_vecLength(ityp2)
             if(not (n1==n2)):
                 return err()
             if(fty.is_Field(fldty)):
+                print "found a field"
                 if ((dim==2) and (n1==2)):
                     return mkTyp([])
                 elif((dim==3) and (n1==3)):
@@ -242,6 +246,7 @@ def applyBinaryOp(op1,ityps):
                 else:
                     return err()
             else:
+                print "found a tensor"
                 if(n1==2):
                     return mkTyp([])
                 elif((n1==3)):
@@ -371,7 +376,9 @@ def get_tshape(opr1, ishape):
     elif(arity==1):
         return applyUnaryOp(opr1, ishape)
     elif(arity==2):
-        #print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
-        return applyBinaryOp(opr1, ishape)
+        print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
+        (m,n) = applyBinaryOp(opr1, ishape)
+        #print "->", n.name
+        return (m,n)
     elif(arity==3):
         return applyThirdOp(opr1, ishape)
