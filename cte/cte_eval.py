@@ -79,7 +79,7 @@ def sort(e, pos):
         else:
             return 1+getLayers(m.lhs)
     if(e.isrootlhs): # is root
-        return embed(1, e)
+        return embed(1, e, pos)
     else:
         c_layer =  getLayers(e)
         return embed(c_layer, e, pos) #multipler layers
@@ -87,7 +87,11 @@ def sort(e, pos):
 # ***************************  main  ***************************
 # evaluate an applicaiton at positions. returns the resulting expression.
 def eval(app, pos):
-    print "about to sort"
-    (otyp1, ortn) = sort(app, pos) #apply operations to expressions
-    rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
-    return rtn
+    if(app.isrootlhs):
+        (otyp1, ortn) = simple_apply(0, app, pos)
+        rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
+        return rtn
+    else:
+        (otyp1, ortn) = sort(app, pos) #apply operations to expressions
+        rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
+        return rtn

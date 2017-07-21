@@ -89,12 +89,6 @@ uncaught exception Fail [Fail: too many steps]
 0.0856318473816
 
 
-***rtn:compile __p_o7_o17_o5_t4_t18__l3
-	 -: inverse(multiplication(normalize))
-	-_T_m2x2,F_s_d3 |p_o7_o17_o5_t4_t18__l3
-	rtn:compile 
-
-
 solution:
 Infinite rewrites.A rewrite was creating a product to rewrite a subterm but then wrapped it inside another product. The filter product was continuously flattening the product.
 —————————————————————————————————————————————————————————————		

@@ -16,7 +16,7 @@ n_template = 0
 shift = 1 # next command number
 
 os.system("mkdir rst")
-#os.system("cp  -R clean/rst  .")
+os.system("cp  -R clean/rst  .")
 main_set(n_template, shift)
 
 os.system("rm *.pyc ")

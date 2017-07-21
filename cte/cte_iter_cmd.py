@@ -47,7 +47,8 @@ def cmd(layer, testing_frame, cnt, shift, args):
             t_inner= int(sys.argv[shift+1])
             opr_inner = id_toOpr(t_inner)
             t_num= int(sys.argv[shift+2])
-            single_specific_ex(opr_inner,t_num, testing_frame, cnt)
+            ex = oprToEx(opr_inner, testing_frame, cnt)
+            single_specific_ex(ex, opr_inner,t_num, testing_frame, cnt)
             writeResults_inner(opr_inner, testing_frame, cnt)
         else:
             raise "unsupported"

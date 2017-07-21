@@ -179,7 +179,7 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
     
     apx = [".diderot",".nrrd",".png"]
     for i in apx:
-        os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/test"+i)
+        os.system("cp "+rst_data+"/observ"+i+" "+path+"/test"+i)
     
     tmp ="_max.png"
     print "opname:",opname
@@ -224,8 +224,8 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     
     filetys = [".diderot",".png", ".nrrd"]
     for i in filetys:
-        os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/output5_p_observ"+i)
-        os.system("cp "+rst_data+"/output5_p_observ"+i+" "+path+"/"+names+i)
+        os.system("cp "+rst_data+"/observ"+i+" "+path+"/observ"+i)
+        os.system("cp "+rst_data+"/observ"+i+" "+path+"/"+names+i)
 
 
     a= names
@@ -267,7 +267,7 @@ def rst_compile(names, x, extraname,  branch,  positions, PARAMS):
     write_rst(names, x, extraname, rtn1)
     labl = dir+"__"+names
     x = extraname+x
-    #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
+    writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 # does not execute
 def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
@@ -299,6 +299,7 @@ def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  pos
 
 def rst_good(num, names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "g"
-    labl = dir+"_"+str(num)#names+"_"+
+    labl1 = dir+"_"+str(num)
+    labl2 = dir+"_"+names
     write_rst(names, x, extraname, "rtn:good")
-    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
+    writeToRst(labl1, observed_data, correct_data,  positions, PARAMS, branch, x)
