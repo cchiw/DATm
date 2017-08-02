@@ -105,7 +105,7 @@ op_slicet0 = operator(id+4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, Fa
 op_slicet1 = operator(id+5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
 op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
 op_unary= op_reg+ op_diff # +op_slice
-id=id+len(op_slice )
+#id=id+len(op_slice )
 #----------------- new  operators -----------------
 op_comp = operator(id,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
 op_zeros_add22 = operator(id+1, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
@@ -122,7 +122,7 @@ op_crossT3 = operator(id+6,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), p
 op_hessian = operator(id+7, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_unary+op_binary+op_trig#+op_specialized#+[op_concat3]
+op_all = op_unary+op_binary+op_trig+op_specialized#+[op_concat3]
 #------------------------------ helpers -----------------------------------------------------
 # print all the ops names and ids
 def pnt_ops():

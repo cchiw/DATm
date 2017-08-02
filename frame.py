@@ -3,10 +3,10 @@
 import sys
 from base_constants import *
 
-
+#unu save -f nrrd -e ascii -i out.nrrd | less
 
 s_layer = 3
-s_random_range = 4999
+s_random_range = 0
 from obj_frame import *
 
 cpath =  "/Users/chariseechiw/diderot/"
@@ -17,10 +17,10 @@ cpath =  "/Users/chariseechiw/diderot/"
 
 name = "vis branch"
 # branch information
-s_branch  = branch_vis15
+#s_branch  = branch_vis15
 #s_branch  = branch_ein16
 #s_branch  = branch_other
-#s_branch = branch_chiw17
+s_branch = branch_chiw17
 s_revision = "r current"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
