@@ -285,7 +285,7 @@ def applyBinaryOp(op1,ityps):
                 return mkTyp(ashape+bshape)
             elif(op_max.id==op1.id):
                 print "inside max"
-                if(fty.is_Scalar(ityp1) and fty.is_Scalar(ityp2)):
+                if(fty.is_ScalarField(ityp1) and fty.is_ScalarField(ityp2)):
                     return mkTyp ([])
                 else:
                     return err()

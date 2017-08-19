@@ -135,7 +135,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
-           
+            raise Exception ("fail")
             return 1
         else:
             counter.inc_run(cnt)
