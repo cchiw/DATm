@@ -184,6 +184,20 @@ def get_compose(es, fldresult):
 
     return rtn
 
+def get_max(es, fldresult):
+    rtn = []
+    # binary operator
+    for e1 in es:
+        for e2 in es:
+            if ((not fty.is_Field(e1)) or (not fty.is_Field(e2))):
+                continue
+            if(not (e1.dim==e2.dim)):
+                continue
+            if (fty.is_Scalar(e1) and fty.is_Scalar(e2)):
+                rtn.append([e1, e2])
+    return rtn
+
+
 #binary operators between flds fld (limited in some way)
 # and higher order tensor/tensor field
 def get_inner(es, fldresult):
@@ -376,6 +390,8 @@ def oprToArgs(op1, tys):
                 return (get_concat2)
             elif(op1.id==op_comp.id):
                 return (get_compose)
+            elif(op1.id==op_max.id):
+                return (get_max)
             else:
                 raise Exception("no built in example of operator"+op1.name)
         return rtnArgs_all(get_eval())

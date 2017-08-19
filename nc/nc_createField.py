@@ -331,13 +331,16 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     
     #print "create field B"
     p_Orig=  e_Orig+".diderot"
-    #os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
+
 
 
     # remove executable
     #os.system(" rm "+e_Orig)
     # compile program
-    #os.system(nrrdbranch+" --log "+p_Orig)
+
+    # comment out if executable exists
+    os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
+    os.system(nrrdbranch+" --log "+p_Orig)
     # does executable exist
 
     endall = time.time()
@@ -363,6 +366,7 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     return (PARAMS,tall50,tall51,tall52,tall53,tall54,tall55)
 
 def sortField(flds, outSize, coeffs, nrrdbranch, space):
+    print "outSize:",outSize
     itypes = []
     for j in range(len(flds)):
         i = flds[j]

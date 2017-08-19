@@ -14,9 +14,9 @@ from cte_iter_cmd import main_set
 # first command is the number of arguments 
 n_template = 0
 shift = 1 # next command number
-
 os.system("mkdir rst")
-os.system("cp  -R clean/rst  .")
+os.system("mkdir rst/tmp")
+
 main_set(n_template, shift)
 
 os.system("rm *.pyc ")

@@ -5,7 +5,7 @@ from base_constants import *
 
 #unu save -f nrrd -e ascii -i out.nrrd | less
 
-s_layer = 3
+s_layer = 2
 s_random_range = 0
 from obj_frame import *
 
@@ -26,8 +26,8 @@ s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
 # order of coefficients
 #s_coeff_style = coeff_quadratic
-s_coeff_style = coeff_cubic
-#s_coeff_style = coeff_linear
+#s_coeff_style = coeff_cubic
+s_coeff_style = coeff_linear
 # kernel
 #s_krn = h_bs5
 s_krn = h_hex

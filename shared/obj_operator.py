@@ -116,13 +116,14 @@ op_concat2 = operator(id+4,"concat2", 2,"concat", place_left, limit_none, True)
 op_specialized = [op_comp, op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_concat2]
 #----------------- embedded  operators -----------------
 #### more than one operator or unsupported operation 
-op_concat3 = operator(id+5,"concat3", 3,"concat", place_left, limit_none, True)
-op_probe= operator(id+8,"probe", 1,"(pos)", place_right, limit_none, True)
-op_crossT3 = operator(id+6,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
-op_hessian = operator(id+7, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
+op_max = operator(id+5,"max", 2,"maxF", place_left, limit_none, True)
+op_concat3 = operator(id+6,"concat3", 3,"concat", place_left, limit_none, True)
+op_probe= operator(id+7,"probe", 1,"(pos)", place_right, limit_none, True)
+op_crossT3 = operator(id+8,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
+op_hessian = operator(id+9, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_unary+op_binary+op_trig+op_specialized#+[op_concat3]
+op_all = op_unary+op_binary+op_trig+op_specialized+[op_max]
 #------------------------------ helpers -----------------------------------------------------
 # print all the ops names and ids
 def pnt_ops():

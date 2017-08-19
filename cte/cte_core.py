@@ -234,7 +234,7 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     #print opr_inner.name,ishape[0].name
     (tf1, tshape1) = get_tshape(opr_inner,ishape)
     #print "post get-tshape"
-    #print tf1, tshape1
+    print tf1, tshape1
     if(not tf1):
         write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
