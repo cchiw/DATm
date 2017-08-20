@@ -390,7 +390,7 @@ def oprToArgs(op1, tys):
                 return (get_concat2)
             elif(op1.id==op_comp.id):
                 return (get_compose)
-            elif(op1.id==op_max.id):
+            elif(op1.id==op_max.id or op1.id ==op_min.id):
                 return (get_max)
             else:
                 raise Exception("no built in example of operator"+op1.name)

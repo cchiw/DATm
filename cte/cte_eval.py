@@ -84,10 +84,24 @@ def sort(e, pos):
         c_layer =  getLayers(e)
         return embed(c_layer, e, pos) #multipler layers
 def getMax(lhs, rhs):
-    if(lhs< rhs):
-        return rhs
-    else:
-        return lhs
+    rtn = []
+    for (l,r) in zip(lhs, rhs):
+        if(l< r):
+            rtn.append(r)
+        else:
+            rtn.append(l)
+    return rtn
+
+def getMin(lhs, rhs):
+    print "inside get min"
+    print "\n\t **** result from probing field: \n\tlhs: ",lhs, "\n\trhs:",rhs
+    rtn = []
+    for (l,r) in zip(lhs, rhs):
+        if(l> r):
+            rtn.append(r)
+        else:
+            rtn.append(l)
+    return rtn
 
 #specifically applying the gradient
 def getGradMax(app, pos, lhs, rhs, e3,e4):
@@ -114,14 +128,51 @@ def getGradMax(app, pos, lhs, rhs, e3,e4):
     print "rtn:", rtn
     return rtn
 
+
 #specifically applying the gradient
-def getMaxMax( e0, e1, e2):
+def getGradMin(app, pos, lhs, rhs, e3,e4):
+    print "\n\t **** result from probing field: \n\tlhs: ",lhs, "\n\trhs:",rhs
+    
+    def applyProbe(exp):
+        appL = apply("tmp", app.opr, exp, app.rhs, app.third, app.oty, true, true)
+        (otyp1L, ortnL) = simple_apply(0, appL, pos)
+        rtnL = probeField(otyp1L, pos, ortnL)
+        print "rtnL: ", rtnL
+        return rtnL
+    
+    rtnL = applyProbe(e3)
+    rtnR = applyProbe(e4)
+    rtn = []
+    # get max between lhs and rhs (which are values)
+    # maximum determines which expression to use (rtnL, rtnR)
+    # then apply operator to expression
+    for (l,r, al, ar) in zip(lhs, rhs, rtnL, rtnR):
+        print "comparing l:", l, "r:",r
+        if(l>r):
+            print "adding to list: ar ", ar
+            rtn.append(ar)
+        else:
+            print "adding to list al: ", al
+            rtn.append(al)
+    print "rtn:", rtn
+    return rtn
+
+
+
+#specifically applying the gradient
+def getMaxMax(op1,op2,e0, e1, e2):
     rtn = []
     for (a0, a1, a2) in zip(e0, e1, e2):
 
-        rtn.append(max(a0,max(a1, a2)))
+        rtn.append(op2(a0,op1(a1, a2)))
 
     return rtn
+
+def getOp(app):
+    if(app.opr.id == op_max.id):
+        return max
+    else:
+        return min
 
 # ***************************  main  ***************************
 # evaluate an applicaiton at positions. returns the resulting expression.
@@ -132,27 +183,39 @@ def eval(app, pos):
             lhs = probeField(app.oty, pos, app.lhs.data)
             rhs = probeField(app.oty, pos, app.rhs.data)
             return getMax(lhs, rhs)
+        elif (app.opr.id == op_min.id):
+            oty = app.oty
+            lhs = probeField(app.oty, pos, app.lhs.data)
+            rhs = probeField(app.oty, pos, app.rhs.data)
+            ortn = getMin(lhs, rhs)
+            print "\nortn:",ortn
+            return ortn
         else:
             (otyp1, ortn) = simple_apply(0, app, pos)
             rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
             return rtn
     else:
-        if((not(app.opr.id == op_max.id)) and (app.lhs.opr.id == op_max.id)):
+        if((app.lhs.opr.id == op_max.id) or (app.lhs.opr.id == op_min.id)):
             shift = app.lhs
+            oty = shift.oty
             e3 = shift.lhs
             e4 = shift.rhs
-            oty = shift.oty
             e1 = probeField(oty, pos, e3.data)
             e2 = probeField(oty, pos, e4.data)
-            rtn = getGradMax(app, pos, e1,e2, e3, e4)
-            return rtn
-        if(((app.opr.id == op_max.id)) and (app.lhs.opr.id == op_max.id)):
-            shift = app.lhs
-            e0 = probeField(app.oty, pos, app.rhs.data)
-            e1 = probeField(app.lhs.oty, pos, shift.lhs.data)
-            e2 = probeField(app.lhs.oty, pos, shift.rhs.data)
-            rtn = getMaxMax(e0, e1, e2)
-            return rtn
+            if((app.opr.id == op_max.id) or (app.opr.id == op_min.id)):
+                op2 = getOp(shift)
+                op1 = getOp(app)
+                e0 = probeField(app.oty, pos, app.rhs.data)
+                rtn = getMaxMax(op2, op1, e0, e1, e2)
+                return rtn
+            elif(app.lhs.opr.id == op_max.id):
+                # need to check inside first
+                # chooses based on inside result
+                rtn = getGradMax(app, pos, e1,e2, e3, e4)
+                return rtn
+            elif(app.lhs.opr.id == op_min.id):
+                rtn = getGradMin(app, pos, e1,e2, e3, e4)
+                return rtn
         else:
             (otyp1, ortn) = sort(app, pos) #apply operations to expressions
             rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions

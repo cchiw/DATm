@@ -40,7 +40,7 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
     #writeCumulative(cnt)
     # check results
     if (rst_check_1==7):
-        raise Exception("check")
+
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
@@ -135,12 +135,12 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
-            raise Exception ("fail")
+
             return 1
         else:
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
-            raise Exception("stop after 1")
+
             return 2
     else:
         #print "read observed data"
