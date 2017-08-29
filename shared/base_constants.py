@@ -14,8 +14,7 @@ ty_All ="mix of tensors and fields"
 branch_chiw17 = "chiw17"
 branch_vis15 = "vis15"
 branch_ein16 = "ein16"
-branch_other = "vis15-old/"
-branch_other = "dev_old/"
+branch_other = "femprime/"
 
 precision_double ="double"
 precision_single ="singe"
@@ -34,6 +33,7 @@ template_isPlain = "t_plain"
 template_isMipMax = "t_mipMax"
 template_isMipSum = "t_mipSum"
 template_isIso = "t_iso"
+template_isFem = "t_fem"
 
 
 #directory to save programs
@@ -44,4 +44,7 @@ opr_adj = 0.1
 
 
 c_pathToSynFiles = "shared/symb/symb_f"
-c_template="shared/template/foo.ddro"     # template
+
+ # template
+c_template="shared/template/foo.ddro"
+#c_template="shared/template/fem.ddro"

@@ -106,7 +106,7 @@ class frame:
         elif(branch == branch_ein16):
             path+= "ein16/bin/diderotc "
         elif(branch == branch_other):
-            path+= branch_other+"bin/diderotc  "
+            path+= branch_other+"bin/diderotc  --exec "
         if(precision ==precision_double):
             path+= " --double "
         return path
@@ -134,7 +134,7 @@ class frame:
         elif(branch == branch_ein16):
             return False
         elif(branch == branch_other):
-            return False # assumption
+            return True # assumption
 
     def transform_template_size(self):
         if(self.template==template_isIso):

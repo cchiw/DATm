@@ -5,7 +5,7 @@ from base_constants import *
 
 #unu save -f nrrd -e ascii -i out.nrrd | less
 
-s_layer = 2
+s_layer = 1
 s_random_range = 0
 from obj_frame import *
 
@@ -19,8 +19,8 @@ name = "testing chiw17 branch"
 # branch information
 #s_branch  = branch_vis15
 #s_branch  = branch_ein16
-#s_branch  = branch_other
-s_branch = branch_chiw17
+s_branch  = branch_other
+#s_branch = branch_chiw17
 s_revision = "r current"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
@@ -40,8 +40,8 @@ s_krn = h_hex
 #ty_T ="all tensors"
 #ty_All ="mix of tensors and fields"
 # what type of arguments do we want to test?
-s_in_tys  = ty_All
-#s_in_tys  = ty_F
+#s_in_tys  = ty_All
+s_in_tys  = ty_F
 #s_in_tys  = ty_T
 
 # op1(t1) -> t2, what is the type of t2?

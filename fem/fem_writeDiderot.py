@@ -7,9 +7,6 @@ import sys
 import os
 import re
 import time
-
-from nc_writeDiderot import nc_compileandRun, nc_setLength
-
 # shared base programs
 from obj_ex import *
 from obj_apply import *
@@ -20,34 +17,65 @@ from base_write import *
 from base_writeDiderot import *
 from base_constants import *
 
-template=c_template     # template
+from nc_writeDiderot import nc_compileandRun, nc_setLength
 
+
+template = c_template     # template
 #strings in diderot template
-foo_in="foo_in"
-foo_outTen="foo_outTen"
-foo_op ="foo_op"
-foo_probe ="foo_probe"
-foo_length="foo_length"
+foo_in = "foo_in"
+foo_outTen = "foo_outTen"
+foo_op = "foo_op"
+foo_probe = "foo_probe"
+foo_length ="foo_length"
 #otherwise variables in diderot program
-foo_out="out"
-foo_pos="pos"
-const_out ="7.2"
+foo_out = "out"
+foo_pos = "pos"
+const_out = "7.2"
 
+
+####### FIXME: need to create fem-inside/conditional
+##################################### input tensor/field #####################################
+#field input line
+#f: file to write to
+#k:continuity
+#itypes: types for input field
+#inputlist: name for input data
+def fem_inShape(f, appC):
+    exps = apply.get_all_Fields(appC)
+    #app = apply.get_root_app(appC)
+    i=0
+    for exp in exps:
+        #print "current fld",field.toStr(exp)
+        dim = field.get_dim(exp)
+        if (field.get_isField(exp)):
+            fi = fieldName(i)
+            F = "F"+fi
+            path = "path"+fi
+            V = "V"+fi
+            
+            foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
+            foo = foo+ "\n fnspace "+V+" = FunctionSpace(UnitSquareMesh(2,2), Lagrange(), 2);"
+            foo = foo+"\n string "+path+" = \"fnspace_data/\";"
+            #+exp.inputfile+"\";"
+            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
+            f.write(foo.encode('utf8'))
+        else: #tensor type
+            foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
+            f.write(foo.encode('utf8'))
+        i+=1
 
 #witten inside update method
 #conditionals are commented out
 def cte_update_method(f, pos, app):
     oty = app.oty
     if(fty.is_Field(oty)):
-        # index field at random positions
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
-        check_inside(f, opfieldname1, app)
-        #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
-        #f.write(foo.encode('utf8'))
-        #check_conditional(f,  opfieldname1, app)
+        #check_inside(f, opfieldname1, app)
+        
+        foo= "\n\t\tout = G(pos);"
+        f.write(foo.encode('utf8'))
     else:
-        # get conditional for tensor argument
         check_conditional(f,  foo_out, app)
 
 ################################ search Diderot template and replace foo variable name ################################
@@ -66,7 +94,7 @@ def readDiderot(p_out, app, pos):
         a0 = re.search(foo_in, line)
         if a0:
             #replace field input line
-            inShape(f,app)
+            fem_inShape(f,app)
             continue
         # is it output tensor line?
         b0 = re.search(foo_outTen, line)
@@ -98,15 +126,4 @@ def readDiderot(p_out, app, pos):
 
     ftemplate.close()
     f.close()
-
-################################ write annd run main function ################################
-# write, compile, and execute new diderot program
-def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd, startall):
-    # write new diderot program
-    readDiderot(p_out, app, pos)
-    endall = time.time()
-    tall = str(endall - startall)
-    writeTime(24, tall)
-    startall=endall
-    shape = app.oty.shape
-    return nc_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall)
+    print "sptting out to:",p_out+".diderot"
