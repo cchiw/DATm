@@ -1,4 +1,4 @@
-pen /*! \file init.c
+/*! \file init.c
  *
  * \author Charisee
  */

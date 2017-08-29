@@ -73,7 +73,7 @@ def cte_update_method(f, pos, app):
         base_index_field_at_positions(f, pos, dim)
         #check_inside(f, opfieldname1, app)
         
-        foo= "\n\t\tout = G(pos);"
+        foo= "\n\t\tout = inst(G, pos);"
         f.write(foo.encode('utf8'))
     else:
         check_conditional(f,  foo_out, app)
