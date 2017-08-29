@@ -54,7 +54,7 @@ def fem_inShape(f, appC):
             V = "V"+fi
             
             foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
-            foo = foo+ "\n //"+field.toStr(exp)+"\n"
+            foo = foo+ "\n //"+field.toStr(exp)
             foo = foo+ "\n fnspace "+V+" = FunctionSpace(UnitSquareMesh(2,2), Lagrange(), 2);"
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"
@@ -74,7 +74,8 @@ def cte_update_method(f, pos, app):
         base_index_field_at_positions(f, pos, dim)
         #check_inside(f, opfieldname1, app)
         
-        foo= "\n\t\tout = inst(G, pos);"
+        #foo= "\n\t\tout = inst(G, pos);"
+        foo= "\n\t\tout = inst(G,pos);"
         f.write(foo.encode('utf8'))
     else:
         check_conditional(f,  foo_out, app)
