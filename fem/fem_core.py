@@ -15,7 +15,7 @@ from obj_counter import *
 from obj_frame import *
 from base_write import *
 from base_var_ty import *
-from base_observed import observed
+
 
 #specific nc programs
 from nc_compare import compare
@@ -24,7 +24,11 @@ from nc_createField import sortField
 
 # specific fem programs
 from fem_main import writeTestPrograms
+from fem_observed import observed
+
 #from fem_eval import eval
+sys.path.insert(0, 'cte/')
+from cte_eval import eval
 
 # results from testing
 def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
@@ -87,7 +91,10 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     name_describe = app.name
 
     # testing positions
-    positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
+    # note here should set positions based on space
+    l_lpos = 0.0
+    l_rpos = 1.0
+    positions = get_positions(dimF, l_lpos, l_rpos, g_num_pos)
     # samples
     #create synthetic field data with diderot
     flds = apply.get_all_Fields(app)
@@ -109,15 +116,18 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
             return 2
     else:
-        #print "read observed data"
+        print "read observed data"
         observed_data = observed(app, g_output)
+        print "observed", observed_data
         if(check(app, observed_data)):
-            #correct_data = eval(app , positions)
-            #ex_otype = fty.get_tensorType(app.oty)
-            #rtn = compare(app.oty, app.name, observed_data, correct_data)
-            #diderotprogram = g_p_Observ+".diderot"
+            print "get eval"
+            correct_data = eval(app, positions)
+            print "correct:",correct_data
+            ex_otype = fty.get_tensorType(app.oty)
+            rtn = compare(app.oty, app.name, observed_data, correct_data)
+            diderotprogram = g_p_Observ+".diderot"
 
-            #analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
+            analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             return 3
         else:
             

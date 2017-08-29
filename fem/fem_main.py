@@ -19,37 +19,47 @@ from base_constants import *
 
 # fem specific programs
 from fem_writeDiderot import readDiderot
+from ex1 import *
 
 #######
 # enable inside check
 # enable conditional
 # fnspace description part of field type
 # limit to only scalar fields (2-d, and 3-d) case
-# change position range
+# change position range (set by branch). should be dependent on mesh testing
 ###########
 
 
 
 
-# write firedrake program
-def writeFem():
-    mesh = UnitSquareMesh(2,2)
-    V= FunctionSpace(mesh,"Lagrange",degree=2)
-    f = Function(V).interpolate(Expression(exp))
+# create firedrake field
+def writeFem(p_out, shape, pos, output):
+    vis_exp(p_out, "x[0]")
+    # convert to txt file
 
-    cut_step(name, f, res)
 
+    product = 1
+    for x in shape:
+        product *= x
+    m2 = len(pos)+1
+    w_shape=" -s "+str(product)+" "+str(m2)
+    
+    os.system("unu reshape -i "+p_out+".nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
 
 # make program
-def makeProgram(p_out):
-    s0 = "cp fem/observ_init.c observ_init.c"
-    s1 = "cp fem/Makefile Makefile"
-    s2 = "make clean"
-    s3 = "make "+p_out+".o"
-    s4 = "make "+p_out+"_init.o"
-    s5 = "make "+p_out+"_init.so"
-    s6 = "py.test -v "+p_out+".py"
-    es = [s0, s1, s2, s3, s4, s5, s6]
+def makeProgram(p_out, output):
+    s0 = "cp observ.diderot ex1.diderot"
+    s1 = "cp fem/ex1_init.c ex1_init.c"
+    s2 = "cp fem/Makefile Makefile"
+    s3 = "make clean"
+    s4 = "make ex1.o"
+    s5 = "make ex1_init.o"
+    s6 = "make ex1_init.so"
+    s8 = "cp fem/ex1.py ex1.py"
+    
+    
+    s10 = "cp ex1.diderot "+output+".diderot"
+    es = [s0, s1, s2, s3, s4, s5, s6, s8]
     for i in es:
         os.system(i)
 
@@ -62,5 +72,7 @@ def makeProgram(p_out):
 def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall):
     # write new diderot program
     readDiderot(p_out, app, pos)
-    makeProgram(p_out)
-    return (None, None, startall)
+    makeProgram(p_out, output)
+    shape = app.oty.shape
+    writeFem(p_out, shape, pos, output)
+    return (1,1, startall)

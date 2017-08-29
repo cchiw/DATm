@@ -17,7 +17,7 @@ class frame:
         #coeff bounds
         self.ucoeff_range = ucoeff_range
         #position bounds
-        if(lpos<-0.5 or  upos>0.5):
+        if (lpos<-0.5 or  upos>0.5):
             return Exception ("outside position range ",lpos,upos)
         self.lpos = lpos
         self.upos = upos

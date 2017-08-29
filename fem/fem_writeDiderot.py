@@ -45,7 +45,7 @@ def fem_inShape(f, appC):
     #app = apply.get_root_app(appC)
     i=0
     for exp in exps:
-        #print "current fld",field.toStr(exp)
+        print "current fld",field.toStr(exp)
         dim = field.get_dim(exp)
         if (field.get_isField(exp)):
             fi = fieldName(i)
@@ -54,6 +54,7 @@ def fem_inShape(f, appC):
             V = "V"+fi
             
             foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
+            foo = foo+ "\n //"+field.toStr(exp)+"\n"
             foo = foo+ "\n fnspace "+V+" = FunctionSpace(UnitSquareMesh(2,2), Lagrange(), 2);"
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"

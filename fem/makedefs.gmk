@@ -1,6 +1,6 @@
 SHELL =		/bin/sh
 
-DIDEROTC =	/Users/chariseechiw/diderot/femprime/bin/diderotc --log --double 
+DIDEROTC =	/Users/chariseechiw/diderot/femprime/bin/diderotc --log --double
 
 CC =		clang
 CXX =		clang++ -std=gnu++11

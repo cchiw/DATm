@@ -143,7 +143,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
             return 2
     else:
-        #print "read observed data"
+        print "read observed data"
+
         observed_data = observed(app, g_output)
         #endall = time.time()
         #tall = str(endall - startall)
