@@ -15,7 +15,7 @@ from obj_counter import *
 from obj_frame import *
 from base_write import *
 from base_var_ty import *
-
+from base_observed import observed
 
 #specific nc programs
 from nc_compare import compare
@@ -24,7 +24,7 @@ from nc_createField import sortField
 
 # specific fem programs
 from fem_main import writeTestPrograms
-from fem_observed import observed
+
 
 #from fem_eval import eval
 sys.path.insert(0, 'cte/')
@@ -47,7 +47,6 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-        raise Exception("stop")
     elif (rst_NA_1==9):
          rst_NA(name_file, x, name_describe,  branch)
              #elif (rst_good_1==1 or rst_eh_1==1):

@@ -1,13 +1,14 @@
 bugs found with datm
 
-EXPECTED
-***rtn:compile __s_8__n_1_
-	 -: grad ( F_s_d2, )
-	-_F_s_d2 |s_8__n_1_
-	rtn:compile 
 
 
-UNEXPECTED
+BUG (parameter not correc):
+ with args:FF0,VF0,posBuildFEM(T0)_1[1])HighToMid.expandEINAPP: error converting out041C = λ(T0[],F1[2],FNCSPACE2,FNCSPACE3,T4[2])<ArcCosine((T0 * Probe(BuildFEM(T1)_2[2]),T4)))> (_t03C4, FF003C6, VF003C9, pathF003CC, pos0357)
+uncaught exception Fail [Fail: expected rhs operator for VF00404 but found BuildSpace(_t03E5,_t03E7,_t03E3)]
+  raised at common/phase-timer.sml:78.57-78.59
+  raised at high-to-mid/high-to-mid.sml:216.7-216.9
+  raised at high-to-mid/data-fem.sml:52.24-55.11
+
 
 ***rtn:compile __s_23__n_1_
 	 -: arccosine ( F_s_d2, )
@@ -28,7 +29,12 @@ UNEXPECTED
 	 -: arcsine ( F_s_d3, )
 	-_F_s_d3 |s_24__n_2_
 	rtn:compile 
-
+—————————————————————————
+EXPECTED
+***rtn:compile __s_8__n_1_
+	 -: grad ( F_s_d2, )
+	-_F_s_d2 |s_8__n_1_
+	rtn:compile 
 
 LACK SUPPORT IN THIS BRANCH
 ***rtn:compile __s_30__n_6_

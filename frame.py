@@ -5,7 +5,7 @@ from base_constants import *
 
 #unu save -f nrrd -e ascii -i out.nrrd | less
 
-s_layer = 1
+s_layer = 2
 s_random_range = 0
 from obj_frame import *
 
@@ -40,13 +40,13 @@ s_krn = h_hex
 #ty_T ="all tensors"
 #ty_All ="mix of tensors and fields"
 # what type of arguments do we want to test?
-#s_in_tys  = ty_All
-s_in_tys  = ty_F
+s_in_tys  = ty_All
+#s_in_tys  = ty_F
 #s_in_tys  = ty_T
 
 # op1(t1) -> t2, what is the type of t2?
-s_rst_ty  = ty_All  #ty_F #ty_T
-#s_rst_ty  =  ty_F #ty_T
+#s_rst_ty  = ty_All  #ty_F #ty_T
+s_rst_ty  =  ty_F #ty_T
 
 
 #-------------- randomize ----------------------

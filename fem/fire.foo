@@ -1,4 +1,4 @@
-# field is defined as FunctionSpace(UnitSquareMesh(2,2), Lagrange(), 2);
+#template for firedrake
 
 import sys
 from firedrake import *
@@ -44,53 +44,32 @@ def init2(name, f, g,target):
     result = _call.callDiderot_ex1(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(dataF),ctypes.c_void_p),ctypes.cast(ctypes.pointer(dataG),ctypes.c_void_p))
     return(result)
 
+# three fields
+def init3(name, f, g, h, target):
+    init_file = target+'_init.so'
+    _call = ctypes.CDLL(init_file)
+    type = 1
+    dataF = organizeData(f)
+    dataG = organizeData(g)
+    dataH = organizeData(h)
+    _call.callDiderot_ex1.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p)
+    result = _call.callDiderot_ex1(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(dataF),ctypes.c_void_p), ctypes.cast(ctypes.pointer(dataG),ctypes.c_void_p),ctypes.cast(ctypes.pointer(dataH),ctypes.c_void_p))
+    return(result)
 
-##############################################
-# define field
-def vis_exp_d2(exp):
-    mesh = UnitSquareMesh(2,2)
-    V= FunctionSpace(mesh,"Lagrange",degree=2)
-    f = Function(V).interpolate(Expression(exp))
-    return f
+# four fields
+def init4(name, f, g, h, i, target):
+    init_file = target+'_init.so'
+    _call = ctypes.CDLL(init_file)
+    type = 1
+    dataF = organizeData(f)
+    dataG = organizeData(g)
+    dataH = organizeData(h)
+    dataI = organizeData(i)
+    _call.callDiderot_ex1.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p)
+    result = _call.callDiderot_ex1(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(dataF),ctypes.c_void_p), ctypes.cast(ctypes.pointer(dataG),ctypes.c_void_p),ctypes.cast(ctypes.pointer(dataH),ctypes.c_void_p),ctypes.cast(ctypes.pointer(dataI),ctypes.c_void_p))
+    return(result)
 
-def vis_exp_d3(exp):
-    mesh = UnitCubeMesh(2,2,2)
-    V= FunctionSpace(mesh,"Lagrange",degree=2)
-    f = Function(V).interpolate(Expression(exp))
-    return f
 
-##############################################
-def connect1_d2(name, exp1,target):
-    f = vis_exp_d2(exp1)
-    namenrrd = name+'.nrrd'
-    os.system(" make clean ")
-    os.system("make "+target+".o")
-    #s5 = "make "+target+"_init.o"
-    os.system( "make "+target+"_init.so")
-    print "here:","make "+target+"_init.so"
-    init1(namenrrd, f,target)
-
-def connect2_d2(name, exp1, exp2,target):
-    f = vis_exp_d2(exp1)
-    g = vis_exp_d2(exp2)
-    namenrrd = name+'.nrrd'
-    init2(namenrrd, f, g,target)
-
-def connect1_d3(name, exp1,target):
-    f = vis_exp_d3(exp1)
-    namenrrd = name+'.nrrd'
-    os.system(" make clean ")
-    os.system("make "+target+".o")
-    #s5 = "make "+target+"_init.o"
-    os.system( "make "+target+"_init.so")
-    print "here:","make "+target+"_init.so"
-    init1(namenrrd, f,target)
-
-def connect2_d3(name, exp1, exp2,target):
-    f = vis_exp_d3(exp1)
-    g = vis_exp_d3(exp2)
-    namenrrd = name+'.nrrd'
-    init2(namenrrd, f, g,target)
 ##############################################
 
 #init field

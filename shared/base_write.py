@@ -295,7 +295,7 @@ def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  pos
     dir = "t"
     labl = dir+"__"+names
     write_rst(names, x, extraname, "rtn:terrible")
-    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
+    #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
 def rst_good(num, names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "g"

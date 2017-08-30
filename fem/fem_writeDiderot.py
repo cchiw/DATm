@@ -19,6 +19,7 @@ from base_constants import *
 
 from nc_writeDiderot import nc_compileandRun, nc_setLength
 
+from fem_helper import *
 
 template = c_template     # template
 #strings in diderot template
@@ -37,10 +38,11 @@ const_out = "7.2"
 ##################################### input tensor/field #####################################
 # create space for field
 def ty_toSpace(V, dim):
-    if(dim==2):
-        return "\n fnspace "+V+" = FunctionSpace(UnitSquareMesh(2,2), Lagrange(), 2);"
-    elif(dim==3):
-        return "\n fnspace "+V+" = FunctionSpace(UnitCubeMesh(2,2,2), Lagrange(), 2);"
+    element = ty_toElement()
+    k_order = ty_toK()
+    mesh = ty_toMesh(dim)
+    return "\n fnspace "+V+" = FunctionSpace("+ mesh+", "+element+"(), "+k_order +");"
+
 
 #field input line
 #f: file to write to
@@ -68,6 +70,7 @@ def fem_inShape(f, appC):
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
             f.write(foo.encode('utf8'))
         else: #tensor type
+            fieldShape(f, exp.fldty)
             foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
             f.write(foo.encode('utf8'))
         i+=1
