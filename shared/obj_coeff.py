@@ -28,13 +28,14 @@ def get_coeffs_debug1(dim, coeff_style, ucoeff):
     if (dim==0): #tensor type
         return [random.randint(lcoeff, ucoeff),0,0,0,0,0,0,0,0]
     elif (dim==1):
-        return [0, 0, 1, 0]
+        return [0, 0, 0, 1]
     elif (dim==2):
         return [0,0,0,1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     elif (dim==3):
         coeffs=[]
-        for i in range(dim):
-            coeffs.append([0,0,1,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        xx = [0,0,0,1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        xz = [0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        coeffs = [xx,xz,xz]
         return coeffs
     else:
         raise "dimension is not supported"

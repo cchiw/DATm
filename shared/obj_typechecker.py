@@ -377,6 +377,10 @@ def applyThirdOp(op1,ityps):
 # apply unary and binary operator
 def get_tshape(opr1, ishape):
     #print "inside getshape", opr1.name
+    for m in ishape:
+        # limitation here
+        if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
+            return (false, "limit_ofield")
     arity = opr1.arity
     if(arity==0):
         return (true, ty_mat3x3F_d3)

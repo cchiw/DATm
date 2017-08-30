@@ -36,21 +36,24 @@ struct Function {
   float * Coords;
 };
 
-void callDiderot_ex1(char *Outfile, int type, void *valM){
-  
+void callDiderot_ex1(char *Outfile, int type, void *valF, void *valG){
+    
     ex1_world_t *wrld = ex1_new_world ();
     if (wrld == 0) {
-      fail ("unable to create world",0);
+        fail ("unable to create world",0);
     }
-
+    
     if (ex1_init_world(wrld)){
-      fail ("unable to init world",wrld);
+        fail ("unable to init world",wrld);
     }
-
-    if (ex1_input_set_FF0 (wrld, valM)) {
+    
+    if (ex1_input_set_FF0 (wrld, valF)) {
         fail ("unable to initialize imgRed", wrld);
     }
-
+    if (ex1_input_set_FF1 (wrld, valG)) {
+        fail ("unable to initialize imgRed", wrld);
+    }
+    
     if (ex1_create_strands (wrld)) {
         fail ("unable to create initial strands", wrld);
     }

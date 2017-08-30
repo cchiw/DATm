@@ -19,40 +19,74 @@ from base_constants import *
 
 # fem specific programs
 from fem_writeDiderot import readDiderot
-from sd2 import connect1, connect2
+foo_femexp = "foo_fireexp"
+template = "fem/fire.foo"
 
-#######
-# enable inside check
-# enable conditional
-# fnspace description part of field type
-# limit to only scalar fields (2-d, and 3-d) case
-# change position range (set by branch). should be dependent on mesh testing
-# need to translate exp in field type to exp for python
-###########
+# write fem
+def writeFem(p_out, target, num_fields, dim):
+    #read diderot template
+    ftemplate = open(template, 'r')
+    ftemplate.readline()
+    #write diderot program
+    f = open(p_out+".py", 'w+')
+    
+    lbl = str(num_fields)+"_d"+str(dim)
+    #output type
+    for line in ftemplate:
+        # is it initial field line?
+        a0 = re.search(foo_femexp, line)
+        if a0:
+            # should inline these pieces
+            foo = "\nname = \"cat\""
+            foo = foo+"\nexp1 = \"x[0]\""
+            foo = foo+"\ntarget =\"ex1\""
+          
+            if(num_fields==1):
+                foo = foo+"\nconnect"+lbl+"(name, exp1, target)"
+            elif(num_fields==2):
+                foo = foo+"\nexp2 = \"x[0]\""
+                foo = foo+"\nconnect"+lbl+"(name, exp1, exp2, target)"
+            f.write(foo.encode('utf8'))
+            continue
+        else:
+            f.write(line)
 
+    ftemplate.close()
+    f.close()
+    print p_out+".py"
+    #raise Exception ("stop here")
 
-target ="ex1" #name in Makefile
+#if(num_fields==1):
+#connect1("cat", "x[0]",target)
+#os.system("python fem/sd2.py")
+#elif(num_fields==2):
+#connect2("cat", "x[0]", "x[0]", target)
+#os.system("python fem/sd2_two.py")
 
 # create firedrake field
-def writeFem(p_out, shape, pos, output):
+def useFem(p_out, shape, pos, output, num_fields,target):
+    print "pos:",pos
     #convert exp to field
-    # depends on number of args
-    #connect1(p_out, "x[0]",target)
-    connect2(p_out, "x[0]", "x[0]", target)
-    
+    # depends on number of args : (attached to arity now)
+    # run program
+    os.system("python "+p_out+".py")
     # convert to txt file
     product = 1
     for x in shape:
         product *= x
     m2 = len(pos)+1
     w_shape=" -s "+str(product)+" "+str(m2)
-    
-    os.system("unu reshape -i "+p_out+".nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
+    os.system("unu reshape -i cat.nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
 
 # make program
-def makeProgram(p_out, output):
-    name = "fem/sd2"  # for a specific shape
-    name  = name+"_fg" # two field args to be init
+def makeProgram(p_out, output, num_fields, target,dim):
+
+    #name of init file
+    name = "fem/s"  # for a specific shape
+    name = name + "d2"
+    if(num_fields==2):
+        # meaning two field args
+        name  = name+"_fg" # two field args to be init
 
     s0 = "cp "+name+"_init.c "+target+"_init.c"
     s1 = "cp observ.diderot "+target+".diderot"
@@ -64,25 +98,55 @@ def makeProgram(p_out, output):
     
     
     s10 = "cp "+target+".diderot "+output+".diderot"
-    es = [s0, s1, s2, s3, s4, s5, s6]
+    es = [s0, s1, s2, s3, s4, s5, s6, s10]
     for i in es:
         os.system(i)
 
 # read output of firedrake program
 
-
-
+def cleanup(output, p_out):
+    os.system("rm ex1.o")
+    os.system("rm ex1_init.o")
+    os.system("rm ex1_init.so")
+    os.system("rm ex1.cxx")
+    os.system("rm ex1.diderot")
+    os.system("rm *.c")
+    os.system("rm *.h")
+    os.system("rm *.txt")
+    os.system("rm *.nrrd")
+    os.system("rm observ.diderot")
+    os.system("rm rst/data/*")
+    os.system("rm ex1*.*")
+    os.system("rm "+output+"*")
+    os.system("rm -r __pycache__")
+    os.system("rm cat.nrrd")
+    os.system("rm  "+p_out+".nrrd")
+    os.system("rm  "+output+".txt")
+    os.system("rm  "+p_out+".txt")
 
 ################################ write annd run test program ################################
 def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall):
+    cleanup(output, p_out)
+    target ="ex1"#+str(app.opr.id)
     # write new diderot program
+    print "p_out:",p_out
     readDiderot(p_out, app, pos)
-    os.system("rm *.*o")
-    makeProgram(p_out, output)
-    name = "ex1"
-    if(os.path.exists(name+".o") and os.path.exists(name+"_init.so")):
+    num_fields = app.opr.arity # number of fields
+    # output type
+    oty = app.oty
+    shape = oty.shape
+    dim = oty.dim
+    #write python firedrake program
+    writeFem(p_out, target,num_fields, dim)
+    #run firedrake program and cvt to txt file
+    makeProgram(p_out, output, num_fields, target, dim)
+
+    # check if the program was executed
+    if(os.path.exists(target+".o") and os.path.exists(target+"_init.so")):
         shape = app.oty.shape
-        writeFem(p_out, shape, pos, output)
+  
+        useFem(p_out, shape, pos, output, num_fields, target)
+        print "pos:",pos
         if(os.path.exists(output+".txt")):
            return (1,1, startall)
         else:

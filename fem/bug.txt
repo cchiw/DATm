@@ -1,0 +1,62 @@
+bugs found with datm
+
+EXPECTED
+***rtn:compile __s_8__n_1_
+	 -: grad ( F_s_d2, )
+	-_F_s_d2 |s_8__n_1_
+	rtn:compile 
+
+
+UNEXPECTED
+
+***rtn:compile __s_23__n_1_
+	 -: arccosine ( F_s_d2, )
+	-_F_s_d2 |s_23__n_1_
+	rtn:compile 
+
+***rtn:compile __s_23__n_2_
+	 -: arccosine ( F_s_d3, )
+	-_F_s_d3 |s_23__n_2_
+	rtn:compile 
+
+***rtn:compile __s_24__n_1_
+	 -: arcsine ( F_s_d2, )
+	-_F_s_d2 |s_24__n_1_
+	rtn:compile 
+
+***rtn:compile __s_24__n_2_
+	 -: arcsine ( F_s_d3, )
+	-_F_s_d3 |s_24__n_2_
+	rtn:compile 
+
+
+LACK SUPPORT IN THIS BRANCH
+***rtn:compile __s_30__n_6_
+	 -: concat2 ( F_s_d2,F_s_d2, )
+	-_F_s_d2,F_s_d2 |s_30__n_6_
+	rtn:compile 
+
+***rtn:compile __s_30__n_12_
+	 -: concat2 ( F_s_d3,F_s_d3, )
+	-_F_s_d3,F_s_d3 |s_30__n_12_
+	rtn:compile 
+
+***rtn:compile __s_31__n_1_
+	 -: max ( F_s_d2,F_s_d2, )
+	-_F_s_d2,F_s_d2 |s_31__n_1_
+	rtn:compile 
+
+***rtn:compile __s_31__n_2_
+	 -: max ( F_s_d3,F_s_d3, )
+	-_F_s_d3,F_s_d3 |s_31__n_2_
+	rtn:compile 
+
+***rtn:compile __s_32__n_1_
+	 -: min ( F_s_d2,F_s_d2, )
+	-_F_s_d2,F_s_d2 |s_32__n_1_
+	rtn:compile 
+
+***rtn:compile __s_32__n_2_
+	 -: min ( F_s_d3,F_s_d3, )
+	-_F_s_d3,F_s_d3 |s_32__n_2_
+	rtn:compile 

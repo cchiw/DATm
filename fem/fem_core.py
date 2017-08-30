@@ -47,6 +47,7 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+        raise Exception("stop")
     elif (rst_NA_1==9):
          rst_NA(name_file, x, name_describe,  branch)
              #elif (rst_good_1==1 or rst_eh_1==1):
@@ -108,7 +109,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
-
+            #raise Exception("stop")
             return 1
         else:
             counter.inc_run(cnt)
@@ -181,7 +182,7 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     #print "post get-tshape"
     print tf1, tshape1
     if(not tf1):
-        write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
+        #write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
     #print "after calling tshape"
     #create app object

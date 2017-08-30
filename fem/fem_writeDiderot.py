@@ -35,6 +35,13 @@ const_out = "7.2"
 
 ####### FIXME: need to create fem-inside/conditional
 ##################################### input tensor/field #####################################
+# create space for field
+def ty_toSpace(V, dim):
+    if(dim==2):
+        return "\n fnspace "+V+" = FunctionSpace(UnitSquareMesh(2,2), Lagrange(), 2);"
+    elif(dim==3):
+        return "\n fnspace "+V+" = FunctionSpace(UnitCubeMesh(2,2,2), Lagrange(), 2);"
+
 #field input line
 #f: file to write to
 #k:continuity
@@ -55,7 +62,7 @@ def fem_inShape(f, appC):
             
             foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
             foo = foo+ "\n //"+field.toStr(exp)
-            foo = foo+ "\n fnspace "+V+" = FunctionSpace(UnitSquareMesh(2,2), Lagrange(), 2);"
+            foo = foo+ty_toSpace(V, dim)
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
