@@ -157,11 +157,12 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
 ##################################################################################################
 ##################################################################################################
 
-
+space = "Unit"
 ##################################################################################################
 # functions create app objects
 # get example from list of examples
 def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
+    print "creating single app"
     # global variables needed from testing framework
     g_inputfile = frame.get_inputfile(testing_frame)
     g_ucoeff = frame.g_ucoeff(testing_frame)
@@ -173,18 +174,21 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     opr = opr_inner
     #ex = oprToEx(opr_inner, testing_frame, cnt)
     (name,ishape)= get_single_exampleEx(ex, t_num)
+    
     # get k value of tshape from kernels
-    ishape = set_ks(g_krn, ishape)
-    #print "calling tshape"
+
+    ishape = set_ks_ofield(g_krn, ishape, space)
+
+    for  i in ishape:
+        print "i",i.name,i.space
+    
+
     #print opr_inner.name,ishape[0].name
     (tf1, tshape1) = get_tshape(opr_inner,ishape)
-    #print "post get-tshape"
-    print tf1, tshape1
     if(not tf1):
         #write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
-    #print "after calling tshape"
-    #create app object
+    print tf1, tshape1.name, tshape1.space
 
     (app, coeffs) = mkApply_fld(name, opr, ishape, g_inputfile, tshape1, g_coeff_style, g_ucoeff, g_krn,g_template)
     dimF = tshape1.dim
@@ -192,23 +196,17 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     core(app, coeffs, dimF, names, testing_frame, cnt)
     return
 
-def getdata(opr_inner, opr_outer, testing_frame, cnt):
-    # break
-    #y = Title_outer(opr_inner, opr_outer)
-    #x = "\n -- shapes:"
-    #for i in ishape:
-    #x+=i.name+","
-    #   writeall(y+x)
-    #   counter.inc_cumulative(cnt)
-    #   counter.inc_cnt(cnt)
-    #   write_results(y, testing_frame, cnt)
-    return
 
 
 
 def convert_fields(ishape,testing_frame):
+    print "inside convert fields"
+    for i in ishape:
+        print "*****", i.name, i.space
     g_krn = frame.get_krn(testing_frame)
-    x = set_ks(g_krn, ishape)
+    x = set_ks_ofield(g_krn, ishape, space)
+    for i in x:
+        print "*****", i.name, i.space
     return x
 
 
@@ -340,6 +338,9 @@ def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, 
 # checks to see if specific ex works
 def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     
+
+    
+    
     print "inside get_tshape 2"
     print "tys:", tys
 
@@ -355,7 +356,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
-    #print "tshape1", tshape1
+    print "tshape1", tshape1.name,"tshape1-space",tshape1.space
     #print "fty", fty
     es = [tshape1]+fty
     xy = get_tshape(opr_outer,es)
@@ -363,7 +364,6 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     (tf2, tshape2) =xy
     #print "tshape2", tshape2
     #print "tf2", tf2
-
     if(tf2==true):# if it works continue
         #create app object
  

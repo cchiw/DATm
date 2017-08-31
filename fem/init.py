@@ -34,12 +34,6 @@ def as_ctypes(dtype):
 
 
 def mk_2d_array(x,t):
-    # y = numpy.empty(x.shape[0],dtype=object)
-    # for i in range(0,len(x)):
-    #     print(x[i])
-    #     y[i] = x[i].ctypes.data_as(POINTER(as_ctypes(x.dtype)))
-    # return(y.ctypes.data_as(POINTER(POINTER(as_ctypes(x.dtype)))))
-    #return((ctypes.cast(ctypes.c_void_p(x.ctypes.data),POINTER(POINTER(as_ctypes(c_int))))))
     return(ctypes.c_void_p(x.ctypes.data))
 
 
@@ -97,36 +91,6 @@ def organizeData(f):
     grumble = opt3.flatten().tolist()
     opt3 = numpy.array(grumble,dtype="int32")
 
-    # print(opt3[0])
-
-
-                    #opt3 = np.array(np.where(opt3.flatten != 0 ),dtype=float_type)
-
-        #float(len(setNodes[x].intersection(setNodes[y]))): this is more inefficient but could be use to enforce stricter locality
-
-    # s = time.clock()
-    # opt = 0-numpy.ones((nc,nc),dtype="int32")
-    # r = range(nc)
-    # #THIS IS MASSIVELY INEFFICIENT: I'm workon a better one
-    # #Use sets -> different system -> cell by cell array
-    # for x in r:
-    #     #a  = (numpy.where(map(lambda y: numpy.intersect1d(cellToNode[x],y).size!=0,cellToNode))[0]).astype("int32")
-    #     a  = (numpy.where(map(lambda y: numpy.intersect1d(cellToNode[x],y).size!=0,cellToNode))[0]).astype("int32")
-    #     #This is really important
-    #     #it needs to have a uniform type or everything goes to hell
-        
-    #     opt[x][0:a.shape[0]]= a
-    #     #opt[x][a.shape[0]] = x -> a should include x
-    # e = time.clock()
-    # print("First loop time is {0}".format(e-s))
-    # opt2 = numpy.empty((nc,nc),dtype=float_type)
-    # for x in r:
-    #     for y in r:
-    #         opt2[x][y] = float(opt[x][y])
-
-
-    
-    
     
     #might want to reoganizesome data
     c_data = _CFunction()
@@ -146,84 +110,3 @@ def organizeData(f):
     #mk_2d_array(opt3,1) #ctypes.c_void_p(opt2.ctypes.data) #mk_2d_array(opt,c_int)
 
     return(c_data) #pass this back
-    
-    
-
-
-# connect to diderot programs
-def data_d2s(name, f, resU, resV, stepSize):
-    p_cf = f._ctypes
-    init_file = path.join(path.dirname(__file__), '../programs/data_d2s/data_d2s_init.o')
-    diderot_file = path.join(path.dirname(__file__),'../programs/data_d2s/data_d2s.o')
-    #call = make_c_evaluate(f, "callDiderot", ldargs=[init_file, diderot_file, "-lteem"])
-    # the datafile
-    return call(ctypes.c_char_p(name),p_cf, resU, resV, ctypes.c_float(stepSize))
-
-
-def basic_d2s_sample(name,f, resU, resV, stepSize, type):
-    p_cf = f._ctypes
-    init_file = path.join(path.dirname(__file__), '../programs/basic_d2s_sample/basic_d2s_sample_init.o')
-    diderot_file = path.join(path.dirname(__file__),'../programs/basic_d2s_sample/basic_d2s_sample.o')
-    #call = make_c_evaluate(f, "callDiderot", ldargs=[init_file, diderot_file, "-lteem"])
-    type = 0
-    return call(ctypes.c_char_p(name),type,p_cf, resU, resV, ctypes.c_float(stepSize))
-
-
-def mesh_d2s_single(name, f, res):
-    #init_file = '/home/teodoro/gitcode/diderot_fem/programs/mesh_d2s_single/mesh_d2s_single_init.so'
-    init_file = '/home/teodoro/gitcode/diderot_fem/programs/mesh_d2s_single/mesh_d2s_single_init.so'
-    _call = ctypes.CDLL(init_file)
-    type = 1
-    data = organizeData(f)
-
-    _call.callDiderot.argtypes = (ctypes.c_char_p,ctypes.c_int,ctypes.c_void_p,ctypes.c_float)
-    result = _call.callDiderot(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p), res)
-    return(result)
-
-def single_mesh(name, f, res,init_file):
-    _call = ctypes.CDLL(init_file)
-    type = 1
-    data = organizeData(f)
-    _call.callDiderot.argtypes = (ctypes.c_char_p,ctypes.c_int,ctypes.c_void_p,ctypes.c_float)
-    result = _call.callDiderot(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p), res)
-    return(result)
-def single_mesh_step(name, f, res,step,init_file):
-    _call = ctypes.CDLL(init_file)
-    type = 1
-    data = organizeData(f)
-    _call.callDiderot.argtypes = (ctypes.c_char_p,ctypes.c_int,ctypes.c_void_p,ctypes.c_int,ctypes.c_float)
-   
-    result = _call.callDiderot(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p), res,step)
-   
-    return(0)
-
-def mesh_d2s_twofields(name, f, g, res):
-    p_cf = f._ctypes
-    p_cg = g._ctypes
-    
-    init_file = path.join(path.dirname(__file__), '../programs/mesh_d2s_twofields/mesh_d2s_twofields_init.o')
-    diderot_file = path.join(path.dirname(__file__),'../programs/mesh_d2s_twofields/mesh_d2s_twofields.o')
-    #call = make_c_evaluate(f, "callDiderot", ldargs=[init_file, diderot_file, "-lteem"])
-    type = 1
-    return call(ctypes.c_char_p(name), type, p_cf, p_cg, res)
-
-
-
-def mesh_step(name, f, res, stepSize):
-    init_file = '/Users/chariseechiw/fire/firedrake/src/firedrake/diderot_fem/programs/mesh_step/mesh_step_init.so'
-    _call = ctypes.CDLL(init_file)
-    type = 1
-    data = organizeData(f)
-    _call.callDiderot_mesh_step.argtypes = (ctypes.c_char_p,ctypes.c_int,ctypes.c_void_p,ctypes.c_int,ctypes.c_float)
-    result = _call.callDiderot_mesh_step(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p), res, stepSize)
-    return(result)
-
-
-
-#visualize images
-def quantize(namenrrd,namepng):
-    os.system('unu quantize -b 16 -i ' +namenrrd+ ' -o '+ namepng )
-    os.system('open ' + namepng)
-
-
-

@@ -14,7 +14,10 @@ from fem_iter_cmd import main_set
 # first command is the number of arguments 
 n_template = 0
 shift = 1 # next command number
+os.system("rm -r rst/stash")
+
 os.system("mkdir rst")
+os.system("mkdir rst/stash")
 os.system("mkdir rst/tmp")
 
 main_set(n_template, shift)
@@ -27,5 +30,5 @@ os.system("rm *.log ")
 #os.system("rm *.diderot")
 #os.system("rm p_observ* ")
 os.system("rm symb_f*")
-#os.system("rm *.nrrd")
+os.system("rm *.nrrd")
 os.system("rm tmp*")

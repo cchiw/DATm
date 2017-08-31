@@ -72,18 +72,14 @@ class tty:
 
 # field types
 class fty:
-    def __init__(self, id, name, dim, shape, tensorType, k):
+    def __init__(self, id, name, dim, shape, tensorType, k, space):
         self.id=id
         self.name=name#+"_k"+str(k)
         self.dim=dim
         self.shape=shape
         self.tensorType=tensorType # if we probed a field with this field type
         self.k=k
-    def toStr(self):
-        if(self.dim==nonefield_dim):
-            return "tensor "
-        else:
-            return ("ofield #"+str(self.k)+"("+str(self.dim)+")"+str(self.shape))
+        self.space = space
     def get_tensorType(self):
         return self.tensorType
     def get_dim(self):
@@ -97,6 +93,8 @@ class fty:
             return shape[0] # vector length
         else:
             raise "unsupported get_vecLength types"
+    def is_OField(self):
+        return (not (self.space==None))
     def is_Field(self):
         return  (not (self.dim==nonefield_dim))
     def is_Tensor(self):
@@ -135,10 +133,14 @@ class fty:
         return (a.id==b.id)
     #string for diderot program
     def toDiderot(self):
+        print "in to diderot",self.name,"-",self.space
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+            if(fty.is_OField(self)):
+                return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+            else:
+                return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
     def toFemDiderot(self):
         if(self.dim==0):
             return "tensor "+str(self.shape)
@@ -149,12 +151,19 @@ class fty:
             return "tensor "+str(self.shape)
         else:
             return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+    def toStr(self):
+        if(self.dim==nonefield_dim):
+            return "tensor "
+        else:
+            return ("field #"+str(self.k)+"("+str(self.dim)+")"+str(self.shape))
 
     #creates ty object
     def convertTy(const,k):
-        return  fty(const.id,const.name, const.dim, const.shape, const.tensorType, k)
+        return  fty(const.id,const.name, const.dim, const.shape, const.tensorType, k, const.space)
+    def convertTySpace(const,k, space):
+        return  fty(const.id,const.name, const.dim, const.shape, const.tensorType, k, space)
     def convertToTensor(self):
-        return fty(200, "T", nonefield_dim, self.shape, self.tensorType, None)
+        return fty(200, "T", nonefield_dim, self.shape, self.tensorType, None, const.space)
 # ------------------------------ type name to other properties ------------------------------
 # shorthand used to refer to different types
 # the helper functions match shorthand to other properties and creates ty object
@@ -186,11 +195,7 @@ def mkNoneField(id, _, outputtensor):
     #print "id",str(id)
     shape = outputtensor.shape
     name = "T_"+shapeToStr(shape)
-    return fty(id, name,nonefield_dim, shape, outputtensor, nonefield_k)
-
-
-
-
+    return fty(id, name,nonefield_dim, shape, outputtensor, nonefield_k, None)
 
 
 
@@ -199,7 +204,13 @@ k_init=2#null k
 def mkField(id, dim, outputtensor):
     #print "id",str(id)
     name = "F_"+shapeToStr(outputtensor.shape)+"_d"+str(dim)
-    return fty(id, name, dim, outputtensor.shape, outputtensor, k_init)
+    return fty(id, name, dim, outputtensor.shape, outputtensor, k_init, None)
+
+def mkOField(id, dim, outputtensor):
+    #print "id",str(id)
+    name = "F_"+shapeToStr(outputtensor.shape)+"_d"+str(dim)
+    return fty(id, name, dim, outputtensor.shape, outputtensor, k_init, True)
+
 
 def get_Tshape(ty):
     return ty.shape
@@ -281,7 +292,7 @@ tms_sym =[ty_mat2x2T, ty_mat3x3T,ty_mat4x4T]
 
 standard_tyT = tvs+ tms
 
-# define possible tensor types
+# define possible field types
 # vector types
 def mkVecF(f, id, dim):
     ty_scalarF = f(id, dim, ty_scalarT)

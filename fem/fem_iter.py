@@ -116,7 +116,8 @@ def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, test
 # get tshape of get_tshape
 def pre_get_tshape1(name, ishape, opr_inner, testing_frame):
     g_krn = frame.get_krn(testing_frame)
-    ishape0 = set_ks(g_krn, ishape)
+    space =  "Unit"
+    ishape0 = set_ks_ofield(g_krn, ishape, space)
     (tf1, tshape1) = get_tshape(opr_inner, ishape0)
     return (name, tf1, tshape1, ishape0)
 
@@ -139,10 +140,6 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
     #writeTime(5)
     opr_inner = oprs[0]
     opr_outer = oprs[1]
-    def call(t_num, t_ty2, ty_ty2):
-        tys = [t_num, t_ty2]
-        #print "call: ",t_num, t_ty2,ty_ty2
-        embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_frame, cnt)
     # core
     n_num = len(ex.tys)
     for t_num  in range(n_num):

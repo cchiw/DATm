@@ -45,7 +45,7 @@ def applyOnce(oexp_inner, app_inner, app_outer, rhs1, rhs2, pos, arity):
     oty_inner = apply.get_oty(app_inner)
     oty_outer = apply.get_oty(app_outer)
     opr_outer = app_outer.opr
-    lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "")
+    lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "", None)
     #create new apply
     app_tmp = apply("tmp", opr_outer, lhs_tmp, rhs1, rhs2, oty_outer, true, true)
     return simple_apply(None, app_tmp, pos)
@@ -109,7 +109,7 @@ def applyProbe(exp, app, pos):
     appL = apply("tmp", app.opr, exp, app.rhs, app.third, app.oty, true, true)
     (otyp1L, ortnL) = simple_apply(0, appL, pos)
     rtnL = probeField(otyp1L, pos, ortnL)
-    print "\n\n\nto apply operator:", app.opr.name, " on \n\t", exp.data, "\n\t",app.rhs.data,"\n\tresult:", ortnL, "\n\tprobed:", rtnL
+    #print "\n\n\nto apply operator:", app.opr.name, " on \n\t", exp.data, "\n\t",app.rhs.data,"\n\tresult:", ortnL, "\n\tprobed:", rtnL
     
     return rtnL
 

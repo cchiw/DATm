@@ -55,19 +55,22 @@ def get_fieldinfo(app):
     init_name = "fem/"
     num_fields = 0
     n = len(exps)
+    exp_fields = []
     for e in (exps[:n-1]):
         if(fty.is_Field(e.fldty)):
             init_name = init_name+"f"
             num_fields +=1
+            exp_fields.append(e)
         else:
             init_name =init_name+"t"
     last = exps[n-1]
     if(fty.is_Field(last.fldty)):
         init_name = init_name+"f"
         num_fields +=1
+        exp_fields.append(last)
     print "init_name:",init_name,
     print "num_fields:", num_fields
-    return (init_name, num_fields)
+    return (init_name, num_fields,exp_fields)
 
 def translate_ty(dim, exp_name, field_name):
     element = ty_toElement()
@@ -78,13 +81,82 @@ def translate_ty(dim, exp_name, field_name):
     foo = foo+"\n"+field_name+" = Function(V).interpolate(Expression("+exp_name+"))"
     return foo
 
-def get_exp(dim, field_name):
+def translate_coeff(a, xyz):
+    if(a==0):
+        return ""
+    else:
+        return "+("+str(a)+"*"+xyz+")"
+
+#translate coeffs to firedrake expression
+def translate_expSingle(coeffs):
+    [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p] = coeffs
+    x="x[0]"
+    y="x[1]"
+    
+    yy = y+"*"+y
+    yyy = yy+"*"+y
+    xy = x+"*"+y
+    xyy = yy+"*"+x
+    xyyy = yyy+"*"+x
+    xx = x+"*"+x
+    xxy = xx+"*"+y
+    xxyy = xx+"*"+yy
+    xxyyy = xx+"*"+yyy
+    xxx = xx+"*"+x
+    xxxy = xxx+"*"+y
+    xxxyy = xxx+"*"+yy
+    xxxyyy = xxx+"*"+yyy
+    
+    #tA = a + b*y + c*x*y+ d*x;
+    tA = [(a,"1"), (b,y), (c,xy), (d,x)]
+    #tB = ((e+f*x+g*(x*x))*y*y) + (h*(x*x)*y);
+    tB =  [(e,yy), (f,xyy), (g,xxyy), (h,xxy)]
+    #tC = i*(x*x) + (j+k*x+l*(x*x))*y*y*y;
+    tC =  [(i,xx), (j,yyy), (k,xyyy), (l,xxyyy)]
+    #tD = (x*x*x)*((m*y*y*y)+(n*y*y)+(o*y)+p);
+    tD =  [(m,xxxyyy), (n,xxxyy), (o,xxxy), (p,xxx)]
+    return tA+ tB+ tC+ tD
+
+def translate_exp(exp):
+    print "translate_exp:", exp.data, exp.name, exp.fldty.name, exp.coeff
+    dim = exp.fldty.dim
+    if(dim==1):
+        raise Exception ("missing dim")
+    elif (dim==2):
+        coeffs= exp.coeff
+        ss="0"
+        tE = translate_expSingle(coeffs)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        return "\""+ss+"\""
+    elif (dim==3):
+        [coeff0, coeff1, coeff2] = exp.coeff
+        ss="0"
+        tE = translate_expSingle(coeff0)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        tE = translate_expSingle(coeff1)
+        z="x[2]"
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c+"*"+z)
+        tE = translate_expSingle(coeff2)
+        zz = z+"*"+z
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c+"*"+zz)
+        
+        return "\""+ss+"\""
+
+
+
+
+def get_exp(dim, field_name, field_exp):
     exp_name = "exp"+field_name
-    foo = "\n"+exp_name+" = \"x[0]\""
+    foo = "\n"+exp_name+" = "+translate_exp(field_exp)
+    
     return  foo+ translate_ty(dim, exp_name,field_name)
 
 # write fem
-def writeFem(p_out, target, num_fields, dim):
+def writeFem(p_out, target, num_fields, dim, exp_fields):
     #read diderot template
     ftemplate = open(template, 'r')
     ftemplate.readline()
@@ -100,24 +172,34 @@ def writeFem(p_out, target, num_fields, dim):
             foo = "\nname = \"cat\""
             foo = foo+"\ntarget =\"ex1\""
             foo = foo+"\nnamenrrd = name+'.nrrd'"
-            if(num_fields==1):
-                foo = foo+ get_exp(dim, "f")
-                foo = foo+"\ninit1(namenrrd, f,target)"
-            elif(num_fields==2):
-                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")
-                foo =foo+"\ninit2(namenrrd, f, g,target)"
-            elif(num_fields==3):
-                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")
-                foo =foo+"\ninit3(namenrrd, f, g,h,target)"
-            elif(num_fields==4):
-                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")
-                foo =foo+"\ninit4(namenrrd, f, g, h, i, target)"
-            elif(num_fields==5):
-                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")+get_exp(dim, "j")
-                foo =foo+"\ninit4(namenrrd, f, g, h, i, j, target)"
-            elif(num_fields==6):
-                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")+get_exp(dim, "j")+get_exp(dim, "k")
-                foo =foo+"\ninit4(namenrrd, f, g, h, i, j, k, target)"
+            
+            names = ""
+            i = 0
+            for e in exp_fields:
+                tmp = "f"+str(i)
+                names = names+tmp+", "
+                foo = foo+ get_exp(dim, tmp, e)
+                i +=1
+            foo =foo+"\ninit"+str(num_fields)+"(namenrrd, "+names+" target)"
+            
+#            if(num_fields==10):
+#                foo = foo+ get_exp(dim, "f")
+#                foo = foo+"\ninit1(namenrrd, f,target)"
+#            elif(num_fields==20):
+#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")
+#                foo =foo+"\ninit2(namenrrd, f, g,target)"
+#            elif(num_fields==3):
+#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")
+#                foo =foo+"\ninit3(namenrrd, f, g,h,target)"
+#            elif(num_fields==4):
+#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")
+#                foo =foo+"\ninit4(namenrrd, f, g, h, i, target)"
+#            elif(num_fields==5):
+#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")+get_exp(dim, "j")
+#                foo =foo+"\ninit4(namenrrd, f, g, h, i, j, target)"
+#            elif(num_fields==6):
+#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")+get_exp(dim, "j")+get_exp(dim, "k")
+#                foo =foo+"\ninit4(namenrrd, f, g, h, i, j, k, target)"
             f.write(foo.encode('utf8'))
             continue
         else:
@@ -179,13 +261,13 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall):
     print "p_out:",p_out
     readDiderot(p_out, app, pos)
 
-    (init_name, num_fields) = get_fieldinfo(app)
+    (init_name, num_fields,exp_fields) = get_fieldinfo(app)
     # output type
     oty = app.oty
     shape = oty.shape
     dim = oty.dim
     #write python firedrake program
-    writeFem(p_out, target,num_fields, dim)
+    writeFem(p_out, target,num_fields, dim,exp_fields)
     #run firedrake program and cvt to txt file
     makeProgram(p_out, output, target, init_name)
 

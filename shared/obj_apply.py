@@ -42,6 +42,10 @@ class apply:
             else :
                 flds += apply.get_all_FieldTys(rhs)
         return flds
+
+
+    
+    
     def toStr(self, layer):
         if (self==None):
             return "None"
