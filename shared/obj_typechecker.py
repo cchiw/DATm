@@ -25,6 +25,9 @@ def applyUnaryOp(op1,ityps):
     ashape = ityp1.shape
     name =  "op1 "+op1.name+"("+ityp1.name+")"
     #print "apply unary op", name, ashape
+    space = None
+    if(fty.is_OField(ityp1)):
+        space = ityp1.space
     def same():
         return (true, ityp1)
     def err():
@@ -32,7 +35,7 @@ def applyUnaryOp(op1,ityps):
     def mkTyp(shape):
         (tf, rty1) = isShapeOk(shape, dim)
         if(tf):
-            rtn1 = fty.convertTy(rty1, k)
+            rtn1 = fty.convertTySpace(rty1, k, space)
             return (true, rtn1)
         else:
             return err()
@@ -44,7 +47,7 @@ def applyUnaryOp(op1,ityps):
         else:
             (tf, rty1) = isShapeOk(shape, dim)
             if(tf):
-                rtn1 = fty.convertTy(rty1, k-k_limit)
+                rtn1 = fty.convertTySpace(rty1, k-k_limit, space)
                 return (true, rtn1)
             else:
                 return err()
@@ -197,7 +200,7 @@ def applyBinaryOp(op1,ityps):
     ityp2 = ityps[1]
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
-    name += "("+ityp1.name+","+ityp2.name+")"
+
     ##print "type name", name
     (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
     if(not tf):
@@ -205,6 +208,12 @@ def applyBinaryOp(op1,ityps):
     k = fldty.k
     if (fty.is_Field(ityp1) and fty.is_Field(ityp2)):
         k = min(ityp1.k, ityp2.k)
+    space = None
+    if (fty.is_OField(ityp1)):
+        space = ityp1.space
+    elif (fty.is_OField(ityp2)):
+        space = ityp2.space
+    
     dim = fldty.dim
     def err():
         # type not supported
@@ -216,9 +225,8 @@ def applyBinaryOp(op1,ityps):
             (tf, rty1) = isShapeOk(shape, dim)
             print tf, rty1
             if(tf):
-                rtn1 = fty.convertTy(rty1, k)
-                print "rtnning->", rtn1
-                print rtn1.name
+                rtn1 = fty.convertTySpace(rty1, k, space)
+
                 return (true, rtn1)
             else:
                 return err()
@@ -347,6 +355,12 @@ def applyThirdOp(op1,ityps):
         return (false, "not the same dimension")
     k = fldty.k
     dim = fldty.dim
+    space = None
+    if (fty.is_OField(ityp1)):
+        space = ityp1.space
+    elif (fty.is_OField(ityp2)):
+        space = ityp2.space
+
     ##print "---------------------  continue ---------"
     def err():
         # type not supported
@@ -360,7 +374,7 @@ def applyThirdOp(op1,ityps):
             (tf, rty1) = isShapeOk(shape, dim)
             ##print "mark d "
             if(tf):
-                rtn1 = fty.convertTy(rty1, k)
+                rtn1 = fty.convertTySpace(rty1, k,space)
                 return (true, rtn1)
             else:
                 return err()
@@ -382,16 +396,21 @@ def applyThirdOp(op1,ityps):
 # apply unary and binary operator
 def get_tshape(opr1, ishape):
     #print "inside getshape", opr1.name
+
 #    for m in ishape:
 #        # limitation here
 #        if(fty.is_Field(m)):
 #            if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
 #                return (false, "limit_ofield")
+
     arity = opr1.arity
     if(arity==0):
         return (true, ty_mat3x3F_d3)
     elif(arity==1):
-        return applyUnaryOp(opr1, ishape)
+        (a,b) =  applyUnaryOp(opr1, ishape)
+        if(a):
+            print fty.toDiderot(b)
+        return (a,b)
     elif(arity==2):
         print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
         (m,n) = applyBinaryOp(opr1, ishape)

@@ -86,6 +86,7 @@ def cte_update_method(f, pos, app):
         
         #foo= "\n\t\tout = inst(G, pos);"
         foo= "\n\t\tout = inst(G,pos);"
+        #foo ="\n\t\tout ="+ isProbe(, fld)
         f.write(foo.encode('utf8'))
     else:
         check_conditional(f,  foo_out, app)

@@ -34,15 +34,15 @@ eps = "0.01"
 def fieldName(i):
     return "F"+str(i)
 # type of field
-def fieldShape(f, fldty):
+def fieldShape(f, fldty, isOField):
     #print "fldty: ",fldty
-    foo = fty.toDiderot(fldty)
+    foo = fty.toDiderot(fldty, isOField)
     f.write(foo.encode('utf8'))
 # writing to a line
-def write_shape(pre, f, typ, lhs, rhs):
+def write_shape(pre, f, typ, lhs, rhs, isOField):
     f.write(pre.encode('utf8'))
     # type of resulting field
-    fieldShape(f, typ)
+    fieldShape(f, typ, isOField)
     # set expression equal to output field
     foo = lhs+" = "+rhs+";\n"
     # Write to file
@@ -53,13 +53,13 @@ def write_shape(pre, f, typ, lhs, rhs):
 #k:continuity
 #itypes: types for input field
 #inputlist: name for input data
-def inShape_base(f, exps):
+def inShape_base(f, exps, isOField):
     #app = apply.get_root_app(appC)
     i=0
     for exp in exps:
         #print "current fld",field.toStr(exp)
         dim = field.get_dim(exp)
-        fieldShape(f, exp.fldty)
+        fieldShape(f, exp.fldty, isOField)
         if (field.get_isField(exp)):
             krnstr = exp.krn.str
             foo= fieldName(i)+" = "+krnstr+u'⊛'+"  image(\""+exp.inputfile+".nrrd\");\n"
@@ -69,9 +69,9 @@ def inShape_base(f, exps):
             f.write(foo.encode('utf8'))
         i+=1
 #inputlist: name for input data
-def inShape(f, appC):
+def inShape(f, appC, isOField):
     exps = apply.get_all_Fields(appC)
-    inShape_base(f, exps)
+    inShape_base(f, exps, isOField)
 ##################################### output tensor/field #####################################
 #instaniate output tensor
 def outLineTF(type,s):
@@ -108,10 +108,9 @@ def getInside(exp, pos, name):
     else:
         return ""
 # probes field at variable position
-def isProbe(exp, fld):
-    if(fty.is_OField(fld)):
-        return "inst("+exp+", pos)"
-    elif(fty.is_Field(fld)):
+def isProbe(exp, fld, isOField):
+    if(fty.is_Field(fld)):
+        if
         return "("+exp+")(pos)"
     else:
         return "("+exp+")"
@@ -156,7 +155,7 @@ def rtn_rhs(f, op1, typ_inner, e, i):
     print "e: ", e, " i:", i
     if (arity==1):
         #if(op1.placement==place_right):
-        #    write_shape("\t", f, typ_inner, f1, e)
+        #    write_shape("\t", f, typ_inner, f1, e, isOField)
         #    return (prntUnary(op1, f1), i+1)
         #else:
         return (prntUnary(op1, e),i)
@@ -182,16 +181,16 @@ def get_exp2(opr, lhs, i):
 ################## apply 1 layer of operator ##################
 #write operation between fields
 #get output var name-lhs
-def gotop1(f, app, pre, lhs):
+def gotop1(f, app, pre, lhs, isOField):
     op1 = app.opr
     oty = app.oty
     f0 = fieldName(0)
     (rhs, _) = rtn_rhs(f, op1, oty, f0, 1)
-    write_shape(pre, f, oty, lhs, rhs)
+    write_shape(pre, f, oty, lhs, rhs, isOField)
     return
 ################## apply 2 layers of operators ##################
 #write operation between fields
-def gotop2(f, app_outer, pre, lhs):
+def gotop2(f, app_outer, pre, lhs, isOField):
     print "gotop2"
     opr_outer=app_outer.opr
     app_inner=apply.get_unary(app_outer)
@@ -207,11 +206,11 @@ def gotop2(f, app_outer, pre, lhs):
     # second operator
     (line1,_) = rtn_rhs(f, opr_outer, typ_outer, e1, n)
     # writing to a line
-    write_shape(pre, f, typ_outer, lhs, line1)
+    write_shape(pre, f, typ_outer, lhs, line1, isOField)
     return
 ################## apply 3 layers of operators ##################
 #write operation between fields
-def gotop3(f, app_outer2, pre, lhs):
+def gotop3(f, app_outer2, pre, lhs, isOField):
     opr_outer2 = app_outer2.opr
     app_outer1 = apply.get_unary(app_outer2)
     opr_outer1 = app_outer1.opr
@@ -228,33 +227,33 @@ def gotop3(f, app_outer2, pre, lhs):
     (e2, n) = rtn_rhs(f, opr_outer1, typ_inner, e1, n)
     (line1,_) = rtn_rhs(f, opr_outer2, typ_outer1, e2, n)
     # writing to a line
-    write_shape(pre, f, typ_outer2, lhs, line1)
+    write_shape(pre, f, typ_outer2, lhs, line1, isOField)
 ################## write operator lines ##################
 # write operator lines
 # calls above functions
-def iter(f, app, lhs, name):
+def iter(f, app, lhs, name, isOField):
     if(app.isrootlhs):
-        return gotop1(f, app, lhs, name)
+        return gotop1(f, app, lhs, name, isOField)
     elif((app.lhs).isrootlhs):
         #print "twice embedded"
-        return gotop2(f ,app, lhs, name)
+        return gotop2(f ,app, lhs, name, isOField)
     else:
         #print "third layers"
-        return gotop3(f, app, lhs, name)
+        return gotop3(f, app, lhs, name, isOField)
 #write operator stmts in field line
-def replaceOp(f, app):
+def replaceOp(f, app, isOField):
     if (fty.is_Field(app.oty)):
         #field type
-        iter(f, app, "", opfieldname1)
+        iter(f, app, "", opfieldname1, isOField)
     else:
         return
 #write operator stmts in output tensor line
-def outLine(f, app):
+def outLine(f, app, isOField):
     type  = app.oty
     if (fty.is_Field(type)):
         outLineF(f, type)
     else:
-        return iter(f, app, "\toutput ", foo_out)
+        return iter(f, app, "\toutput ", foo_out, isOField)
 
 ##################################### conditionals and limits #####################################
 # limitation on operator
@@ -285,15 +284,15 @@ def get_exp1(opr, i):
         return fieldName(i+1)
     elif(arity==3):
         return fieldName(i+2)
-def innerL(app, lhs, i):
+def innerL(app, lhs, i, isOField):
     opr = app.opr
     oty = app.oty
     (z, _) = get_exp2(opr, lhs , i)
-    return isProbe(z, oty)
+    return isProbe(z, oty, isOField)
 def innerF(app, i):
     exp0 = fieldName(i)
     return  innerL(app, exp0, i+1)
-def get_args2(app, app_inner, i):
+def get_args2(app, app_inner, i, isOField):
     print "get_args 2", i
     opr_inner =app_inner.opr
     exp0 = fieldName(i)
@@ -306,15 +305,15 @@ def get_args2(app, app_inner, i):
             third = app.lhs.lhs
             opr = third.opr
             z = get_exp1(opr, i)
-        return isProbe(z, oty)
+        return isProbe(z, oty, isOField)
     else:
         if(app.lhs.isrootlhs):
             oty  = app_inner.oty
-            return isProbe(exp0, oty)
+            return isProbe(exp0, oty, isOField)
         else:
             third = app.lhs.lhs
             return innerF(third, i)
-def get_args3(app):
+def get_args3(app, isOField):
     print "inside ger args 3"
     if(app.opr.limit==limit_small):# op_division.id):
         if((app.lhs).isrootlhs):
@@ -324,12 +323,12 @@ def get_args3(app):
             opr_inner = app_inner.opr
             z = get_exp1(opr_inner,1)
             oty = app_outer.rhs.fldty
-            return isProbe(z, oty)
+            return isProbe(z, oty, isOField)
         else:
             # one layer
             z = app.rhs.name
             oty = app.rhs.fldty
-            return isProbe(z, oty)
+            return isProbe(z, oty, isOField)
     else:
         if((app.lhs).isrootlhs):
             # layer 2
@@ -371,23 +370,10 @@ def getCond(app, set):
     else:
         return  set
 ##ff: field that is being probed or tensor variable inside if statement
-def check_conditional(f, ff, app):
+def check_conditional(f, ff, app, isOField):
     # probes field at variable position
     oty = app.oty
-    set = "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
-    foo = ""
-    if(app.isrootlhs or oty.dim==1):
-        foo = set
-    else: #twice embedded
-        # there might be a conditional restraint
-        foo= getCond(app, set)
-    f.write(foo.encode('utf8'))
-    return
-##ff: field that is being probed or tensor variable inside if statement
-def check_conditional(f, ff, app):
-    # probes field at variable position
-    oty = app.oty
-    set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
+    set =  "\t"+foo_out+" = "+isProbe(ff,oty, isOField)+";\n"
     foo =  ""
     if(app.isrootlhs or oty.dim==1):
         foo = set
@@ -398,10 +384,10 @@ def check_conditional(f, ff, app):
     return
 ##################################### inside field test  #####################################
 #probes field at variable position
-def check_inside(f, ff, app):
+def check_inside(f, ff, app, isOField):
     print "inside check inside"
     oty = app.oty
-    set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";"
+    set =  "\t"+foo_out+" = "+isProbe(ff,oty, isOField)+";"
     exps = apply.get_all_Fields(app)
     foo = ""
     pos = "pos"

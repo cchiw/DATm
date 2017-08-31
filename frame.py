@@ -24,10 +24,15 @@ name = "vis branch"
 # branch information
 #s_branch  = branch_vis15
 #s_branch  = branch_ein16
-s_branch  = branch_other
+
+
 #s_branch = branch_chiw17
 name = "testing chiw17 branch"
 
+
+
+s_branch  = branch_other
+#s_branch = branch_chiw17
 
 s_revision = "r current"
 s_precision = precision_double  #precision_single

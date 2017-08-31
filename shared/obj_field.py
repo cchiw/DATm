@@ -65,7 +65,12 @@ def set_k(g_krn, id, ty1):
     c_krn = transform_krn(g_krn, id)
     c_k = c_krn.continuity
     ty1.k = c_k
-    return fty(ty1.id, ty1.name, ty1.dim, ty1.shape, ty1.tensorType, c_k)
+    return fty(ty1.id, ty1.name, ty1.dim, ty1.shape, ty1.tensorType, c_k, ty1.space)
+def set_k_ofield(g_krn, id, ty1, space):
+    c_krn = transform_krn(g_krn, id)
+    c_k = c_krn.continuity
+    ty1.k = c_k
+    return fty(ty1.id, ty1.name, ty1.dim, ty1.shape, ty1.tensorType, c_k, 1)
 #return ty1
 def set_ks(g_krn, ishapes):
     id = 0
@@ -77,15 +82,26 @@ def set_ks(g_krn, ishapes):
     return rtn
 
 
+def set_ks_ofield(g_krn, ishapes, space):
+    id = 0
+    rtn = []
+    for (i) in (ishapes):
+        r = set_k_ofield(g_krn, id, i, space)
+        rtn.append(r)
+        id+=1
+    return rtn
+
+
 #returns expression created with coefficients
 class field:
-    def __init__(self, isField, name, fldty, krn, data, inputfile):
+    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff):
         self.isField = isField
         self.name = name
         self.fldty = fldty
         self.krn = krn
         self.data = data
         self.inputfile = inputfile
+        self.coeff = coeff
     def toStr(self):
         if (self==None):
             return "field is none"
@@ -182,45 +198,45 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
         return (coeffs, exps)
     if (fty.is_ScalarField(finfo1)):
         (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
-        F = field(true, id, finfo1 , krn, exp1, input1)
+        F = field(true, id, finfo1 , krn, exp1, input1, coeff1)
         #print ("Fsca", field.toStr(F))
         return (F, finfo1, coeff1)
     elif(fty.is_VectorField(finfo1)): # input is a vector field
         n= fty.get_vecLength(finfo1)
         (coeffs, exps) = get_vec(n)
-        F = field(true, id, finfo1 ,krn, exps, input1)
+        F = field(true, id, finfo1 ,krn, exps, input1, coeffs)
         #print ("Fvec", field.toStr(F))
         return (F, finfo1, coeffs)
     elif(fty.is_MatrixField(finfo1)): # input is a vector field
         [shape0, shape1] = fty.get_shape(finfo1)
         (coeffs, exps) =  get_mat(shape0, shape1)
-        F = field(true, id, finfo1 ,krn, exps, input1)
+        F = field(true, id, finfo1 ,krn, exps, input1, coeffs)
         #print ("Fvec", field.toStr(F))
         return (F, finfo1, coeffs)
     elif(fty.get_dim(finfo1)==0): #tensor
         if(fty.is_Scalar(finfo1)):
             (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
             (coeffs, exps) = (coeff1, exp1)
-            F = field(false, id, i_fty,"", exps, "")
+            F = field(false, id, i_fty,"", exps, "", coeffs)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeff1)
         elif(fty.is_Vector(finfo1)):
             n= fty.get_vecLength(finfo1)
             (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
             (coeffs, exps) = get_vec(n)
-            F = field(false, id, i_fty,"", exps, "")
+            F = field(false, id, i_fty,"", exps, "", coeffs)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeff1)
         elif(fty.is_Matrix(finfo1)):
             [shape0, shape1] = fty.get_shape(finfo1)
             (coeffs, exps) =  get_mat(shape0, shape1)
-            F = field(false, id, i_fty,"", exps, "")
+            F = field(false, id, i_fty,"", exps, "", coeffs)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeffs)
         elif(fty.is_Ten3(finfo1)):
             [shape0, shape1, shape2] = fty.get_shape(finfo1)
             (coeffs, exps) = get_ten3(shape0, shape1, shape2)
-            F = field(false, id, i_fty,"", exps, "")
+            F = field(false, id, i_fty,"", exps, "", coeffs)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeffs)
         else:
