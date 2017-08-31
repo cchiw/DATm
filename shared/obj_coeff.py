@@ -13,10 +13,15 @@ x,y,z =symbols('x y z')
 #------------------------------ get coeff ------------------------------
 #-------------------- Synthetic field --------------------
 # coefficients for synthetic field
+
 # a, b*x + c*y
 # d*x*x, e*x*y,f*y*y
 # g*y*x*x, h*x*y*y, i*x*x*y*y
 #get coeffs depending on dimension and coeff_order
+
+
+#debug1: makes it [x]
+
 def get_coeffs_debug1(dim, coeff_style, ucoeff):
     lcoeff = ucoeff*(-1)
     def mk_coeffs(c):
@@ -31,11 +36,12 @@ def get_coeffs_debug1(dim, coeff_style, ucoeff):
     elif (dim==1):
         return [1, 0, 0, 0]
     elif (dim==2):
-        return [1,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        return [0,0,0,1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     elif (dim==3):
         coeffs=[]
-        for i in range(dim):
-            coeffs.append([1,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        xx = [0,0,0,1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        xz = [0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        coeffs = [xx,xz,xz]
         return coeffs
     else:
         raise "dimension is not supported"
@@ -152,7 +158,7 @@ def coeffToExp(coeff, dim):
 def mk_exp(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
         #print "using regular template"
-        coeff1= get_coeffs(dim, coeff_style, ucoeff)
+        coeff1= get_coeffs_debug1(dim, coeff_style, ucoeff)
         exp1 = coeffToExp(coeff1, dim)
         return (coeff1, exp1)
     else:

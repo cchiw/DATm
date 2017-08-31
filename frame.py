@@ -5,7 +5,11 @@ from base_constants import *
 
 #unu save -f nrrd -e ascii -i out.nrrd | less
 
-s_layer = 3
+
+
+
+s_layer = 2
+
 s_random_range = 0
 from obj_frame import *
 
@@ -15,19 +19,27 @@ cpath =  "/Users/chariseechiw/diderot/"
 # go for it!
 # options are commented out
 
+
 name = "vis branch"
 # branch information
 #s_branch  = branch_vis15
 #s_branch  = branch_ein16
-#s_branch  = branch_other
-s_branch = branch_chiw17
+s_branch  = branch_other
+#s_branch = branch_chiw17
+name = "testing chiw17 branch"
+
+
 s_revision = "r current"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
 # order of coefficients
 #s_coeff_style = coeff_quadratic
+
 s_coeff_style = coeff_cubic
 #s_coeff_style = coeff_linear
+
+#s_coeff_style = coeff_cubic
+
 # kernel
 #s_krn = h_bs5
 s_krn = h_hex
@@ -45,8 +57,12 @@ s_in_tys  = ty_All
 #s_in_tys  = ty_T
 
 # op1(t1) -> t2, what is the type of t2?
+
 s_rst_ty  = ty_All  #ty_F #ty_T
 #s_rst_ty  =  ty_F #ty_T
+#s_rst_ty  = ty_All  #ty_F #ty_T
+#s_rst_ty  =  ty_F #ty_T
+
 
 
 #-------------- randomize ----------------------

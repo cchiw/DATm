@@ -83,7 +83,7 @@ class fty:
         if(self.dim==nonefield_dim):
             return "tensor "
         else:
-            return ("field #"+str(self.k)+"("+str(self.dim)+")"+str(self.shape))
+            return ("ofield #"+str(self.k)+"("+str(self.dim)+")"+str(self.shape))
     def get_tensorType(self):
         return self.tensorType
     def get_dim(self):
@@ -138,7 +138,19 @@ class fty:
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
+
             return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+            #return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+    def toFemDiderot(self):
+        if(self.dim==0):
+            return "tensor "+str(self.shape)
+        else:
+            return "fem#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+    def toOFieldDiderot(self):
+        if(self.dim==0):
+            return "tensor "+str(self.shape)
+        else:
+            return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
     #creates ty object
     def convertTy(const,k):
         return  fty(const.id,const.name, const.dim, const.shape, const.tensorType, k)

@@ -1,0 +1,19 @@
+//fem template
+foo_in
+foo_op
+
+
+ofield#1(2)[] F = convert(f, V, path);
+
+int length =foo_length;
+strand f(int i) {
+
+    output foo_outTen
+    update {
+
+        foo_probe;
+
+        stabilize;
+    }
+}
+initially [ f(i) | i in 0..length];

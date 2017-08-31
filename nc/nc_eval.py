@@ -657,6 +657,7 @@ def fn_comp(fld1, fld2):
     exp2 = field.get_data(fld2)
     ityp1 = field.get_ty(fld1)
     ityp2 = field.get_ty(fld2)
+
     bshape = fty.get_shape(ityp2) #  determine x, y ,z
     def replaceX(a,b):
         r =  a.subs(A,b*adj)
@@ -703,14 +704,12 @@ def fn_comp(fld1, fld2):
     f = getF()
     if(fty.is_Scalar(ityp1)):
         k = f(exp1,exp2)
-        #print "kSca:",k
         return k
     elif(fty.is_Vector(ityp1)):
         [a1] = fty.get_shape(ityp1)
         rtn = []
         for i in range(a1):
             rtn.append(f(exp1[i],exp2))
-        #print "kVec:", rtn
         return rtn
     elif(fty.is_Matrix(ityp1)):
         [a1, a2] = fty.get_shape(ityp1)
@@ -720,7 +719,6 @@ def fn_comp(fld1, fld2):
             for j in range(a2):
                 rtnj.append(f(exp1[i][j],exp2))
             rtn.append(rtnj)
-        #print "kMat:", rtn
         return rtn
     elif(fty.is_Ten3(ityp1)):
         [a1, a2, a3] = fty.get_shape(ityp1)

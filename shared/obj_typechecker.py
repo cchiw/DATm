@@ -187,7 +187,11 @@ def applyUnaryOp(op1,ityps):
 
 #type of field after operation is applied
 def applyBinaryOp(op1,ityps):
+
     ##print "---------------------  applyBinaryOp ---------"
+
+    print "---------------------  applyBinaryOp ---------"
+
     name =  "op1 "+op1.name
     ityp1 = ityps[0]
     ityp2 = ityps[1]
@@ -278,10 +282,18 @@ def applyBinaryOp(op1,ityps):
             else:
                 return err()
     else:
+
+        print "made it to else"
         # rest of operators are non scalar
         if(fty.is_Scalar(ityp1) or fty.is_Scalar(ityp2)):
             if(op_scale==op1):
                 return mkTyp(ashape+bshape)
+            elif(op_max.id==op1.id or op_min.id==op1.id):
+                print "inside max"
+                if(fty.is_ScalarField(ityp1) and fty.is_ScalarField(ityp2)):
+                    return mkTyp ([])
+                else:
+                    return err()
             else:
                 return err()
         else:
@@ -370,6 +382,11 @@ def applyThirdOp(op1,ityps):
 # apply unary and binary operator
 def get_tshape(opr1, ishape):
     #print "inside getshape", opr1.name
+#    for m in ishape:
+#        # limitation here
+#        if(fty.is_Field(m)):
+#            if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
+#                return (false, "limit_ofield")
     arity = opr1.arity
     if(arity==0):
         return (true, ty_mat3x3F_d3)
@@ -378,7 +395,7 @@ def get_tshape(opr1, ishape):
     elif(arity==2):
         print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
         (m,n) = applyBinaryOp(opr1, ishape)
-        #print "->", n.name
+        print m, "->", n
         return (m,n)
     elif(arity==3):
         return applyThirdOp(opr1, ishape)

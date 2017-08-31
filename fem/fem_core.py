@@ -22,8 +22,12 @@ from nc_compare import compare
 from nc_continue import check
 from nc_createField import sortField
 
-# specific cte programs
-from cte_writeDiderot import writeDiderot
+# specific fem programs
+from fem_main import writeTestPrograms
+
+
+#from fem_eval import eval
+sys.path.insert(0, 'cte/')
 from cte_eval import eval
 
 # results from testing
@@ -43,7 +47,6 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-
     elif (rst_NA_1==9):
          rst_NA(name_file, x, name_describe,  branch)
              #elif (rst_good_1==1 or rst_eh_1==1):
@@ -63,9 +66,6 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
-    #writeTime(100,"\n\n\n\n")
-    #startall = time.time()
-    #writeTime(125, str(startall))
     print "############################################inside central############################################"
 
     
@@ -91,87 +91,45 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     name_describe = app.name
 
     # testing positions
-    #endall = time.time()
-    #tall = str(endall - startall)
-    #writeTime(21, tall)
-    #startall=endall
-    positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
+    # note here should set positions based on space
+    l_lpos = 0.0
+    l_rpos = 1.0
+    positions = get_positions(dimF, l_lpos, l_rpos, g_num_pos)
     # samples
-    #endall = time.time()
-    #tall = str(endall - startall)
-    #writeTime(22, tall)
-    #startall=endall
-    
     #create synthetic field data with diderot
     flds = apply.get_all_Fields(app)
     (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(flds, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
-   
-
-
     endall = time.time()
-    #tall = endall - startall
-    #writeTime(100,"n\n")
-    #writeTime(50, str(all50))
-    #writeTime(50, str(all51))
-    #writeTime(50, str(all52))
-    #writeTime(50, str(all53))
-    #writeTime(50, str(all54))
-    #writeTime(50, str(all55))
-    #writeTime(50, str(tall-(all50+all51+all52+all53+all54+all55)))
-    #writeTime(100,"n\n")
     startall=endall
 
-    (isCompile, isRun, startall) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
-    #endall = time.time()
-    #tall = str(endall - startall)
-    #writeTime(27, tall)
-    #startall=endall
-
-
+    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
     if(isRun == None):
-  
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
+            #raise Exception("stop")
             return 1
         else:
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
+
             return 2
     else:
+        print "read observed data"
         observed_data = observed(app, g_output)
-        #endall = time.time()
-        #tall = str(endall - startall)
-        #writeTime(28, tall)
-        #startall=endall
-        #correct_data = eval(app , positions)
+        print "observed", observed_data
         if(check(app, observed_data)):
-            correct_data = eval(app , positions)
-            #endall = time.time()
-            #tall = str(endall - startall)
-            #writeTime(29, tall)
-            #startall=endall
-            #print "observed data:", observed_data
-            #print "correct data:", correct_data
+            print "get eval"
+            correct_data = eval(app, positions)
+            print "correct:",correct_data
             ex_otype = fty.get_tensorType(app.oty)
             rtn = compare(app.oty, app.name, observed_data, correct_data)
-            #endall = time.time()
-            #tall = str(endall - startall)
-            #writeTime(30, tall)
-            #startall=endall
             diderotprogram = g_p_Observ+".diderot"
 
             analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
-            #endall = time.time()
-            #tall = str(endall - startall)
-            #writeTime(31, tall)
-            #startall=endall
             return 3
         else:
-            #writeTime(29, "0")
-            #writeTime(30, "0")
-            #writeTime(31, "0")
             
             return None
 
@@ -180,20 +138,11 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     writetys("\n\t***"+app.name)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     counter.inc_cnt(cnt)
-    #writeTime(13)
     if(mk_choice_range(testing_frame, cnt)):
         counter.inc_cumulative(cnt)
         
         rtn = core2(app, coeffs, dimF, names, testing_frame, cnt)
         if(rtn==None):
-#            core2(app, coeffs, dimF, names, testing_frame, cnt)
-#            if(rtn==None):
-#                fnames = apply.get_all_FieldTys(app)
-#                x = "_"+fnames +" |"+names
-#                name_describe = app.name
-#                g_branch = frame.get_branch(testing_frame)
-#                counter.inc_NA(cnt)
-#                rst_NA(names, x, name_describe, g_branch)
             fnames = apply.get_all_FieldTys(app)
             x = "_"+fnames +" |"+names
             name_describe = app.name
@@ -230,8 +179,9 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     #print opr_inner.name,ishape[0].name
     (tf1, tshape1) = get_tshape(opr_inner,ishape)
     #print "post get-tshape"
+    print tf1, tshape1
     if(not tf1):
-        write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
+        #write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
     #print "after calling tshape"
     #create app object
