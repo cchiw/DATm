@@ -38,10 +38,8 @@ def cleanup(output, p_out):
     os.system("rm *.txt")
     os.system("rm *.nrrd")
     os.system("rm observ.diderot")
-    os.system("rm rst/data/*")
     os.system("rm ex1*.*")
     os.system("rm "+output+"*")
-    os.system("rm -r __pycache__")
     os.system("rm cat.nrrd")
     os.system("rm  "+p_out+".nrrd")
     os.system("rm  "+output+".txt")
@@ -72,12 +70,20 @@ def get_fieldinfo(app):
     print "num_fields:", num_fields
     return (init_name, num_fields,exp_fields)
 
-def translate_ty(dim, exp_name, field_name):
+def translate_ty(field, exp_name, field_name):
     element = ty_toElement()
     k_order = ty_toK()
-    mesh  = ty_toMesh(dim)
+    fldty = field.fldty
+    mesh  = ty_toMesh(field.fldty)
     foo = "\nmesh = "+mesh
-    foo = foo+"\nV= FunctionSpace(mesh,\""+element+"\",degree="+k_order+")"
+
+    foo = foo+"\nV= FunctionSpace(mesh,\""+element+"\",degree="+k_order
+    
+    if(fty.is_ScalarField(fldty)):
+        foo=foo+")"
+    elif(fty.is_VectorField(fldty)):
+        n = fty.get_vecLength(fldty)
+        foo=foo+", dim = "+str(n)+")"
     foo = foo+"\n"+field_name+" = Function(V).interpolate(Expression("+exp_name+"))"
     return foo
 
@@ -117,20 +123,22 @@ def translate_expSingle(coeffs):
     tD =  [(m,xxxyyy), (n,xxxyy), (o,xxxy), (p,xxx)]
     return tA+ tB+ tC+ tD
 
-def translate_exp(exp):
-    print "translate_exp:", exp.data, exp.name, exp.fldty.name, exp.coeff
-    dim = exp.fldty.dim
+def translate_exp(field):
+
+    fldty = field.fldty
+    dim = fldty.dim
+    
     if(dim==1):
         raise Exception ("missing dim")
-    elif (dim==2):
-        coeffs= exp.coeff
+    elif(fldty.id == ty_scalarF_d2.id):
+        coeffs= field.coeff
         ss="0"
         tE = translate_expSingle(coeffs)
         for (var_n, var_c) in tE:
             ss=ss+translate_coeff(var_n, var_c)
         return "\""+ss+"\""
-    elif (dim==3):
-        [coeff0, coeff1, coeff2] = exp.coeff
+    elif(fldty.id == ty_scalarF_d3.id):
+        [coeff0, coeff1, coeff2] = field.coeff
         ss="0"
         tE = translate_expSingle(coeff0)
         for (var_n, var_c) in tE:
@@ -143,20 +151,28 @@ def translate_exp(exp):
         zz = z+"*"+z
         for (var_n, var_c) in tE:
             ss=ss+translate_coeff(var_n, var_c+"*"+zz)
-        
         return "\""+ss+"\""
+    elif(fldty.id == ty_vec2F_d2.id):
+        [coeff0, coeff1] = field.coeff
+        ss="0"
+        tE = translate_expSingle(coeff0)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss0= "\""+ss+"\""
 
+        tE = translate_expSingle(coeff1)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss1 = "\""+ss+"\""
+        return "("+ss0+","+ss1+")"
 
-
-
-def get_exp(dim, field_name, field_exp):
+def get_exp(field, field_name):
     exp_name = "exp"+field_name
-    foo = "\n"+exp_name+" = "+translate_exp(field_exp)
-    
-    return  foo+ translate_ty(dim, exp_name,field_name)
+    foo = "\n"+exp_name+" = "+translate_exp(field)
+    return  foo+translate_ty(field, exp_name, field_name)
 
 # write fem
-def writeFem(p_out, target, num_fields, dim, exp_fields):
+def writeFem(p_out, target, num_fields, dim, fields):
     #read diderot template
     ftemplate = open(template, 'r')
     ftemplate.readline()
@@ -175,31 +191,12 @@ def writeFem(p_out, target, num_fields, dim, exp_fields):
             
             names = ""
             i = 0
-            for e in exp_fields:
-                tmp = "f"+str(i)
-                names = names+tmp+", "
-                foo = foo+ get_exp(dim, tmp, e)
+            for field in fields:
+                field_name = "f"+str(i)
+                names = names+field_name+", "
+                foo = foo+ get_exp(field,  field_name)
                 i +=1
             foo =foo+"\ninit"+str(num_fields)+"(namenrrd, "+names+" target)"
-            
-#            if(num_fields==10):
-#                foo = foo+ get_exp(dim, "f")
-#                foo = foo+"\ninit1(namenrrd, f,target)"
-#            elif(num_fields==20):
-#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")
-#                foo =foo+"\ninit2(namenrrd, f, g,target)"
-#            elif(num_fields==3):
-#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")
-#                foo =foo+"\ninit3(namenrrd, f, g,h,target)"
-#            elif(num_fields==4):
-#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")
-#                foo =foo+"\ninit4(namenrrd, f, g, h, i, target)"
-#            elif(num_fields==5):
-#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")+get_exp(dim, "j")
-#                foo =foo+"\ninit4(namenrrd, f, g, h, i, j, target)"
-#            elif(num_fields==6):
-#                foo = foo+ get_exp(dim, "f")+get_exp(dim, "g")+get_exp(dim, "h")+get_exp(dim, "i")+get_exp(dim, "j")+get_exp(dim, "k")
-#                foo =foo+"\ninit4(namenrrd, f, g, h, i, j, k, target)"
             f.write(foo.encode('utf8'))
             continue
         else:
@@ -261,13 +258,13 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall):
     print "p_out:",p_out
     readDiderot(p_out, app, pos)
 
-    (init_name, num_fields,exp_fields) = get_fieldinfo(app)
+    (init_name, num_fields, fields) = get_fieldinfo(app)
     # output type
     oty = app.oty
     shape = oty.shape
     dim = oty.dim
     #write python firedrake program
-    writeFem(p_out, target,num_fields, dim,exp_fields)
+    writeFem(p_out, target, num_fields, dim, fields)
     #run firedrake program and cvt to txt file
     makeProgram(p_out, output, target, init_name)
 

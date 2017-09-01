@@ -37,10 +37,11 @@ const_out = "7.2"
 ####### FIXME: need to create fem-inside/conditional
 ##################################### input tensor/field #####################################
 # create space for field
-def ty_toSpace(V, dim):
+def ty_toSpace(V, fldty):
+    dim =  fldty.dim
     element = ty_toElement()
     k_order = ty_toK()
-    mesh = ty_toMesh(dim)
+    mesh = ty_toMesh(fldty)
     return "\n fnspace "+V+" = FunctionSpace("+ mesh+", "+element+"(), "+k_order +");"
 
 
@@ -64,7 +65,7 @@ def fem_inShape(f, appC):
             
             foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
             foo = foo+ "\n //"+field.toStr(exp)
-            foo = foo+ty_toSpace(V, dim)
+            foo = foo+ty_toSpace(V, exp.fldty)
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
@@ -82,12 +83,9 @@ def cte_update_method(f, pos, app):
     if(fty.is_Field(oty)):
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
-        #check_inside(f, opfieldname1, app)
-        
-        #foo= "\n\t\tout = inst(G, pos);"
-        foo= "\n\t\tout = inst(G,pos);"
-        #foo ="\n\t\tout ="+ isProbe(, fld)
-        f.write(foo.encode('utf8'))
+        check_inside(f, opfieldname1, app)
+        #foo= "\n\t\tout = inst(G,pos);"
+        #f.write(foo.encode('utf8'))
     else:
         check_conditional(f,  foo_out, app)
 

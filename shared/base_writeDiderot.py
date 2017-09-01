@@ -30,6 +30,8 @@ foo_pos="pos"
 const_out ="7.2"
 opfieldname1="G"
 eps = "0.01"
+
+inside ="insideF"
 ##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)
@@ -104,7 +106,7 @@ def outLineF(f, type):
 # checks inside a field but not inside a tensor term
 def getInside(exp, pos, name):
     if (fty.is_Field(exp.fldty)):
-        return "(inside("+name+","+pos+")) && "
+        return "("+inside+"("+name+","+pos+")) && "
     else:
         return ""
 # probes field at variable position

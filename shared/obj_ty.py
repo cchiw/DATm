@@ -6,6 +6,8 @@ from __future__ import unicode_literals
 nonefield_k= -1
 nonefield_dim = 0
 
+from base_constants import *
+pde_test = c_pde_test
 #tensor types
 class tty:
     def __init__(self, id, name, shape):
@@ -137,9 +139,7 @@ class fty:
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
-            #return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
-            if(fty.is_OField(self)):
+            if(fty.is_OField(self) or pde_test):
                 return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
             else:
                 return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)

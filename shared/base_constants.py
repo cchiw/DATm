@@ -52,3 +52,4 @@ c_pathToSynFiles = "shared/symb/symb_f"
 c_template="shared/template/foo.ddro"
 #c_template="shared/template/fem.ddro"
 
+c_pde_test = True

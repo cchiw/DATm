@@ -6,6 +6,8 @@ from obj_apply import *
 from obj_ty import *
 from obj_operator import *
 from obj_field import *
+from base_constants import *
+pde_test = c_pde_test
 
 # check application of operator to types
 # organized by arity of operator
@@ -397,11 +399,12 @@ def applyThirdOp(op1,ityps):
 def get_tshape(opr1, ishape):
     #print "inside getshape", opr1.name
 
-#    for m in ishape:
-#        # limitation here
-#        if(fty.is_Field(m)):
-#            if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
-#                return (false, "limit_ofield")
+    if(pde_test):
+        # limitation here for pdes
+        for m in ishape:
+            if(fty.is_Field(m)):
+                if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id)or (m.id==ty_vec2F_d2.id))):
+                    return (false, "limit_ofield")
 
     arity = opr1.arity
     if(arity==0):
