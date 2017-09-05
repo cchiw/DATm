@@ -76,8 +76,12 @@ def init4(name, f, g, h, i, target):
 name = "cat"
 target ="ex1"
 namenrrd = name+'.nrrd'
-expf0 = "0+(2*1)+(1*x[1])"
-mesh = UnitSquareMesh(2,2)
+expf0 = "0+(2*1)+(2*1*x[2])+(2*1*x[2]*x[2])"
+mesh = UnitCubeMesh(2,2,2)
 V= FunctionSpace(mesh,"Lagrange",degree=2)
 f0 = Function(V).interpolate(Expression(expf0))
-init1(namenrrd, f0,  target)
+expf1 = "0+(2*1)+(2*1*x[2])+(2*1*x[2]*x[2])"
+mesh = UnitCubeMesh(2,2,2)
+V= FunctionSpace(mesh,"Lagrange",degree=2)
+f1 = Function(V).interpolate(Expression(expf1))
+init2(namenrrd, f0, f1,  target)

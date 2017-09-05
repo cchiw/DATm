@@ -33,7 +33,6 @@ from fem_core import *
 # get example from list of examples
 def single_specific_ex(ex, opr_inner, t_num, testing_frame, cnt):
     # increment total
-    print "single_specific_ex"
     counter.inc_total(cnt)
 
     rtn = create_single_app(ex, opr_inner, t_num, testing_frame, cnt)
@@ -63,9 +62,7 @@ def mk_choice_limit(testing_frame, cnt):
 ##################################################################################################
 def embed_base_specific_ex(ex, tshape1, ishape0, oprs, tys, testing_frame, cnt):
     # adjusting to accept 2|3 layers of operators
-    print "in embed_base_specific_ex, tys",tys
-    for j in ishape0:
-        print "-ishape -", j.name
+    # print "in embed_base_specific_ex, tys",tys
     opr_outer = oprs[1]
 
     #writeCumulative(cnt)
@@ -97,8 +94,7 @@ def embed_base_specific_ex(ex, tshape1, ishape0, oprs, tys, testing_frame, cnt):
 # already given type for extra argument
 # transforms that type to kernel specific type
 def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, testing_frame, cnt):
-    print "inside embed_giventy2_specific_ex"
-    print "tys_num", tys_num
+
     #writeTime(8)
     fty=[]
     g_krn = frame.get_krn(testing_frame)
@@ -136,7 +132,7 @@ def oprToEx(opr_inner, testing_frame, cnt):
 #iterates over extra type
 #inter_num, and iter_ty2
 def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
-    print "embed base iter ty2"
+
     #writeTime(5)
     opr_inner = oprs[0]
     opr_outer = oprs[1]
@@ -181,7 +177,6 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
 #iterating ex_outer from 0...l
 # iterate over outer operator and extra type
 def embed_base_iter_outer2(ex, name, ishape, opr_inner, t_num, testing_frame, cnt):
-    print "embed iter outer 2"
     # set local counters to zero
     counter.zero_locals(cnt)
     n_outer = getN()
@@ -210,7 +205,7 @@ def embed_base_iter_outer2(ex, name, ishape, opr_inner, t_num, testing_frame, cn
 
 # same as embed_base_iter_ty1, except already given extra type (t_ty2)
 def embed_base_iter_ty2_wihty2(ex, name, ishape, oprs, tys, testing_frame, cnt):
-    print "embed base-iter ty2-with2", tys
+    #print "embed base-iter ty2-with2", tys
     # adjusting to accept 2|3 layers of operators
     opr_inner = oprs[0]
     opr_outer = oprs[1]
@@ -338,11 +333,10 @@ def embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt):
 
 #run all examples for a specific operator
 def single_all_ops(opr_inner, testing_frame, cnt):
-    print "single all ops"
+
     # get built-in example
     ex = oprToEx(opr_inner, testing_frame, cnt)
     n_num = len(ex.tys)
-    print "n_num", n_num
 
     
     if (n_num==0):

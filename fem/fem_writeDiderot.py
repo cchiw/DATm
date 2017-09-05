@@ -55,7 +55,7 @@ def fem_inShape(f, appC):
     #app = apply.get_root_app(appC)
     i=0
     for exp in exps:
-        print "current fld",field.toStr(exp)
+        #print "current fld",field.toStr(exp)
         dim = field.get_dim(exp)
         if (field.get_isField(exp)):
             fi = fieldName(i)
@@ -137,4 +137,4 @@ def readDiderot(p_out, app, pos):
 
     ftemplate.close()
     f.close()
-    print "sptting out to:",p_out+".diderot"
+    #print "sptting out to:",p_out+".diderot"

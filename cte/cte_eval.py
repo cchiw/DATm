@@ -3,7 +3,7 @@ from sympy import *
 #symbols
 x,y,z =symbols('x y z')
 import sys
-import re
+from sympy import re
 import math
 
 # shared base programs
@@ -98,18 +98,19 @@ def eval(app, pos):
 def getMaxOrMin(opr, lhs, rhs):
     print "\n\t **** result from probing field: \n\tlhs: ",lhs, "\n\trhs:",rhs
     rtn = []
+    fncall = Max
     if(opr.id==op_max.id):
-        for (l,r) in zip(lhs, rhs):
-            if(l< r):
-                rtn.append(r)
-            else:
-                rtn.append(l)
+        fncall = Max
     elif(opr.id==op_min.id):
-        for (l,r) in zip(lhs, rhs):
-            if(l> r):
-                rtn.append(r)
-            else:
-                rtn.append(l)
+        fncall = Min
+                     
+    for (l,r) in zip(lhs, rhs):
+        if(l.is_imaginary):
+            rtn.append(r)
+        elif(r.is_imaginary):
+            rtn.append(l)
+        else:
+            rtn.append(fncall(l, r))
     return rtn
 ######################## get max or min of an inner operator
 # create a new app (using exp as lhs)
@@ -127,8 +128,8 @@ def getGradMax(opr, app, pos, lhs, rhs, e3,e4):
 
     rtnL = applyProbe(e3, app, pos)
     rtnR = applyProbe(e4, app, pos)
-    print "\n\t **** result from probing field: \n\tlhs: ",lhs, "\n\tlhs exp:",e3.data, "\n\t apply then probe", rtnL
-    print "\n\t **** result from probing field: \n\trhs: ",rhs, "\n\trhs exp:",e4.data, "\n\t apply then probe", rtnR
+    #print "\n\t **** result from probing field: \n\tlhs: ",lhs, "\n\tlhs exp:",e3.data, "\n\t apply then probe", rtnL
+    #print "\n\t **** result from probing field: \n\trhs: ",rhs, "\n\trhs exp:",e4.data, "\n\t apply then probe", rtnR
     
     rtn = []
     if(opr.id==op_max.id):
@@ -136,21 +137,15 @@ def getGradMax(opr, app, pos, lhs, rhs, e3,e4):
         # maximum determines which expression to use (rtnL, rtnR)
         # then apply operator to expression
         for (l,r, al, ar) in zip(lhs, rhs, rtnL, rtnR):
-            print "comparing l:", l, "r:",r
             if(l< r):
-                print "adding to list: ar ", ar
                 rtn.append(ar)
             else:
-                print "adding to list al: ", al
                 rtn.append(al)
     elif(opr.id==op_min.id):
         for (l,r, al, ar) in zip(lhs, rhs, rtnL, rtnR):
-            print "comparing l:", l, "r:",r
             if(l>r):
-                print "adding to list: ar ", ar
                 rtn.append(ar)
             else:
-                print "adding to list al: ", al
                 rtn.append(al)
     print "rtn:", rtn
     return rtn

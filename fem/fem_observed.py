@@ -7,7 +7,7 @@ from obj_operator import *
 #programs organized by number of output per line
 #one input per line
 def getObserv_1(p_out):
-    print  "getObserv_1"
+    #print  "getObserv_1"
     obs = []
     name = p_out+".txt"
     if(os.path.exists(name)):
@@ -24,7 +24,7 @@ def getObserv_1(p_out):
 
 #n inputs per line
 def getObserv_t(p_out, n):
-    print "getObserv_t", p_out, n
+    #print "getObserv_t", p_out, n
     obs = []
     name = p_out+".txt"
     #print "looking for-t",name
@@ -47,8 +47,8 @@ def getObserv_t(p_out, n):
 #chooose function based on number of input per line
 def base_observed(oty, p_out):
     ex_rtn = fty.get_tensorType(oty)
-    print "ex_rtn", ex_rtn
-    print "p_out", p_out
+    #print "ex_rtn", ex_rtn
+    #print "p_out", p_out
     if(ty_scalarT==ex_rtn):
         return getObserv_1(p_out)
     else:
@@ -61,5 +61,4 @@ def base_observed(oty, p_out):
 
 #chooose function based on number of input per line
 def observed(app, p_out):
-    print "here"
     return base_observed(app.oty, p_out)

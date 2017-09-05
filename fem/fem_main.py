@@ -47,7 +47,7 @@ def cleanup(output, p_out):
 
 def get_fieldinfo(app):
     exps = apply.get_all_Fields(app)
-    print "exps:",exps
+    #print "exps:",exps
     #name of init file
     init_name = "fem/"
     num_fields = 0
@@ -65,8 +65,8 @@ def get_fieldinfo(app):
         init_name = init_name+"f"
         num_fields +=1
         exp_fields.append(last)
-    print "init_name:",init_name,
-    print "num_fields:", num_fields
+    #print "init_name:",init_name,
+    #print "num_fields:", num_fields
     return (init_name, num_fields,exp_fields)
 
 def translate_ty(field, exp_name, field_name):
@@ -303,7 +303,7 @@ def writeFem(p_out, target, num_fields, dim, fields):
 
     ftemplate.close()
     f.close()
-    print p_out+".py"
+    #print p_out+".py"
     #raise Exception ("stop here")
 
 #if(num_fields==1):
@@ -315,17 +315,8 @@ def writeFem(p_out, target, num_fields, dim, fields):
 
 # create firedrake field
 def useFem(p_out, shape, pos, output, target):
-    print "pos:",pos
-    #convert exp to field
-    # depends on number of args : (attached to arity now)
-    # run program
-
-    print "output",output
-    print "traget",target
-
     
     os.system("python "+p_out+".py")
-    print "p_out", p_out
     s13 = "cp "+p_out+".py" +output+".py"
     es = [s13]
     for i in es:
@@ -354,7 +345,7 @@ def makeProgram(p_out, output, target, init_name):
     s12 = "cp "+target+"_init.c "+output+"_init.c"
     
     print "init_name:", init_name
-    print "target:", target
+    #print "target:", target
     
     es = [s0, s1, s2, s3, s4, s5, s6,s10, s11, s12]
     for i in es:

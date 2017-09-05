@@ -123,13 +123,13 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
             return 2
     else:
-        print "read observed data"
+        #print "read observed data"
         observed_data = observed(app, g_output)
-        print "observed", observed_data
+        #print "observed", observed_data
         if(check(app, observed_data)):
-            print "get eval"
+            #print "get eval"
             correct_data = eval(app, positions)
-            print "correct:",correct_data
+            #print "correct:",correct_data
             ex_otype = fty.get_tensorType(app.oty)
             rtn = compare(app.oty, app.name, observed_data, correct_data)
             diderotprogram = g_p_Observ+".diderot"
@@ -142,7 +142,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
 
 def core(app, coeffs, dimF, names, testing_frame, cnt):
-    print "**** at core ***"
+    #print "**** at core ***"
     writetys("\n\t***"+app.name)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     counter.inc_cnt(cnt)
@@ -170,7 +170,7 @@ space = "Unit"
 # functions create app objects
 # get example from list of examples
 def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
-    print "################## creating single app##################"
+    #print "################## creating single app##################"
     # global variables needed from testing framework
     g_inputfile = frame.get_inputfile(testing_frame)
     g_ucoeff = frame.g_ucoeff(testing_frame)
@@ -187,21 +187,17 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
 
     ishape = set_ks_ofield(g_krn, ishape, space)
 
-    for  i in ishape:
-        print "i",i.name,i.space
-    print " mark A"
 
     #print opr_inner.name,ishape[0].name
     (tf1, tshape1) = get_tshape(opr_inner,ishape)
-    print " mark B"
+
     if(not tf1):
-        print "tshape1:",tshape1
         #write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
-    print tf1, tshape1.name, tshape1.space
-    print " mark C"
+    #print tf1, tshape1.name, tshape1.space
+    #print " mark C"
     (app, coeffs) = mkApply_fld(name, opr, ishape, g_inputfile, tshape1, g_coeff_style, g_ucoeff, g_krn,g_template)
-    print " mark D"
+    #print " mark D"
     dimF = tshape1.dim
     names= "s_"+str(opr_inner.id)+"__"+"n_"+str(t_num)+"_"
     core(app, coeffs, dimF, names, testing_frame, cnt)
@@ -211,13 +207,10 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
 
 
 def convert_fields(ishape,testing_frame):
-    print "inside convert fields"
-    for i in ishape:
-        print "*****", i.name, i.space
+    #print "inside convert fields"
+
     g_krn = frame.get_krn(testing_frame)
     x = set_ks_ofield(g_krn, ishape, space)
-    for i in x:
-        print "*****", i.name, i.space
     return x
 
 
@@ -256,8 +249,8 @@ def create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame
     g_krn = frame.get_krn(testing_frame)
     g_template = frame.get_template(testing_frame)
     (app, coeffs) = mkApply_twice(opr_inner,opr_outer, ishape, g_inputfile, tshape1, tshape2, g_coeff_style, g_ucoeff, g_krn, g_template )
-    print "___________________", app.oty.name
-    print "___________________", app.lhs.oty.name
+    #print "___________________", app.oty.name
+    #print "___________________", app.lhs.oty.name
     return (app, coeffs)
 
 
@@ -282,10 +275,10 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, 
     # third layer operator, and second type it is applied to (incase it is a binary)
     tmpshape = []
     s = ""
-    print "opr_outer2", opr_outer2.name
-    print "opr_outer1", opr_outer1.name
-    print "opr_inner:", opr_inner.name
-    print "tys", tys
+    #print "opr_outer2", opr_outer2.name
+    #print "opr_outer1", opr_outer1.name
+    #print "opr_inner:", opr_inner.name
+    #print "tys", tys
     if(opr_outer2.arity==2):
         ty3 = get_all_extra(testing_frame)
         [i] = newtys
@@ -305,9 +298,9 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, 
     ishape_outer2 = [tshape2] + tmpshape
     ishape_all = ishape + tmpshape
     ishape_all = convert_fields(ishape_all, testing_frame)
-    print "trying to match opr_outer2", opr_outer2.name ,"with ",tshape2.name
-    for j in tmpshape:
-        print "-- shape", j.name
+    #print "trying to match opr_outer2", opr_outer2.name ,"with ",tshape2.name
+    #for j in tmpshape:
+    #print "-- shape", j.name
     # ok now back to regular programming
     (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2)
     if(tf3==true):#
@@ -339,7 +332,7 @@ def iter_ty3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
 
 # iterating over third operator
 def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
-    print "gettshap3-iterop3"
+
     for opr_outer2 in op_all:
         # next function will type check it and get type
         iter_ty3(app, coeffs, ishape, tshape2, oprs+[opr_outer2], tys, testing_frame, cnt)
@@ -348,26 +341,18 @@ def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, 
 
 # checks to see if specific ex works
 def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
-    
-
-    
-    
-    print "inside get_tshape 2"
-    print "tys:", tys
 
     #writeTime(9)
     # adjusting to accept 2|3 layers of operators
     #print "in get-tshape print ishape"
-    for j in ishape:
-        print "-ishape -", j.name
-    print "in get tshape1 ",tshape1.name
+
     opr_inner = oprs[0]
     opr_outer = oprs[1]
 
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
-    print "tshape1", tshape1.name,"tshape1-space",tshape1.space
+    #print "tshape1", tshape1.name,"tshape1-space",tshape1.space
     #print "fty", fty
     es = [tshape1]+fty
     xy = get_tshape(opr_outer,es)

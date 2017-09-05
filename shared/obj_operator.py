@@ -100,7 +100,7 @@ op_hessian = operator(id+1, "hessian", 1, u'∇⊗∇', place_left, limit_none, 
 
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_reg+op_binary+op_trig+op_new+[op_gradient, op_hessian]
+op_all = op_reg+op_binary+op_trig+op_new#+[op_gradient, op_hessian]
 id=id+len(op_all)
 #------------------------------ operators not included -----------------------------------------------------
 op_divergence = operator(id, "div", 1, u'∇•', place_left, limit_none, True)
