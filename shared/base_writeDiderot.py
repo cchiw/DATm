@@ -550,6 +550,19 @@ def check_inside(f, ff, app):
 ##################################### probe field at positions #####################################
 # set positions variables
 # index field at position
+def create_position(f,  dim):
+    print "index at positions"
+    i=0
+    foo="\t\t"
+    if(dim==1):
+        foo+="real  "+foo_pos+"=0;\n"
+    elif(dim==2):
+        foo+="tensor [2] "+foo_pos+"=[0,0];\n"
+    elif(dim==3):
+        foo+="tensor [3] "+foo_pos+"=[0,0,0];\n"
+    f.write(foo.encode('utf8'))
+
+
 def base_index_field_at_positions(f, pos, dim):
     print "index at positions"
     i=0

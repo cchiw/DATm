@@ -18,7 +18,7 @@ from base_var_ty import *
 from base_observed import observed
 
 #specific nc programs
-from nc_compare import compare
+from nc_compare import compare,compare_zero
 from nc_continue import check
 from nc_createField import sortField
 
@@ -29,6 +29,26 @@ from fem_main import writeTestPrograms
 #from fem_eval import eval
 sys.path.insert(0, 'cte/')
 from cte_eval import eval
+
+test_new = true # new type of test
+
+
+def cleanup(output, p_out):
+    os.system("rm ex1.o")
+    os.system("rm ex1_init.o")
+    os.system("rm ex1_init.so")
+    os.system("rm ex1.cxx")
+    os.system("rm ex1.diderot")
+    os.system("rm *.c")
+    os.system("rm *.h")
+    os.system("rm *.txt")
+    os.system("rm *.nrrd")
+    os.system("rm observ.diderot")
+    os.system("rm "+output+"*")
+    os.system("rm cat.nrrd")
+    os.system("rm  "+p_out+".nrrd")
+    os.system("rm  "+output+".txt")
+    os.system("rm  "+p_out+".txt")
 
 # results from testing
 def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
@@ -67,6 +87,10 @@ def mk_choice_range(testing_frame, cnt):
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
     print "############################################inside central############################################"
+    
+    
+
+    
     exps = apply.get_all_Fields(app)
     
     # limit core fields by the ones we can rep.
@@ -109,8 +133,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #create diderot program with operator
     endall = time.time()
     startall=endall
-
-    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
+    cleanup(g_output, g_p_Observ)
+    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new)
     if(isRun == None):
         if(isCompile == None):
             counter.inc_compile(cnt)
@@ -123,18 +147,19 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
             return 2
     else:
-        #print "read observed data"
+        print "read observed data"
         observed_data = observed(app, g_output)
-        #print "observed", observed_data
+        print "observed", observed_data
         if(check(app, observed_data)):
-            #print "get eval"
-            correct_data = eval(app, positions)
-            #print "correct:",correct_data
-            ex_otype = fty.get_tensorType(app.oty)
-            rtn = compare(app.oty, app.name, observed_data, correct_data)
-            diderotprogram = g_p_Observ+".diderot"
 
-            analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
+            if(test_new):
+                correct_data = 0 #expects zero everywhere
+                rtn = compare_zero(app.oty, app.name, observed_data)
+                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
+            else:
+                correct_data = eval(app, positions)
+                rtn = compare(app.oty, app.name, observed_data, correct_data)
+                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             return 3
         else:
             

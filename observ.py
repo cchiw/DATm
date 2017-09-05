@@ -32,6 +32,16 @@ def init1(name, f,target):
     result = _call.callDiderot_ex1(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p))
     return(result)
 
+def init1Sample(name, f,target,res, stepSize, limit):
+    init_file = target+'_init.so'
+    _call = ctypes.CDLL(init_file)
+    type = 1
+    data = organizeData(f)
+    _call.callDiderot_ex1.argtypes = (ctypes.c_char_p,ctypes.c_int,ctypes.c_void_p,ctypes.c_int,ctypes.c_float,ctypes.c_float)
+    result = _call.callDiderot_ex1(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p), res, stepSize, limit)
+    return(result)
+
+
 # two fields
 def init2(name, f, g,target):
     init_file = target+'_init.so'
@@ -70,8 +80,12 @@ def init4(name, f, g, h, i, target):
 
 
 ##############################################
+#general declarations
 
-#init field
+res = 10 
+stepSize = 1.0/res 
+limit = 5#init field
+# call to init
 
 name = "cat"
 target ="ex1"
@@ -80,8 +94,4 @@ expf0 = "0+(2*1)+(2*1*x[2])+(2*1*x[2]*x[2])"
 mesh = UnitCubeMesh(2,2,2)
 V= FunctionSpace(mesh,"Lagrange",degree=2)
 f0 = Function(V).interpolate(Expression(expf0))
-expf1 = "0+(2*1)+(2*1*x[2])+(2*1*x[2]*x[2])"
-mesh = UnitCubeMesh(2,2,2)
-V= FunctionSpace(mesh,"Lagrange",degree=2)
-f1 = Function(V).interpolate(Expression(expf1))
-init2(namenrrd, f0, f1,  target)
+init1Sample(namenrrd, f0,  target, res, stepSize ,limit)

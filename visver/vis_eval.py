@@ -38,6 +38,7 @@ def mk_samplefile(p_out, app, positions):
 
     print "---------------  mk samplefile ----------------------"
     t_file_b = "shared/template/"+p_out +".ddro"
+    print "p_out", p_out
     readDiderot(p_out, app, positions, t_file_b)
 
     return
@@ -46,6 +47,7 @@ def mk_samplefile(p_out, app, positions):
 def mk_vis_files(app, positions,arg_inc, arg_positions):
 
     print "---------------  mk vis ifles----------------------"
+    # FIXME in foo.ddro inline     p_Observ = "observ" name for nrrd files
     positions = get_x(arg_inc, arg_positions)
     p_out = "vis_sample_out"
     mk_samplefile(p_out, app, positions)
@@ -100,6 +102,7 @@ def run_sample(runtimepath, arg_center, arg_positions, arg_inc):
     os.system( executable)
     print "post executable",executable
     os.system("unu quantize -b 8  -i "+p_color +".nrrd -o "+p_color +".png")
+    os.system("open "+p_color +".png")
     os.system("cp "+p_color +".png"+"rst/data/color.png")
     print "gen image"
     copy_all(p_color )

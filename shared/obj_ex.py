@@ -351,7 +351,6 @@ def oprToArgs(op1, tys):
         elif(op1.id==op_gradient.id):
             return get_k_noT(get_scaF) # differentiation only for scalar fields
         elif(op1.id==op_hessian.id):
-            print "inside here"
             return get_k_noT(get_scaF) # differentiation only for scalar fields
         elif((op1.id==op_divergence.id) or (op1.id==op_curl.id)):
             return  get_k_noT(get_vecF_samedim)
@@ -407,14 +406,8 @@ def oprToArgs(op1, tys):
         raise Exception("no built in example of operator"+op1.name)
 # returns example object
 def oprToEx_a(op1, rst_ty, tys):
-    print "oprToEx_a"
     mm = oprToArgs(op1, tys)
-    for j in tys:
-        print "tys:", j
-    
     args = getArgs(mm, rst_ty)
-    for i in args:
-        print "returning opr to ex arg", i[0].name
     return example(op1, args)
 # gets a single examples
 def get_single_example(opr, ty_num, args_types):
@@ -444,7 +437,7 @@ def get_single_exampleEx(ex, ty_num):
         for j in t:
             x+= j.name+","
         i+=1
-        print x
+        #print x
     name = example.toStr(ex, ty_num)
     ty = example.get_ty(ex, ty_num)
     return (name, ty)

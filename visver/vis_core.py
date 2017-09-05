@@ -27,25 +27,25 @@ from vis_eval import *
 
 
 # results from testing
-def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_data, observed_sphere, PARAMS, branch):
+def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_data, observed_sphere, arg_positions, PARAMS, branch):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
     (rst_lbl,  rst_all) = rtn_1
     ##print "X", x
     test_header_0 = name_file+"\n\t"+name_describe+"| "+name_ty+"| "+rst_lbl
     test_header_1 =  test_header_0+rst_all
+    
+    
     writeall(test_header_0)
-    #print "-", test_header_0
-    #print "-", test_header_1
-    # collect results
+    print test_header_0
+    
     counter.inc_locals(cnt, rtn)
     # write to file
+    correct_data = observed_sphere
+    positions = arg_positions
     if (rst_terrible_1==1):
-        writeToRst2("f_"+opr_name,  "fails/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
-        write_terrible(test_header_1)
-        writesummary(test_header_0)
-    else:
-        #writeToRst2("p_"+opr_name, "passes/"+name_file, test_header_1, observed_data, observed_sphere, PARAMS, branch)
-        return
+          rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+    return
+
 
 ##################################################################################################
 ##################################################################################################
@@ -58,7 +58,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
-    ##print "############################################inside central############################################"
+    print "############################################inside central############################################"
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     
     # get global variables from testing framework
@@ -83,16 +83,16 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     name_describe = app.name
 
     # testing positions
-    #print "\n ******************************   vis a"
+    print "\n ******************************   vis a"
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     # samples
     #create synthetic field data with diderot
-    #print "\n ******************************   vis b"
+    print "\n ******************************   vis b"
     PARAMS = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
-    #print "\n ******************************   pre write date "
+    print "\n ******************************   pre write date "
     (isCompile, isRun) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd,t_size*t_size,t_file)
-    #print "\n ******************************  post write data"
+    print "\n ******************************  post write data"
     if(isRun == None):
         # did not run
         if(isCompile == None):
@@ -105,8 +105,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             return 2
     else:
         # read observed data
-        #print "---------------  pre read  observed data ----------------------"
-        os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
+        print "---------------  pre read  observed data ----------------------"
         observed_data = observed(app, g_output)
         # center of spehere
         arg_center = (t_size/2)
@@ -117,11 +116,11 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         arg_perline = 9 # output of mip program
         # take samples of output
         
-        #print "---------------  pre read diderot ----------------------"
+        print "---------------  pre read diderot ----------------------"
         # sampling diderot file
-        os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
-        positions = mk_vis_files(app, positions, arg_inc, arg_positions)
-        os.system("cp rst/data/output5_p_observ  rst/data/output5_p_observ.nrrd")
+        os.system("cp rst/data/observ  rst/data/observ.nrrd")
+        mk_vis_files(app, positions, arg_inc, arg_positions)
+        os.system("cp rst/data/observ  rst/data/observ.nrrd")
         #print "--------------- pre run sample-----------------------"
         observed_sphere =  run_sample(t_runtimepath, arg_center, arg_positions, arg_inc)
         #print "observed_eval",observed_sphere
@@ -132,8 +131,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         
 
         # collect results
-        vis_analyze(app.opr.name+"_", names, fnames, name_describe, cnt, rtn, observed_data, observed_sphere, PARAMS, g_branch)
-        return 3
+        vis_analyze(app.opr.name+"_", names, fnames, name_describe, cnt, rtn, observed_data, observed_sphere, arg_positions, PARAMS, g_branch)
+        return 0
         #else:
         #return None
 
@@ -260,20 +259,6 @@ def create_single_app(opr_inner, t_num, testing_frame, cnt):
     names= "s_"+str(opr_inner.id)+"__"+"n_"+str(t_num)+"_"
     core(app, coeffs, dimF, names, testing_frame, cnt)
     return
-
-def getdata(opr_inner, opr_outer, testing_frame, cnt):
-    # break
-    #y = Title_outer(opr_inner, opr_outer)
-    #x = "\n -- shapes:"
-    #for i in ishape:
-    #x+=i.name+","
-    #   writeall(y+x)
-    #   counter.inc_cumulative(cnt)
-    #   counter.inc_cnt(cnt)
-    #   write_results(y, testing_frame, cnt)
-    return
-
-
 
 def convert_fields(ishape,testing_frame):
     g_krn = frame.get_krn(testing_frame)

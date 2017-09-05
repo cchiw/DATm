@@ -147,6 +147,44 @@ def checkdiff_1(name, obv, cor):
             #print("current maximal difference", maxdiff, "c: ", c, " o:",o)
         return toStr(name,"x0", maxdiff,avg, per ,s)
 
+
+def checkdiff_1Zero(name, obv):
+    maxdiff = 0
+    sumdiff = 0
+    length = 0
+    obs=0.0
+    o6 = 0.0
+    c6 = 0.0
+    per = 0.0
+    t = 0
+    c1 =0.0
+    for o1 in obv:
+        length+=1
+        t+=1
+        diff=abs(o1-c1)
+        sumdiff += diff
+        if(diff > maxdiff):
+            maxdiff = diff
+            o6 = o1
+            c6 = c1
+        else:
+            continue
+
+    if(t==0):
+        rtn ="NAN-single"
+        return  (rtn, 0, 0, 0, 0, 1)
+    else:
+        if(o6==0):
+            per = 0.0
+        else:
+            per  = abs(100*(maxdiff/o6))
+        avg = sumdiff/length
+        s=" max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(avg,4))+" "+ str(round(per,4))+"% c:"+str( c6)+ " o:"+str(o6)
+        #print("current maximal difference", maxdiff, "c: ", c, " o:",o)
+    return toStr(name,"x0", maxdiff,avg, per ,s)
+
+
+
 def checkdiff(name, obv, cor):
     no = len(obv)
     nc = len(cor)
@@ -201,3 +239,10 @@ def compare(ex_otype, name, obv, cor):
         return checkdiff_1(name, obv, cor)
     else:
         return checkdiff(name, obv, cor)
+
+
+#expects every value to be 0
+def compare_zero(ex_otype, name, obv):
+    
+    if(fty.is_Scalar(ex_otype)):
+        return checkdiff_1Zero(name, obv)
