@@ -1,5 +1,5 @@
 
-field#3(2)[]F = c4hexic⊛  image("rst/data/output5_p_observ.nrrd");
+field#3(2)[]F = c4hexic⊛  image("rst/data/observ.nrrd");
 int ires = 300;
 //the middle
 input real midx;

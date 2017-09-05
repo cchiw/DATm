@@ -33,6 +33,16 @@ def init1(name, f,target):
     result = _call.callDiderot_ex1(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p))
     return(result)
 
+def init1Sample(name, f,target,res, stepSize, limit):
+    init_file = target+'_init.so'
+    _call = ctypes.CDLL(init_file)
+    type = 1
+    data = organizeData(f)
+    _call.callDiderot_ex1.argtypes = (ctypes.c_char_p,ctypes.c_int,ctypes.c_void_p,ctypes.c_int,ctypes.c_float,ctypes.c_float)
+    result = _call.callDiderot_ex1(ctypes.c_char_p(name), type,ctypes.cast(ctypes.pointer(data),ctypes.c_void_p), res, stepSize, limit)
+    return(result)
+
+
 # two fields
 def init2(name, f, g,target):
     init_file = target+'_init.so'
@@ -71,6 +81,8 @@ def init4(name, f, g, h, i, target):
 
 
 ##############################################
-
+#general declarations
+foo_femGen
 #init field
-foo_fireexp
+# call to init
+foo_femfields

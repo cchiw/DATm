@@ -1,6 +1,6 @@
 //initialize fields
 //unu save -f nrrd -e ascii -i ev.nrrd | less
-field#3(2)[]F = c4hexic⊛  image("rst/data/output5_p_observ.nrrd");
+field#3(2)[]F = c4hexic⊛  image("rst/data/observ.nrrd");
 
 //the middle
 input real midx;

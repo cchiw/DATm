@@ -14,111 +14,6 @@ sys.path.insert(0, 'visver/')
 from base_observed import getObserv_t
 from vis_writeDiderot import *
 
-def pnt(dist, p):
-    pp = p*p;
-    rr = dist*dist;
-    return sqrt(rr-pp);
-
-
-def get_x(inc, top):
-    pos=[]
-    for i in range(top):
-        dist = i*inc # distance from center
-        tmp = []
-        for j in range(4):
-            pos_x = random.randint(0, dist)
-            pos_y =  pnt(dist, pos_x)
-            t = (pos_x, pos_y)
-            tmp.append(t)
-        pos.append(tmp)
-    return pos
-
-#############  generate diderot programs from template
-def mk_samplefile(p_out, app, positions):
-
-    print "---------------  mk samplefile ----------------------"
-    t_file_b = "shared/template/"+p_out +".ddro"
-    print "p_out", p_out
-    readDiderot(p_out, app, positions, t_file_b)
-
-    return
-
-# create diderot program from template
-def mk_vis_files(app, positions,arg_inc, arg_positions):
-
-    print "---------------  mk vis ifles----------------------"
-    # FIXME in foo.ddro inline     p_Observ = "observ" name for nrrd files
-    positions = get_x(arg_inc, arg_positions)
-    p_out = "vis_sample_out"
-    mk_samplefile(p_out, app, positions)
-    p_out = "vis_color"
-    mk_samplefile(p_out, app, positions)
-    return
-
-def copy_all(p_sample):
-    print "---------------  copy all ----------------------"
-    os.system("unu save -f text -i "+p_sample+".nrrd -o "+p_sample +".txt")
-    output ="rst/data/"+p_sample
-    i = [".diderot ",".txt ",".png ",".nrrd "]
-    for t in i:
-        os.system("cp "+ p_sample+t+output+t)
-
-
-
-#############  compile and execute program
-
-# run sampling program on output
-# currently using eval.diderot as constant sampling program
-def run_sample(runtimepath, arg_center, arg_positions, arg_inc):
-    print "gen vis sample"
-
-    # run sampling program on output
-    p_sample ="vis_sample_out"
-    diderotprogram = p_sample+".diderot"
-    print " compile vis sample out "
-    os.system(runtimepath+" "+diderotprogram)
-    os.system("/Users/chariseechiw/diderot/vis15/bin/diderotc --exec "+diderotprogram)
-    # run
-    PARAMS =" -incx "+str(arg_inc)+" -incy "+str(arg_inc)+" -midx "+ str(arg_center)+" -midy "+ str(arg_center)
-    print "about to execute vis sample out "
-    executable = "./"+p_sample+PARAMS+ " -positions  "+str(arg_positions)
-    os.system(executable)
-    executable = "./"+p_sample+PARAMS+ " -positions  "+str(arg_positions)+ " -o "+p_sample+".nrrd"
-    os.system(executable)
-    print "executable",executable
-    print "post compile vis sample out "
-    # copy over files
-    copy_all(p_sample)
-    print "compile vis color"
-    # run sampling program on output
-    p_color ="vis_color"
-    diderotprogram = p_color +".diderot"
-    os.system(runtimepath+" "+diderotprogram)
-    os.system("/Users/chariseechiw/diderot/vis15/bin/diderotc --exec "+diderotprogram)
-    print "post compile"
-    executable = "./"+p_color +PARAMS+ " -o "+p_color
-    os.system( executable)
-    executable = "./"+p_color +PARAMS+ " -o "+p_color+".nrrd"
-    os.system( executable)
-    print "post executable",executable
-    os.system("unu quantize -b 8  -i "+p_color +".nrrd -o "+p_color +".png")
-    os.system("open "+p_color +".png")
-    os.system("cp "+p_color +".png"+"rst/data/color.png")
-    print "gen image"
-    copy_all(p_color )
-    print "about to observe "
-
-    #os.system("unu quantize -b 8 -i "+ p_sample+".nrrd -o "+output+".png")
-    arg_perline = 9 # output of mip program
-    observed_sphere  = getObserv_t(p_sample, arg_perline)
-    
-    os.system(" rm "+p_sample+"*")
-    os.system(" rm "+  p_color+"*")
-    return observed_sphere
-
-
-
-
 
 
 #############   Evaluation
@@ -180,12 +75,14 @@ def eval_sample(observed_sphere):
     num = 4
     maxcoeffvar = -999
     dstr=""
+    print "[i, rad_0, rad_1, rad_2, rad_3, probe_0, probe_1, probe_2, probe_3]"
     for j in observed_sphere:
-        print "j:",j
+        #print "j:",j
         # each line is the result of sampling 4 points at equal distance from center
         # rad: distance of point from center
         # probe_0 = F(pos_0)
         [i, rad_0, rad_1, rad_2, rad_3, probe_0, probe_1, probe_2, probe_3] = j
+
         
         maxp = max(max(max(probe_0,probe_1),probe_2),probe_3)
         minp = min(min(min(probe_0,probe_1),probe_2),probe_3)

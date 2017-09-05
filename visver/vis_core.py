@@ -23,8 +23,9 @@ from base_var_ty import *
 # specific vis ver programs
 from vis_createField import createField
 from vis_writeDiderot import writeDiderot
-from vis_eval import *
-
+from vis_eval import eval_sample
+from vis_sample import run_sample,mk_vis_files
+                                  
 
 # results from testing
 def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_data, observed_sphere, arg_positions, PARAMS, branch):
@@ -43,7 +44,8 @@ def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_
     correct_data = observed_sphere
     positions = arg_positions
     if (rst_terrible_1==1):
-          rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+        x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
+        rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
     return
 
 
@@ -110,7 +112,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         # center of spehere
         arg_center = (t_size/2)
         # number of testing points
-        arg_positions  = 30
+        arg_positions  = 3#30
         # increment testing points
         arg_inc=arg_center/ arg_positions
         arg_perline = 9 # output of mip program
@@ -122,7 +124,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         mk_vis_files(app, positions, arg_inc, arg_positions)
         os.system("cp rst/data/observ  rst/data/observ.nrrd")
         #print "--------------- pre run sample-----------------------"
-        observed_sphere =  run_sample(t_runtimepath, arg_center, arg_positions, arg_inc)
+        observed_sphere =  run_sample(t_runtimepath, arg_center, arg_inc,arg_positions)
         #print "observed_eval",observed_sphere
         rtn  = eval_sample(observed_sphere)
         #print "--------------- pre color-----------------------"
