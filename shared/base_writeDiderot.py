@@ -31,7 +31,9 @@ const_out ="7.2"
 opfieldname1="G"
 eps = "0.01"
 
-inside ="insideF"
+inside ="inside"
+if (c_pde_test):
+    inside ="insideF"
 ##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)

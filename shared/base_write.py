@@ -222,12 +222,13 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
             k = i+str(j)
             os.system("cp "+rst_data+"/"+k+".nrrd "+path+"/"+k+".nrrd")
     
-    filetys = [".diderot",".png", ".nrrd"]
+    filetys = [".diderot",".png", ".nrrd", "_init.c",".py"]
     for i in filetys:
         os.system("cp "+rst_data+"/observ"+i+" "+path+"/observ"+i)
         os.system("cp "+rst_data+"/observ"+i+" "+path+"/"+names+i)
 
-
+    os.system("cp observ.py " +path+"/observ.py")
+    os.system("cp Makefile " +path+"/Makefile")
     a= names
     b= "\n\nobserved data from "+branch+" "+str(observed_data)
     # correct values from python
@@ -268,7 +269,7 @@ def rst_compile(names, x, extraname,  branch,  positions, PARAMS):
     labl = dir+"__"+names
     x = extraname+x
 
-    #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
+    writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 
 # does not execute
@@ -277,7 +278,7 @@ def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
     dir = "r"
     write_rst(names, x, extraname, rtn1)
     labl = dir+"__"+names
-    #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
+    writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 #raise Exception( "caught did not compile")
 # not available
@@ -298,7 +299,7 @@ def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  pos
     labl = dir+"__"+names
     write_rst(names, x, extraname, "rtn:terrible")
 
-    #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
+    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
 def rst_good(num, names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "g"

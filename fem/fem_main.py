@@ -38,7 +38,6 @@ def cleanup(output, p_out):
     os.system("rm *.txt")
     os.system("rm *.nrrd")
     os.system("rm observ.diderot")
-    os.system("rm ex1*.*")
     os.system("rm "+output+"*")
     os.system("rm cat.nrrd")
     os.system("rm  "+p_out+".nrrd")
@@ -165,6 +164,106 @@ def translate_exp(field):
             ss=ss+translate_coeff(var_n, var_c)
         ss1 = "\""+ss+"\""
         return "("+ss0+","+ss1+")"
+    elif(fldty.id == ty_vec3F_d2.id):
+        [coeff0, coeff1, coeff2] = field.coeff
+        ss="0"
+        tE = translate_expSingle(coeff0)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss0= "\""+ss+"\""
+        
+        tE = translate_expSingle(coeff1)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss1 = "\""+ss+"\""
+
+        tE = translate_expSingle(coeff2)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss2 = "\""+ss+"\""
+        return "("+ss0+","+ss1+","+ss2+")"
+
+    elif(fldty.id == ty_mat2x2F_d2.id):
+        [coeffA, coeffB] = field.coeff
+                    
+        [coeff0, coeff1] = coeffA
+        ss="0"
+        tE = translate_expSingle(coeff0)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss0A= "\""+ss+"\""
+
+        tE = translate_expSingle(coeff1)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss1A = "\""+ss+"\""
+
+        [coeff0, coeff1] = coeffB
+        ss="0"
+        tE = translate_expSingle(coeff0)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss0B= "\""+ss+"\""
+        
+        tE = translate_expSingle(coeff1)
+        for (var_n, var_c) in tE:
+            ss=ss+translate_coeff(var_n, var_c)
+        ss1B = "\""+ss+"\""
+        return "(("+ss0A+","+ss1A+")"+","+"("+ss0B+","+ss1B+"))"
+#    elif(fldty.id == ty_mat3x3F_d3.id):
+#        [coeffA, coeffB, coeffC] = field.coeff
+#        [coeff0, coeff1, coeff2] = coeffA
+#        ss="0"
+#        tE = translate_expSingle(coeff0)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss0A= "\""+ss+"\""
+#        
+#        tE = translate_expSingle(coeff1)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss1A = "\""+ss+"\""
+#    
+#        tE = translate_expSingle(coeff2)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss2A = "\""+ss+"\""
+#        [coeff0, coeff1, coeff2] = coeffB
+#        ss="0"
+#        tE = translate_expSingle(coeff0)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss0B= "\""+ss+"\""
+#        
+#        tE = translate_expSingle(coeff1)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss1B = "\""+ss+"\""
+#
+#        tE = translate_expSingle(coeff2)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss2B = "\""+ss+"\""
+#        [coeff0, coeff1, coeff2] = coeffC
+#        ss="0"
+#        tE = translate_expSingle(coeff0)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss0C= "\""+ss+"\""
+#        
+#        tE = translate_expSingle(coeff1)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss1C = "\""+ss+"\""
+#        
+#        tE = translate_expSingle(coeff2)
+#        for (var_n, var_c) in tE:
+#            ss=ss+translate_coeff(var_n, var_c)
+#        ss2C = "\""+ss+"\""
+#        return "(("+ss0A+","+ss1A+","+ss2A+"),("+ss0B+","+ss1B+","+ss2B+"),("+ss0C+","+ss1C+","+ss2C+"))"
+    else:
+        raise Exception ("not supported")
+
 
 def get_exp(field, field_name):
     exp_name = "exp"+field_name
@@ -220,7 +319,18 @@ def useFem(p_out, shape, pos, output, target):
     #convert exp to field
     # depends on number of args : (attached to arity now)
     # run program
+
+    print "output",output
+    print "traget",target
+
+    
     os.system("python "+p_out+".py")
+    print "p_out", p_out
+    s13 = "cp "+p_out+".py" +output+".py"
+    es = [s13]
+    for i in es:
+        os.system(i)
+    
     # convert to txt file
     product = 1
     for x in shape:
@@ -239,13 +349,19 @@ def makeProgram(p_out, output, target, init_name):
     s4 = "make "+target+".o"
     s5 = "make "+target+"_init.o"
     s6 = "make "+target+"_init.so"
-    
-    
     s10 = "cp "+target+".diderot "+output+".diderot"
-    es = [s0, s1, s2, s3, s4, s5, s6, s10]
+    s11 = "cp "+target+".cxx "+output+".cxx"
+    s12 = "cp "+target+"_init.c "+output+"_init.c"
+    
+    print "init_name:", init_name
+    print "target:", target
+    
+    es = [s0, s1, s2, s3, s4, s5, s6,s10, s11, s12]
     for i in es:
         os.system(i)
-
+    es = [s10, s11, s12]
+    for i in es:
+        os.system(i)
 # read output of firedrake program
 
 
@@ -253,9 +369,9 @@ def makeProgram(p_out, output, target, init_name):
 ################################ write annd run test program ################################
 def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall):
     cleanup(output, p_out)
-    target ="ex1"#+str(app.opr.id)
+    target ="ex1"
+
     # write new diderot program
-    print "p_out:",p_out
     readDiderot(p_out, app, pos)
 
     (init_name, num_fields, fields) = get_fieldinfo(app)

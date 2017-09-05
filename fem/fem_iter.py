@@ -33,9 +33,9 @@ from fem_core import *
 # get example from list of examples
 def single_specific_ex(ex, opr_inner, t_num, testing_frame, cnt):
     # increment total
-    #print "single_specific_ex"
+    print "single_specific_ex"
     counter.inc_total(cnt)
-    # main
+
     rtn = create_single_app(ex, opr_inner, t_num, testing_frame, cnt)
     return
 
@@ -285,18 +285,18 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
         embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
         writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
     #switch
-#    writeall("\nswitch")
-#    opr_outer=opr_inner
-#    for  t_inner in range(n_outer):
-#        #zero counters
-#        counter.zero_locals(cnt)
-#        counter.zero_total(cnt)
-#        opr_inner = id_toOpr(t_inner)
-#        ex = oprToEx(opr_inner, testing_frame, cnt)
-#        writeTitle_outer(opr_inner, opr_outer)
-#        oprs = [opr_inner, opr_outer]
-#        embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
-#        writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
+    writeall("\nswitch")
+    opr_outer=opr_inner
+    for  t_inner in range(n_outer):
+        #zero counters
+        counter.zero_locals(cnt)
+        counter.zero_total(cnt)
+        opr_inner = id_toOpr(t_inner)
+        ex = oprToEx(opr_inner, testing_frame, cnt)
+        writeTitle_outer(opr_inner, opr_outer)
+        oprs = [opr_inner, opr_outer]
+        embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
+        writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
     return
 #run all possible examples from 0...n
 def embed2_iter_inner(testing_frame, cnt):
@@ -338,10 +338,13 @@ def embed2_iter_inner_gotouter(opr_outer, testing_frame, cnt):
 
 #run all examples for a specific operator
 def single_all_ops(opr_inner, testing_frame, cnt):
-    #print "single all ops"
+    print "single all ops"
     # get built-in example
     ex = oprToEx(opr_inner, testing_frame, cnt)
     n_num = len(ex.tys)
+    print "n_num", n_num
+
+    
     if (n_num==0):
         return
     writeTitle_inner(opr_inner)

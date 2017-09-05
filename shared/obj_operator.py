@@ -92,18 +92,21 @@ op_min = operator(id+1,"min", 2,"minF", place_left, limit_none, True)
 op_concat2 = operator(id+2,"concat2", 2,"concat", place_left, limit_none, True)
 op_new = [op_max, op_min, op_concat2]
 id=id+len(op_new)
-#----------------- list of all operators -----------------
-# all the operators
-op_all = op_reg+op_binary+op_trig+op_new
 
-#------------------------------ operators not included -----------------------------------------------------
 #----------------- differentiation -----------------
 #differentiation
 op_gradient = operator(id, "grad", 1, u'∇', place_left, limit_none, True)
-op_divergence = operator(id+1, "div", 1, u'∇•', place_left, limit_none, True)
-op_curl= operator(id+2, "curl", 1, u'∇×',place_left, limit_none, True)
-op_jacob= operator(id+3, "jacob", 1, u'∇⊗', place_left, limit_none, True)
-op_diff =[op_gradient, op_divergence, op_curl, op_jacob]
+op_hessian = operator(id+1, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
+
+#----------------- list of all operators -----------------
+# all the operators
+op_all = op_reg+op_binary+op_trig+op_new+[op_gradient, op_hessian]
+id=id+len(op_all)
+#------------------------------ operators not included -----------------------------------------------------
+op_divergence = operator(id, "div", 1, u'∇•', place_left, limit_none, True)
+op_curl= operator(id+1, "curl", 1, u'∇×',place_left, limit_none, True)
+op_jacob= operator(id+2, "jacob", 1, u'∇⊗', place_left, limit_none, True)
+op_diff =[op_divergence, op_curl, op_jacob]
 id=id+len(op_diff)
 #----------------- slicing -----------------
 op_slicem0 = operator(id,"slicem0", 1, u'[1,:]', place_right, limit_none, False)
@@ -126,7 +129,6 @@ id=id+len(op_specialized)
 #### more than one operator or unsupported operation
 op_probe= operator(id,"probe", 1,"(pos)", place_right, limit_none, True)
 op_crossT3 = operator(id+1,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
-op_hessian = operator(id+2, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
 op_concat3 = operator(id+3,"concat3", 3,"concat", place_left, limit_none, True)
 #------------------------------ helpers -----------------------------------------------------
 # print all the ops names and ids

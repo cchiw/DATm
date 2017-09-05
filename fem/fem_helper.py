@@ -24,12 +24,10 @@ from base_observed import observed
 
 def ty_toMesh(fldty):
     dim =  fldty.dim
-    if(fldty.id == ty_scalarF_d2.id):
+    if(fldty.dim == 2):
         return "UnitSquareMesh(2,2)"
-    elif(fldty.id == ty_scalarF_d3.id):
+    elif(fldty.dim== 3):
         return "UnitCubeMesh(2,2,2)"
-    elif(fldty.id == ty_vec2F_d2.id):
-        return "UnitSquareMesh(2,2)"
     else:
         raise Exception ("unsupported mesh")
 

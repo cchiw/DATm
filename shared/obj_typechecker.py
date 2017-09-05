@@ -43,7 +43,7 @@ def applyUnaryOp(op1,ityps):
             return err()
     # differentiation was used, k has a limit
     def mkTyp_deductk(k_limit, shape):
-        #print "inside mktyp deduct k "
+        print "inside mktyp deduct k "
         if(k<k_limit or len(shape)>3):
              return err()
         else:
@@ -90,7 +90,7 @@ def applyUnaryOp(op1,ityps):
         else:
             return err()
     elif(fty.is_Scalar(ityp1)):
-        ##print "tshape-scalar"
+        print "tshape-scalar"
         if(op_sqrt==op1):
             return same()
         elif(op_cosine==op1) or (op_sine==op1)or (op_tangent==op1) or (op_acosine==op1) or (op_asine==op1)or (op_atangent==op1):
@@ -108,12 +108,14 @@ def applyUnaryOp(op1,ityps):
             else:
                 return mkTyp_deductk(1, [dim])
         elif (op_hessian==op1):
+            print "hessian mark"
             if(not fty.is_Field(ityp1)):
                 return err()
             if (dim==1):
                 # should actually  be gradient of gradient
                 return err()
             else:
+                print "in here"
                 return mkTyp_deductk(2, [dim, dim])
         else:
             return err()
@@ -398,13 +400,15 @@ def applyThirdOp(op1,ityps):
 # apply unary and binary operator
 def get_tshape(opr1, ishape):
     #print "inside getshape", opr1.name
-
-    if(pde_test):
-        # limitation here for pdes
-        for m in ishape:
-            if(fty.is_Field(m)):
-                if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id)or (m.id==ty_vec2F_d2.id))):
-                    return (false, "limit_ofield")
+#
+#    if(pde_test):
+#        # limitation here for pdes
+#        for m in ishape:
+#            if(fty.is_Field(m)):
+#                #if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
+#                #if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id) or (m.id==ty_vec2F_d2.id))):
+#                if(false):
+#                    return (false, "limit_ofield")
 
     arity = opr1.arity
     if(arity==0):

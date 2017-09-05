@@ -67,6 +67,13 @@ def mk_choice_range(testing_frame, cnt):
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
     print "############################################inside central############################################"
+    exps = apply.get_all_Fields(app)
+    
+    # limit core fields by the ones we can rep.
+    for e in exps:
+        m = e.fldty
+        if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
+            return None
 
     
     # get global variables from testing framework
@@ -135,6 +142,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
 
 def core(app, coeffs, dimF, names, testing_frame, cnt):
+    print "**** at core ***"
     writetys("\n\t***"+app.name)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     counter.inc_cnt(cnt)
@@ -162,7 +170,7 @@ space = "Unit"
 # functions create app objects
 # get example from list of examples
 def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
-    print "creating single app"
+    print "################## creating single app##################"
     # global variables needed from testing framework
     g_inputfile = frame.get_inputfile(testing_frame)
     g_ucoeff = frame.g_ucoeff(testing_frame)
@@ -181,16 +189,19 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
 
     for  i in ishape:
         print "i",i.name,i.space
-    
+    print " mark A"
 
     #print opr_inner.name,ishape[0].name
     (tf1, tshape1) = get_tshape(opr_inner,ishape)
+    print " mark B"
     if(not tf1):
+        print "tshape1:",tshape1
         #write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
     print tf1, tshape1.name, tshape1.space
-
+    print " mark C"
     (app, coeffs) = mkApply_fld(name, opr, ishape, g_inputfile, tshape1, g_coeff_style, g_ucoeff, g_krn,g_template)
+    print " mark D"
     dimF = tshape1.dim
     names= "s_"+str(opr_inner.id)+"__"+"n_"+str(t_num)+"_"
     core(app, coeffs, dimF, names, testing_frame, cnt)
