@@ -1,0 +1,19 @@
+int cat = 0;
+
+foo_in
+foo_op;
+input int res;
+input int stepSize;
+input real limit;
+
+strand f(foo_posIn) {
+
+    output foo_outTen
+    update {
+
+        foo_limits;
+
+        stabilize;
+    }
+}
+foo_posLast

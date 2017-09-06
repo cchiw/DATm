@@ -97,17 +97,18 @@ id=id+len(op_new)
 #differentiation
 op_gradient = operator(id, "grad", 1, u'∇', place_left, limit_none, True)
 op_hessian = operator(id+1, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
+op_jacob= operator(id+2, "jacob", 1, u'∇⊗', place_left, limit_none, True)
+op_divergence = operator(id+3, "div", 1, u'∇•', place_left, limit_none, True)
+op_curl= operator(id+4, "curl", 1, u'∇×',place_left, limit_none, True)
+op_diff =[op_divergence, op_curl, op_jacob]
+id=id+len(op_diff)
 
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_reg+op_binary+op_trig+op_new+[op_gradient, op_hessian]
+op_all = op_reg+op_binary+op_trig+op_new+[op_gradient, op_hessian, op_jacob]
 id=id+len(op_all)
 #------------------------------ operators not included -----------------------------------------------------
-op_divergence = operator(id, "div", 1, u'∇•', place_left, limit_none, True)
-op_curl= operator(id+1, "curl", 1, u'∇×',place_left, limit_none, True)
-op_jacob= operator(id+2, "jacob", 1, u'∇⊗', place_left, limit_none, True)
-op_diff =[op_divergence, op_curl, op_jacob]
-id=id+len(op_diff)
+
 #----------------- slicing -----------------
 op_slicem0 = operator(id,"slicem0", 1, u'[1,:]', place_right, limit_none, False)
 op_slicem1 = operator(id+1,"slicem1", 1, u'[:,0]', place_right, limit_none, False)

@@ -4,6 +4,7 @@
 coeff_cubic = "cubic"
 coeff_quadratic ="quadratic"
 coeff_linear ="linear"
+coeff_order4 ="order4"
 
 #-------------------------- types --------------------------
 ty_F ="all fields"

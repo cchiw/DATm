@@ -80,7 +80,7 @@ def run_sample_main(runtimepath, PARAMS, p_name, mkImage):
     if(mkImage):
         # create vis for program
         os.system("unu quantize -b 8  -i "+p_name +".nrrd -o "+p_name +".png")
-        os.system("open "+p_name +".png")
+        #os.system("open "+p_name +".png")
         os.system("cp "+p_name +".png"+" rst/data/"+p_name+".png")
 
 

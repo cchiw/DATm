@@ -212,6 +212,7 @@ def copyFiles(n, src_path, dst_path):
     for t in filetys:
         tmpname = n+t
         os.system("cp "+src_path+tmpname+" "+dst_path+"/"+tmpname)
+        os.system("cp "+src_path+tmpname+" "+dst_path+tmpname)
 
 
 def rmFiles(n, src_path):
@@ -243,7 +244,7 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     #copy of observ programs
     filename =["observ", "vis_sample_out", "vis_color"]
     for n in filename:
-        copyFiles(n, rst_data+"/", path)
+        copyFiles(n, rst_data+"/", path+"/")
 
     # added for fem
     os.system("cp Makefile " +path+"/Makefile")

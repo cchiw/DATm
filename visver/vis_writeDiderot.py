@@ -218,12 +218,12 @@ def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd,t_templatesize,t_t
             return (true, None)
         else:
             os.system("unu quantize -b 8 -i "+ nrrdname+".nrrd -o "+output+".png")
-            os.system("open "+output+".png")
+            #os.system("open "+output+".png")
             copyFiles("", p_out, output)
             
-            # i = [".diderot ",".txt ",".c" ,".png "]
+            #i = [".diderot ",".txt ",".c" ,".png "]
             #for t in i:
-            #    os.system("cp "+ p_out+t+output+t)
+            #os.system("cp "+ p_out+t+output+t)
 
     
             return (true, true)
