@@ -31,16 +31,14 @@ const_out ="7.2"
 opfieldname1="G"
 eps = "0.01"
 
-inside ="inside"
-if (c_pde_test):
-    inside ="insideF"
 ##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)
 # type of field
 def fieldShape(f, fldty):
     #print "fldty: ",fldty
-    foo = fty.toDiderot(fldty)
+    pde_test = false
+    foo = fty.toDiderot(fldty,pde_test)
     f.write(foo.encode('utf8'))
 # writing to a line
 def write_shape(pre, f, typ, lhs, rhs):
@@ -106,7 +104,11 @@ def outLineF(f, type):
 
 ##################################### field declaration helpers #####################################
 # checks inside a field but not inside a tensor term
-def getInside(exp, pos, name):
+def getInside(exp, pos, name, pde_test):
+    inside ="inside"
+    if (pde_test):
+        inside ="insideF"
+    
     if (fty.is_Field(exp.fldty)):
         return "("+inside+"("+name+","+pos+")) && "
     else:
@@ -402,24 +404,24 @@ def check_conditional(f, ff, app):
     return
 ##################################### inside field test  #####################################
 #probes field at variable position
-def check_inside(f, ff, app):
+def check_inside(f, ff, app, pde_test):
     print "inside check inside"
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";"
     exps = apply.get_all_Fields(app)
     foo = ""
     pos = "pos"
-    i0 = getInside(exps[0],"F0", pos)
+    i0 = getInside(exps[0],"F0", pos, pde_test)
     adjs = str(adj)
     outerif = "true"     # create outer if
     ################## comp term ##################
     #number of fields we probe for composition inside test
     def insideExpFld0(i):
-        return getInside(exps[i], fieldName(i) , pos)
+        return getInside(exps[i], fieldName(i) , pos, pde_test)
     def insideExpFld1(i, j):
-        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+pos+")*"+adjs)
+        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+pos+")*"+adjs, pde_test)
     def insideExpFld2(i, j, k):
-        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+fieldName(k)+"("+pos+")*" +adjs+")*"+adjs)
+        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+fieldName(k)+"("+pos+")*" +adjs+")*"+adjs, pde_test)
     # inside expression for field in composition
     def i0():
         return insideExpFld0(0)
@@ -532,7 +534,7 @@ def check_inside(f, ff, app):
         #regular probing of expressions
         j= ""
         for i in range(len(exps)):
-            j = j+ getInside(exps[i],"F"+str(i), pos)
+            j = j+ getInside(exps[i],"F"+str(i), pos, pde_test)
         outerif = j+"true"
         # inside if
         # check none inside test

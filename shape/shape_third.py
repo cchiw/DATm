@@ -17,6 +17,8 @@ from shape_helper import *
 from shape_helper_current import *
 from shape_backwards import *
 
+pde_test = false # test pdes in femprime branch
+
 ##################################################################################################
 # #print types on list
 def pes(pre, es):

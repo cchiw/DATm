@@ -7,7 +7,7 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_constants import *
-pde_test = c_pde_test
+
 
 # check application of operator to types
 # organized by arity of operator
@@ -398,25 +398,14 @@ def applyThirdOp(op1,ityps):
         return err()
 #############################################################################################
 # apply unary and binary operator
-def get_tshape(opr1, ishape):
-    #print "inside getshape", opr1.name
-#
-#    if(pde_test):
-#        # limitation here for pdes
-#        for m in ishape:
-#            if(fty.is_Field(m)):
-#                #if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
-#                #if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id) or (m.id==ty_vec2F_d2.id))):
-#                if(false):
-#                    return (false, "limit_ofield")
-
+def get_tshape(opr1, ishape, pde_test):
     arity = opr1.arity
     if(arity==0):
         return (true, ty_mat3x3F_d3)
     elif(arity==1):
         (a,b) =  applyUnaryOp(opr1, ishape)
         if(a):
-            print fty.toDiderot(b)
+            print fty.toDiderot(b,pde_test)
         return (a,b)
     elif(arity==2):
         print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name

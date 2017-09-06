@@ -35,6 +35,7 @@ foo_out="out"
 foo_pos="pos"
 const_out ="7.2"
 
+pde_test =false
 
 #witten inside update method
 #conditionals are commented out
@@ -44,7 +45,7 @@ def cte_update_method(f, pos, app):
         # index field at random positions
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
-        check_inside(f, opfieldname1, app)
+        check_inside(f, opfieldname1, app, pde_test)
         #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
         #f.write(foo.encode('utf8'))
         #check_conditional(f,  opfieldname1, app)

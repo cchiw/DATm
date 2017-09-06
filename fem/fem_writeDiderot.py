@@ -36,7 +36,7 @@ foo_posLast = "foo_posLast"
 foo_out = "out"
 foo_pos = "pos"
 const_out = "7.2"
-
+pde_test = true 
 
 
 ####### FIXME: need to create fem-inside/conditional
@@ -48,6 +48,14 @@ def ty_toSpace(V, fldty):
     k_order = ty_toK()
     mesh = ty_toMesh(fldty)
     return "\n fnspace "+V+" = FunctionSpace("+ mesh+", "+element+"(), "+k_order +");"
+
+
+
+def fem_fieldShape(f, fldty):
+    #print "fldty: ",fldty
+    pde_test = true
+    foo = fty.toDiderot(fldty,pde_test)
+    f.write(foo.encode('utf8'))
 
 
 #field input line
@@ -76,7 +84,7 @@ def fem_inShape(f, appC):
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
             f.write(foo.encode('utf8'))
         else: #tensor type
-            fieldShape(f, exp.fldty)
+            fem_fieldShape(f, exp.fldty)
             foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
             f.write(foo.encode('utf8'))
         i+=1
@@ -130,7 +138,7 @@ def cte_update_method(f, pos, app):
     if(fty.is_Field(oty)):
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
-        check_inside(f, opfieldname1, app)
+        check_inside(f, opfieldname1, app, pde_test)
     #foo= "\n\t\tout = inst(G,pos);"
     #f.write(foo.encode('utf8'))
     else:

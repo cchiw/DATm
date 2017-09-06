@@ -26,6 +26,8 @@ from nc_createField import sortField
 from cte_writeDiderot import writeDiderot
 from cte_eval import eval
 
+pde_test=false# test pdes in femprime branche
+
 # results from testing
 def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
@@ -228,7 +230,7 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     ishape = set_ks(g_krn, ishape)
     #print "calling tshape"
     #print opr_inner.name,ishape[0].name
-    (tf1, tshape1) = get_tshape(opr_inner,ishape)
+    (tf1, tshape1) = get_tshape(opr_inner,ishape,pde_test)
     #print "post get-tshape"
     if(not tf1):
         write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
@@ -350,7 +352,7 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, 
     for j in tmpshape:
         print "-- shape", j.name
     # ok now back to regular programming
-    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2)
+    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2,pde_test)
     if(tf3==true):#
         writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         appname = opr_outer2.name+"("+opr_outer1.name+"("+opr_inner.name+")"+")"
@@ -408,7 +410,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     #print "tshape1", tshape1
     #print "fty", fty
     es = [tshape1]+fty
-    xy = get_tshape(opr_outer,es)
+    xy = get_tshape(opr_outer,es,pde_test)
   
     (tf2, tshape2) =xy
     #print "tshape2", tshape2

@@ -207,46 +207,61 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
     #os.system("open  "+path+"/"+opname+"_max.png")
     return
 
+def copyFiles(n, src_path, dst_path):
+    filetys = [".diderot",".png", ".nrrd", "_init.c",".py",".txt",".c"]
+    for t in filetys:
+        tmpname = n+t
+        os.system("cp "+src_path+tmpname+" "+dst_path+"/"+tmpname)
+
+
+def rmFiles(n, src_path):
+    filetys = [".diderot",".png", ".nrrd", "_init.c",".py",".txt","",".o",".h",".c",".cxx"]
+    for t in filetys:
+        os.system("rm "+src_path+n+t)
+
+
+
 
 # copy programs and corresponding file to new directory
 def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, rst):
     path = "rst/stash/"+names
     os.system("mkdir "+path)
 
-
-    os.system("cp rst/tmp/correct_dbl.nrrd "+path+"/correct_dbl.nrrd")
-    os.system("cp rst/tmp/correct_sng.nrrd "+path+"/correct_sng.nrrd")
-    nrrdNames =["inputfile_","inputfile", "inputfileF"]
+    # single and double nrrd file
+    filetys = ["_sng.nrrd", "_dbl.nrrd"]
+    for i in filetys:
+        os.system("cp rst/tmp/correct"+i+" "+path+"/correct"+i)
+    
+    # input field f
+    #nrrdNames =["inputfile_","inputfile", "inputfileF"]
+    nrrdNames =["inputfile"]
     for i in  nrrdNames:
         for j in range(3):
             k = i+str(j)
             os.system("cp "+rst_data+"/"+k+".nrrd "+path+"/"+k+".nrrd")
-    
-    filetys = [".diderot",".png", ".nrrd", "_init.c",".py"]
-    for i in filetys:
-        os.system("cp "+rst_data+"/observ"+i+" "+path+"/observ"+i)
-        os.system("cp "+rst_data+"/observ"+i+" "+path+"/"+names+i)
 
-    os.system("cp observ.py " +path+"/observ.py")
+    #copy of observ programs
+    filename =["observ", "vis_sample_out", "vis_color"]
+    for n in filename:
+        copyFiles(n, rst_data+"/", path)
+
+    # added for fem
     os.system("cp Makefile " +path+"/Makefile")
-    a= names
-    b= "\n\nobserved data from "+branch+" "+str(observed_data)
-    # correct values from python
+
+    # for rst txt file
+    b = "\n\nobserved data from "+branch+" "+str(observed_data)
     c= "\n\ncorrect data from python"+str(correct_data)
-    e = "\n\n positions"+str( positions)
-    d = "\n\nParams("+str(len(PARAMS))+")"
+    d = "\n\n positions"+str( positions)+"\n\nParams("+str(len(PARAMS))+")"
+    st = names+b+c+d
+    e = ""
     j = 0
-    #print "Params", PARAMS
     for p in PARAMS:
-        d+="\n\t"+str(j)+".)"+p
+        e+="\n\t"+str(j)+".)"+p
         j+=1
-    st = a+b+c+e+d+"\n"+rst+"\n\n"
+    st = st+"\n"+rst+"\n\n"
     f = open(path+"/rst.txt", 'w+')
     f.write(st)
-
     f.close()
-
-
 
 
 def write_rst(names, x, extraname, phrase):
@@ -257,7 +272,6 @@ def write_rst(names, x, extraname, phrase):
     write_terrible(m)
     print (x)
     return
-
 
 
 # does not compile
@@ -301,10 +315,9 @@ def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  pos
 
     writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
-def rst_good(num, names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
+def rst_good(names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "g"
-    labl1 = dir+"_"+str(num)
-    labl2 = dir+"_"+names
+    labl = dir+"_"+names
     write_rst(names, x, extraname, "rtn:good")
 
-    #writeToRst(labl1, observed_data, correct_data,  positions, PARAMS, branch, x)
+    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)

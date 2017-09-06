@@ -12,6 +12,7 @@ sys.path.insert(0, 'visver/')
 
 
 from base_observed import getObserv_t
+from base_write import copyFiles
 from vis_writeDiderot import *
 
 def pnt(dist, p):
@@ -34,34 +35,28 @@ def get_x(inc, top):
     return pos
 
 #############  generate diderot programs from template
-def mk_samplefile(p_out, app, positions):
-
-    print "---------------  mk samplefile ----------------------"
-    t_file_b = "shared/template/"+p_out +".ddro"
-    print "p_out", p_out
-    readDiderot(p_out, app, positions, t_file_b)
-
-    return
-
 # create diderot program from template
 def mk_vis_files(app, positions,arg_inc, arg_positions):
-
-    print "---------------  mk vis ifles----------------------"
     # FIXME in foo.ddro inline     p_Observ = "observ" name for nrrd files
     positions = get_x(arg_inc, arg_positions)
+    
+    ###### sample program
     p_out = "vis_sample_out"
-    mk_samplefile(p_out, app, positions)
+    t_file_b = "shared/template/"+p_out +".ddro"
+    readDiderot(p_out, app, positions, t_file_b)
+
+    #### color program
     p_out = "vis_color"
-    mk_samplefile(p_out, app, positions)
+    t_file_b = "shared/template/"+p_out +".ddro"
+    readDiderot(p_out, app, positions, t_file_b)
     return
 
-def copy_all(p_sample):
-    print "---------------  copy all ----------------------"
-    os.system("unu save -f text -i "+p_sample+".nrrd -o "+p_sample +".txt")
-    output ="rst/data/"+p_sample
-    i = [".diderot ",".txt ",".png ",".nrrd "]
-    for t in i:
-        os.system("cp "+ p_sample+t+output+t)
+def copy_all(n):
+    src_path = ""
+    dst_path ="rst/data/"
+    os.system("unu save -f text -i "+n+".nrrd -o "+src_path +n+".txt")
+    copyFiles(n, src_path, dst_path)
+
 
 
 
@@ -86,7 +81,9 @@ def run_sample_main(runtimepath, PARAMS, p_name, mkImage):
         # create vis for program
         os.system("unu quantize -b 8  -i "+p_name +".nrrd -o "+p_name +".png")
         os.system("open "+p_name +".png")
-        os.system("cp "+p_name +".png"+"rst/data/color.png")
+        os.system("cp "+p_name +".png"+" rst/data/"+p_name+".png")
+
+
     # copy over files
     copy_all(p_name)
     return (true, p_name)

@@ -31,7 +31,7 @@ sys.path.insert(0, 'cte/')
 from cte_eval import eval
 
 test_new = true # new type of test
-
+pde_test=true # test pdes in femprime branche
 
 def cleanup(output, p_out):
     os.system("rm ex1.o")
@@ -214,7 +214,7 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
 
 
     #print opr_inner.name,ishape[0].name
-    (tf1, tshape1) = get_tshape(opr_inner,ishape)
+    (tf1, tshape1) = get_tshape(opr_inner,ishape,pde_test)
 
     if(not tf1):
         #write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
@@ -327,7 +327,7 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, 
     #for j in tmpshape:
     #print "-- shape", j.name
     # ok now back to regular programming
-    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2)
+    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2,pde_test)
     if(tf3==true):#
         writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         appname = opr_outer2.name+"("+opr_outer1.name+"("+opr_inner.name+")"+")"
@@ -369,7 +369,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
 
     #writeTime(9)
     # adjusting to accept 2|3 layers of operators
-    #print "in get-tshape print ishape"
+    print "in get-tshape print ishape"
 
     opr_inner = oprs[0]
     opr_outer = oprs[1]
@@ -380,10 +380,10 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     #print "tshape1", tshape1.name,"tshape1-space",tshape1.space
     #print "fty", fty
     es = [tshape1]+fty
-    xy = get_tshape(opr_outer,es)
+    xy = get_tshape(opr_outer,es,pde_test)
   
     (tf2, tshape2) =xy
-    #print "tshape2", tshape2
+    print "tf2:", tf2, " tshape2:", tshape2
     #print "tf2", tf2
     if(tf2==true):# if it works continue
         #create app object
@@ -395,7 +395,6 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
         # refer to testing frame
         layer = frame.get_layer(testing_frame)
         if(layer==2):
-    
             dimF = tshape2.dim
             # done creating app. continute to main part
             title =  generate_name(oprs, tys, "_l2")

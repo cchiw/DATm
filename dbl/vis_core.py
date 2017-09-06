@@ -25,6 +25,7 @@ from vis_createField import createField
 from vis_writeDiderot import writeDiderot
 from vis_eval import *
 
+pde_test = false # test pdes in femprime branch
 
 # results from testing
 def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_data, observed_sphere, PARAMS, branch):
@@ -248,7 +249,7 @@ def create_single_app(opr_inner, t_num, testing_frame, cnt):
     # get k value of tshape from kernels
     ishape = set_ks(g_krn, ishape)
     ##print "calling tshape"
-    (tf1, tshape1) = get_tshape(opr_inner,ishape)
+    (tf1, tshape1) = get_tshape(opr_inner,ishape,pde_test)
     if(not tf1):
         write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
@@ -352,7 +353,7 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
     ishape_all = convert_fields(ishape_all, testing_frame)
     
     # ok now back to regular programming
-    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2)
+    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2,pde_test)
     if(tf3==true):#
         writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         appname = opr_outer2.name+"("+opr_outer1.name+"("+opr_inner.name+")"+")"
@@ -392,7 +393,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
-    (tf2, tshape2) = get_tshape(opr_outer,[tshape1]+fty)
+    (tf2, tshape2) = get_tshape(opr_outer,[tshape1]+fty,pde_test)
     ##print "in get tshape 2 tys",tys
     if(tf2==true):# if it works continue
         #create app object

@@ -15,6 +15,7 @@ from obj_operator import *
 from obj_field import *
 from base_constants import *
 from base_writeDiderot import *
+from base_write import copyFiles
 
 #strings in diderot template
 foo_in="foo_in"
@@ -97,30 +98,30 @@ def vis_color_mark(positions,f, app):
 #op1: unary operation involved
 def readDiderot(p_out,app,pos,template):
     #read diderot ,template
-    print "template", template
+
     ftemplate = open(template, 'r')
     ftemplate.readline()
     #write diderot program
-    print "p_out+.diderot",p_out+".diderot"
+
     f = open(p_out+".diderot", 'w+')
     for line in ftemplate:
         # is it initial field line?
         a0 = re.search(foo_in, line)
         if a0:
             #replace field input line
-            #print "inshape"
+
             inShape(f,app)
             continue
         # is it output tensor line?
         b0 = re.search(foo_outTen, line)
         if b0:
-            #print "outline"
+
             outLine(f, app)
             continue
         # operation on field
         c0 = re.search(foo_op,line)
         if c0:
-            #print "replace op"
+
             replaceOp(f, app)
             continue
         d0 = re.search(foo_samplespread,line)
@@ -137,13 +138,12 @@ def readDiderot(p_out,app,pos,template):
             continue
         g0 = re.search(foo_maxfieldOut,line)
         if g0:
-            #print "probe output field type"
             foo="\n\tout = max(out, "+opfieldname1+"(pos));// update output based on last sample\n"
             f.write(foo.encode('utf8'))
             continue
         i0 = re.search(foo_sumfieldOut, line)
         if i0:
-            #print "probe output field type"
+
             foo="\n\tout += ("+opfieldname1+"(pos)) "
             if(app.oty.id==ty_vec3F_d3.id):
                 #foo+=u'•'+" (pos)"
@@ -166,20 +166,18 @@ def readDiderot(p_out,app,pos,template):
 
 # execute new diderot program
 def runDiderot(p_out, app, pos, output, runtimepath, isNrrd, t_templatesize, nrrdname, product, PARAMS ):
-    print "**********  runDidero***********"
+
     if(isNrrd):
-        print "write diderot-isnrrd-true"
+
         m2=t_templatesize
         w_shape=" -s "+str(product)+" "+str(m2)
-        print "./"+p_out+" -o "+nrrdname+PARAMS
+
         os.system("./"+p_out+" -o  "+nrrdname+PARAMS)
         os.system("./"+p_out+" -o  "+nrrdname+".nrrd "+PARAMS)
         os.system("unu reshape -i  "+nrrdname+".nrrd "+w_shape+" | unu save -f text -o "+p_out+".txt")
     else:
-        print "write diderot-isnrrd-false"
-        print "not is vis"
+
         executable = "./"+p_out+" "+ PARAMS
-        print executable
         os.system(executable)
 
 
@@ -187,50 +185,46 @@ def runDiderot(p_out, app, pos, output, runtimepath, isNrrd, t_templatesize, nrr
 # p_out names diderot program created
 # names output nrrd file output
 def writeDiderot(p_out, app, pos, output, runtimepath, isNrrd,t_templatesize,t_templatefile):
-    print "************** writeDiderot1  aaa ********************"
+   
     # write new diderot program
     readDiderot(p_out, app, pos,t_templatefile)
     # copy and compile diderot program
     diderotprogram = p_out+".diderot"
     os.system("cp "+p_out+".diderot "+output+".diderot")
-    print "cp "+p_out+".diderot "+output+".diderot"
-    os.system("rm "+p_out) # remove existing executable
     os.system(runtimepath + " " + diderotprogram)
     nrrdname = output     # name of nrrd file read
     # did it compile?
-    print "************** writeDiderot1 bb ********************"
+
     if(not(os.path.exists(p_out))):
         # did not compile
-        #print "did not compile"
+
         return (None, None)
     else:
         # remove txt
-        print "************** writeDiderot1 cc  ********************"
+
         txfile  = p_out+".txt"
-        os.system("rm "+txfile)
         # run executable
         shape = [] #app.oty.shape
-        # print "shape",shape
-        print "************** writeDiderot1 dd********************"
         product = 1
         for x in shape:
             product *= x
         size = str(300)
-        print "************** writeDiderot1 ee ********************"
+
         PARAMS = " -iresU "+size+" -iresV  "+size+ " -camOrtho true -camEye 8 0 0 -camFOV 15 -rayStep 0.01 "
-        print "************** writeDiderot1 ff********************"
+
         runDiderot(p_out, app, pos, output, runtimepath, isNrrd, t_templatesize, nrrdname,product,  PARAMS )
         if(not(os.path.exists(txfile))):
             # did not execute
-            #print "did not execute"
             return (true, None)
         else:
             os.system("unu quantize -b 8 -i "+ nrrdname+".nrrd -o "+output+".png")
             os.system("open "+output+".png")
-            i = [".diderot ",".txt ",".c" ,".png "]
-            for t in i:
-                os.system("cp "+ p_out+t+output+t)
+            copyFiles("", p_out, output)
+            
+            # i = [".diderot ",".txt ",".c" ,".png "]
+            #for t in i:
+            #    os.system("cp "+ p_out+t+output+t)
 
-            os.system("rm "+p_out+"*")
+    
             return (true, true)
 

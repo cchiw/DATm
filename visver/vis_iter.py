@@ -24,6 +24,7 @@ from vis_core import *
 #top-level
 from frame import  *
 
+pde_test = false # test pdes in femprime branch
 
 #    Iterate over defined types and operators
 #create app object that represents that application of one or two operators on tensor and/or tensor field arguments.
@@ -124,7 +125,7 @@ def pre_get_tshape1(ex, t_num, opr_inner, testing_frame):
     (name, ishape) = get_single_exampleEx(ex, t_num)
     g_krn = frame.get_krn(testing_frame)
     ishape0 = set_ks(g_krn, ishape)
-    (tf1, tshape1) = get_tshape(opr_inner, ishape0)
+    (tf1, tshape1) = get_tshape(opr_inner, ishape0,pde_test)
     return (name, tf1, tshape1, ishape0)
 
 

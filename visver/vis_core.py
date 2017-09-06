@@ -27,11 +27,12 @@ from vis_eval import eval_sample
 from vis_sample import run_sample,mk_vis_files
                                   
 
+pde_test=false# test pdes in femprime branche
+
 # results from testing
 def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_data, observed_sphere, arg_positions, PARAMS, branch):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
     (rst_lbl,  rst_all) = rtn_1
-    ##print "X", x
     test_header_0 = name_file+"\n\t"+name_describe+"| "+name_ty+"| "+rst_lbl
     test_header_1 =  test_header_0+rst_all
     
@@ -43,11 +44,12 @@ def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_
     # write to file
     correct_data = observed_sphere
     positions = arg_positions
-    if (rst_terrible_1==1):
-        x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
-        rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-    return
 
+    print "x:",test_header_0
+    if (rst_terrible_1==1):
+        rst_terrible(name_file, test_header_0, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+    else:
+        rst_good(name_file, test_header_0, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
 
 ##################################################################################################
 ##################################################################################################
@@ -56,6 +58,12 @@ def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_
 def mk_choice_range(testing_frame, cnt):
     random_range  = frame.get_random_range(testing_frame)
     return (not random.randint(0, random_range))
+
+def cleanup(g_p_Observ):
+    filenames =["observ", "vis_sample_out", "vis_color",g_p_Observ]
+    for n in filenames:
+        rmFiles(n, "")
+
 
 
 # already created app object
@@ -80,21 +88,21 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     t_size = frame.transform_template_size(testing_frame)
     t_file = frame.transform_template_file(testing_frame)
     ##print "*******************************************"
+    print "clean up files"
+    #cleanup(g_p_Observ)
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
     name_describe = app.name
 
     # testing positions
-    print "\n ******************************   vis a"
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     # samples
     #create synthetic field data with diderot
-    print "\n ******************************   vis b"
+
     PARAMS = createField(app, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
     print "\n ******************************   pre write date "
     (isCompile, isRun) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd,t_size*t_size,t_file)
-    print "\n ******************************  post write data"
     if(isRun == None):
         # did not run
         if(isCompile == None):
@@ -109,10 +117,11 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         # read observed data
         print "---------------  pre read  observed data ----------------------"
         observed_data = observed(app, g_output)
+        print "observed_data ",observed_data 
         # center of spehere
         arg_center = (t_size/2)
         # number of testing points
-        arg_positions  = 3#30
+        arg_positions  = 20 #30
         # increment testing points
         arg_inc=arg_center/ arg_positions
         arg_perline = 9 # output of mip program
@@ -249,7 +258,7 @@ def create_single_app(opr_inner, t_num, testing_frame, cnt):
     # get k value of tshape from kernels
     ishape = set_ks(g_krn, ishape)
     ##print "calling tshape"
-    (tf1, tshape1) = get_tshape(opr_inner,ishape)
+    (tf1, tshape1) = get_tshape(opr_inner,ishape,pde_test)
     if(not tf1):
         write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
         return None
@@ -379,7 +388,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
-    (tf2, tshape2) = get_tshape(opr_outer,[tshape1]+fty)
+    (tf2, tshape2) = get_tshape(opr_outer,[tshape1]+fty,pde_test)
     ##print "in get tshape 2 tys",tys
     if(tf2==true):# if it works continue
         #create app object

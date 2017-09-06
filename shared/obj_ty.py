@@ -7,7 +7,6 @@ nonefield_k= -1
 nonefield_dim = 0
 
 from base_constants import *
-pde_test = c_pde_test
 #tensor types
 class tty:
     def __init__(self, id, name, shape):
@@ -134,7 +133,7 @@ class fty:
     def isEq_id(a,b):
         return (a.id==b.id)
     #string for diderot program
-    def toDiderot(self):
+    def toDiderot(self, pde_test):
         print "in to diderot",self.name,"-",self.space
         if(self.dim==0):
             return "tensor "+str(self.shape)

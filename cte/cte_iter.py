@@ -24,7 +24,7 @@ from base_var_ty import *
 from cte_writeDiderot import writeDiderot
 from cte_core import *
 
-
+pde_test = false # test pdes in femprime branch
 #    Iterate over defined types and operators
 #create app object that represents that application of one or two operators on tensor and/or tensor field arguments.
 #for a unary operator unary(e) we iterate over the single argu- ment (e) where e in tau.
@@ -118,7 +118,7 @@ def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, test
 def pre_get_tshape1(name, ishape, opr_inner, testing_frame):
     g_krn = frame.get_krn(testing_frame)
     ishape0 = set_ks(g_krn, ishape)
-    (tf1, tshape1) = get_tshape(opr_inner, ishape0)
+    (tf1, tshape1) = get_tshape(opr_inner, ishape0,pde_test)
     return (name, tf1, tshape1, ishape0)
 
 

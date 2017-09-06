@@ -1,6 +1,3 @@
-#r4300
-
-
 #evalaute output by sampling output
 # then comparing points equaldistant apart
 

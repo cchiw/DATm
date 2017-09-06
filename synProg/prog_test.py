@@ -20,6 +20,7 @@ from base_observed import observed
 
 # specific prog programs
 from obj_prog import *
+pde_test = false # test pdes in femprime branch
 
 # create a field
 def set_fld(id, c_ity, testing_frame):
@@ -50,7 +51,7 @@ def isValid(id, outname, c_opr, c_arg1, c_arg2):
         ishape = [c_arg1.ty]
         if(c_arg2):
             ishape = ishape+[c_arg2.ty]
-    (tf, tshape) = get_tshape(c_opr, ishape)
+    (tf, tshape) = get_tshape(c_opr, ishape,pde_test)
     #find if it is a valid test
     if(not tf):
         print tshape

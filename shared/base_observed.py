@@ -9,6 +9,7 @@ from obj_operator import *
 def getObserv_1(p_out):
     obs = []
     name = p_out+".txt"
+    print "name:",name
     if(os.path.exists(name)):
         obsf = open(name, 'r')
         obsf.readline()
@@ -16,7 +17,9 @@ def getObserv_1(p_out):
             #print "line",line
             m = re.split(r'\n',line)
             if m:
+                print "m:",m
                 u0 = m[0]
+                print "u0",u0
                 obs.append(float(u0))
         return obs
     return []
@@ -45,6 +48,7 @@ def getObserv_t(p_out, n):
 #chooose function based on number of input per line
 def base_observed(oty, p_out):
     ex_rtn = fty.get_tensorType(oty)
+    print "ex_rtn",ex_rtn
     if(ty_scalarT==ex_rtn):
         return getObserv_1(p_out)
     else:

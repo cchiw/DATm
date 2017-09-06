@@ -26,7 +26,7 @@ from cte_continue import *
 from cte_core import *
 
 
-
+pde_test = false # test pdes in femprime branch
 # create a field
 def set_fld(id, c_ity, testing_frame):
     # global variables needed from testing framework
@@ -64,7 +64,7 @@ def set_first(id,  c_ity, c_opr, c_otype, testing_frame):
 
 # internal typechecker
 def isValid(c_opr, ishape):
-    (tf1, tshape1) = get_tshape(c_opr, ishape)
+    (tf1, tshape1) = get_tshape(c_opr, ishape,pde_test)
     #find if it is a valid test
     if(not tf1):
         raise Exception( "\n apply blocked from attempting: "+"b__"+name+str(opc.id)+"_")
