@@ -244,10 +244,11 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     #copy of observ programs
     filename =["observ", "vis_sample_out", "vis_color"]
     for n in filename:
-        copyFiles(n, rst_data+"/", path+"/w0_")
+        copyFiles(n, rst_data+"/", path+"/")
 
     # added for fem
     os.system("cp Makefile " +path+"/Makefile")
+    os.system("cp observ.py " +path+"/observ.py")
 
     # for rst txt file
     b = "\n\nobserved data from "+branch+" "+str(observed_data)

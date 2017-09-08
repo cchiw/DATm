@@ -70,10 +70,7 @@ def organizeData(f):
     gdim = len(cellToNode[0]) 
     sdim = len(nodeToCoords[0])
     nc = len(cellToNode)
-    # nodesPerCell = len(nodeToCoords[0])
-    # numberOfNodes = nc * nodesPerCell
-    # functionSpaceShape = space.shape
-    #shape = [numberOfNodes] + list(functionSpaceShape)
+
     
     r = range(nc)
     import sets
@@ -146,10 +143,17 @@ def organizeData(f):
     c_data.CellToNode = mk_2d_array(cellToNode,c_int)
     c_data.NodeToCoords =  mk_2d_array(nodeToCoords,c_int) #nodeToPoint.ctypes.data_as(POINTER(POINTER(as_ctypes(c_int))))
     c_data.NodeToPoint = mk_2d_array(numpy.asfarray(nodeToPoint,dtype=float_type),c_int)
+
+    
     functionDataCtype = reduce(lambda x,y : x*y, coords.shape, ctypes_float_type)
-    print(functionDataCtype)
-    print(coords.shape)
-    c_data.Coords =   ctypes.cast((functionDataCtype)(*coords),POINTER(ctypes_float_type)) #coords.ctypes.data_as(POINTER(ctypes_float_type))
+    functionDataSize = reduce(lambda x,y : x*y, coords.shape, 1)
+    c = coords.flatten().copy()
+    # print(coords.T[0][0])
+    # print(coords.ctypes.shape)
+    # print(c.flags)
+    # print(len(c))
+    c_data.Coords =  ctypes.cast((ctypes_float_type*functionDataSize)(*c),POINTER(ctypes_float_type)) #c.ctypes.data_as(POINTER(ctypes_float_type))
+
     c_data.Nbrs = ctypes.cast((ctypes.c_int32 * (nc*nc))(*opt3),c_void_p) #This change prevented many a segfault.
     #mk_2d_array(opt3,1) #ctypes.c_void_p(opt2.ctypes.data) #mk_2d_array(opt,c_int)
 

@@ -97,7 +97,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     for e in exps:
         m = e.fldty
         print "m:",m.name
-        if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
+        dim  = 2
+        if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id)or (m.id==ty_vec2F_d2.id)or (m.id==ty_vec3F_d2.id)or (m.id==ty_vec4F_d2.id))):
             return None
 
     print "continued"
@@ -160,6 +161,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
                 analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             else:
                 correct_data = eval(app, positions)
+                print "correct_data",correct_data
                 rtn = compare(app.oty, app.name, observed_data, correct_data)
                 analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             return 3

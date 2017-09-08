@@ -52,7 +52,7 @@ c_pathToSynFiles = "shared/symb/symb_f"
  # template
 c_template="shared/template/foo.ddro"
 
-
-flag_vis_test = True
-c_pde_test = False
-#c_pde_test = True
+flag_vis_test = False
+#flag_vis_test = True
+#c_pde_test = False
+c_pde_test = True

@@ -42,15 +42,6 @@ pde_test = true
 ####### FIXME: need to create fem-inside/conditional
 ##################################### input tensor/field #####################################
 # create space for field
-def ty_toSpace(V, fldty):
-    dim =  fldty.dim
-    element = ty_toElement()
-    k_order = ty_toK()
-    mesh = ty_toMesh(fldty)
-    return "\n fnspace "+V+" = FunctionSpace("+ mesh+", "+element+"(), "+k_order +");"
-
-
-
 def fem_fieldShape(f, fldty):
     #print "fldty: ",fldty
     pde_test = true
@@ -78,7 +69,9 @@ def fem_inShape(f, appC):
             
             foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
             foo = foo+ "\n //"+field.toStr(exp)
-            foo = foo+ty_toSpace(V, exp.fldty)
+            fnspace = ty_toSpace_forDiderot(exp.fldty)
+            foo = foo+"\n fnspace "+V+" = "+fnspace +";"
+        
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"

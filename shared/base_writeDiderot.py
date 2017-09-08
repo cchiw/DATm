@@ -358,6 +358,8 @@ def get_args3(app):
 # get restraint on argument to operators
 # i.e. sqrt(x), so x must be positive
 def getCond(app, set):
+    if(removeCond):
+        return set
     oty = app.oty
     app_outer = app
     opr_outer=app_outer.opr
