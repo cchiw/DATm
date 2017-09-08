@@ -8,6 +8,8 @@ from obj_operator import *
 from obj_field import *
 from base_constants import *
 
+#apply inverse of reals
+InvReal = flag_vis_test
 
 # check application of operator to types
 # organized by arity of operator
@@ -117,6 +119,8 @@ def applyUnaryOp(op1,ityps):
             else:
                 print "in here"
                 return mkTyp_deductk(2, [dim, dim])
+        elif(op_inverse==op1 and InvReal):            # apply op_inverse_d2
+            return same()
         else:
             return err()
     elif(fty.is_Vector(ityp1)):

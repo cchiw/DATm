@@ -43,7 +43,8 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     outputnrrd=orig+".nrrd"
     sout=str(outSize)
     tty = itype.tensorType
-    PARAMS=""
+    PARAMS=" -which 0 "
+    
     # range of angle
     if(space):
         PARAMS += " -angle " +str(random.randint(0, 90))

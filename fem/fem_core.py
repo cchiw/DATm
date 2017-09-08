@@ -96,9 +96,11 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     # limit core fields by the ones we can rep.
     for e in exps:
         m = e.fldty
+        print "m:",m.name
         if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id))):
             return None
 
+    print "continued"
     
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)

@@ -505,6 +505,15 @@ def get_mat_symmal(es):
             if(n==m):
                 rtn.append(f)
     return rtn
+
+def get_mat_symmalR(es):
+    rtn = []
+    # binary operator
+    for f in es:
+        if(fty.is_Scalar(f)):
+            rtn.append(f)
+    return rtn 
+
 #list of matrix fields
 def get_mat_symmal_22(es):
     rtn = []

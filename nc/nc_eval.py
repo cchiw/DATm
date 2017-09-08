@@ -186,7 +186,9 @@ def fn_inverse(fld):
     exp = field.get_data(fld)
     ityp = field.get_ty(fld)
     rtn=[]
-    if(field.is_Matrix(fld)):
+    if(field.is_Scalar(fld)):
+        return 1/exp
+    elif(field.is_Matrix(fld)):
         [n, m] = fty.get_shape(ityp)
         if (n!=m):
             raise Exception("matrix is not identitical")
@@ -949,6 +951,8 @@ def applyToExp_U_S(fn_name, fld):
         return sqrt(exp)
     elif(op_zeros_scale3.id ==fn_name.id):
         return build_zero(3,3)
+    elif(op_inverse == fn_name):
+        return fn_inverse(fld)
     else:
         raise Exception("unsupported unary operator on scalar field:"+ fn_name.name)
 # unary operator

@@ -34,23 +34,23 @@ def vis_analyze(opr_name, name_file, name_ty, name_describe, cnt, rtn, observed_
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
     (rst_lbl,  rst_all) = rtn_1
     test_header_0 = name_file+"\n\t"+name_describe+"| "+name_ty+"| "+rst_lbl
-    test_header_1 =  test_header_0+rst_all
+
     
     
-    writeall(test_header_0)
-    print test_header_0
-    
+    #writeall(test_header_0)
+    print "header0",test_header_0
+    print "done"
     counter.inc_locals(cnt, rtn)
     # write to file
     correct_data = observed_sphere
     positions = arg_positions
 
     print "x:",test_header_0
-    if (rst_terrible_1==1):
-        rst_terrible(name_file, test_header_0, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-    else:
-        rst_good(name_file, test_header_0, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-
+    #if (rst_terrible_1==1):
+    #rst_terrible(name_file, test_header_0, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+        #else:
+    rst_good(name_file, test_header_0, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+    return
 ##################################################################################################
 ##################################################################################################
 
@@ -89,7 +89,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     t_file = frame.transform_template_file(testing_frame)
     ##print "*******************************************"
     print "clean up files"
-    #cleanup(g_p_Observ)
+    cleanup(g_p_Observ)
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
     name_describe = app.name
@@ -117,7 +117,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         # read observed data
         print "---------------  pre read  observed data ----------------------"
         observed_data = observed(app, g_output)
-        print "observed_data ",observed_data 
+        #print "observed_data ",observed_data
         # center of spehere
         arg_center = (t_size/2)
         # number of testing points

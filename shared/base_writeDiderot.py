@@ -31,6 +31,8 @@ const_out ="7.2"
 opfieldname1="G"
 eps = "0.01"
 
+# remove conditional if statetment
+removeCond = flag_vis_test
 ##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)
@@ -543,8 +545,11 @@ def check_inside(f, ff, app, pde_test):
         foo = wrap(outerif,set, oty)
         f.write(foo.encode('utf8'))
     else:
-        print "inside else"
-        t = getCond(app,set)
+        t = ""
+        if(removeCond):
+            t = "out=G(pos);"
+        else:
+            t = getCond(app,set)
         foo = wrap(outerif, t, oty)
         f.write(foo.encode('utf8'))
 

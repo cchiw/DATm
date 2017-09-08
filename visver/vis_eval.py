@@ -34,10 +34,10 @@ def toStr( dstr, maxcoeffvar, maxdiff, sumdiff, o6, length):
     if ( maxcoeffvar<=0.0005):
         rtn = append("Rst: RA-a ")
         rst_good = 1
-    if ( maxcoeffvar<=0.001):
+    elif ( maxcoeffvar<=0.001):
         rtn = append("Rst: RA-b ")
         rst_good = 1
-    if ( maxcoeffvar<=0.005):
+    elif ( maxcoeffvar<=0.005):
         rtn = append("Rst: RB-a ")
         rst_eh = 1
     elif(maxcoeffvar<=0.01):

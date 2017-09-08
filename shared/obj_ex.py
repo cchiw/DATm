@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from obj_ty import *
 from obj_operator import *
 from base_var_ty import *
-
+from base_constants import *
 class example:
     def __init__(self, opr, tys):
         self.opr=opr
@@ -27,6 +27,7 @@ class example:
         return self.tys[i]
 
 
+InvR = flag_vis_test
 #--------------  put list in parameter form  ----------------------
 # make list of unary args
 def get_unu(fall):
@@ -327,8 +328,12 @@ def oprToArgs(op1, tys):
             return  ps_unu_all                # probe
         elif((op1.id==op_trace.id) or (op1.id==op_transpose.id)):
             return get_k(get_mat_symmal)                # trace, transpose,det
-        elif((op1.id==op_det.id) or (op1.id==op_inverse.id)):
+        elif(op1.id==op_det.id):
             return get_k(get_mat_symmal)                # trace, transpose,det
+        elif(op1.id==op_inverse.id and InvR):
+            return get_k(get_mat_symmalR)
+        elif(op1.id==op_inverse.id):
+            return get_k(get_mat_symmal)
             # symmetric matrices
         elif((op1.id==op_slicev0.id) or (op1.id==op_slicev1.id)) :
             return get_k(get_vecF)                  # slice vector
