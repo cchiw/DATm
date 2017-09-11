@@ -13,6 +13,7 @@ from obj_apply import *
 from obj_ty import *
 from obj_operator import *
 from obj_field import *
+from obj_space import *
 from base_write import * 
 from base_writeDiderot import *
 from base_constants import *
@@ -28,7 +29,7 @@ foo_femGen = "foo_femGen"
 
 def translate_ty(field, exp_name, field_name):
     fldty = field.fldty
-    fnspace = ty_fnSpace_forFire(fldty)
+    fnspace = space.ty_fnSpace_forFire(fldty.space)
     foo = "\nV= "+fnspace 
     foo = foo+"\n"+field_name+" = Function(V).interpolate(Expression("+exp_name+"))"
     return foo
@@ -38,7 +39,7 @@ def translate_coeff(a, xyz):
         return ""
     else:
         return "+("+str(a)+"*"+xyz+")"
-
+#######################################################################
 #translate coeffs to firedrake expression
 def translate_expSingle(coeffs):
     [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p] = coeffs
@@ -69,63 +70,75 @@ def translate_expSingle(coeffs):
     tD =  [(m,xxxyyy), (n,xxxyy), (o,xxxy), (p,xxx)]
     return tA+ tB+ tC+ tD
 
-
-def get_CoeffExp(coeff):
+#######################################################################
+def get_CoeffExp_d2(coeff):
     ss="0"
     tE = translate_expSingle(coeff)
     for (var_n, var_c) in tE:
         ss=ss+translate_coeff(var_n, var_c)
     return "\""+ss+"\""
 
-def cvtVector(coeffs):
-    ss0 = "("+get_CoeffExp(coeffs[0])
+def cvtVector_d2(coeffs):
+    ss0 = "("+get_CoeffExp_d2(coeffs[0])
     last = coeffs[1:]
     for c in last:
-        ss0 = ss0+","+get_CoeffExp(c)
+        ss0 = ss0+","+get_CoeffExp_d2(c)
     return ss0+")"
+
+def get_CoeffExp_d3(coeffs):
+    [coeff0, coeff1, coeff2] = coeffs
+    ss="0"
+    tE = translate_expSingle(coeff0)
+    for (var_n, var_c) in tE:
+        ss=ss+translate_coeff(var_n, var_c)
+    tE = translate_expSingle(coeff1)
+    z="x[2]"
+    for (var_n, var_c) in tE:
+        ss=ss+translate_coeff(var_n, var_c+"*"+z)
+    tE = translate_expSingle(coeff2)
+    zz = z+"*"+z
+    for (var_n, var_c) in tE:
+        ss=ss+translate_coeff(var_n, var_c+"*"+zz)
+    return "\""+ss+"\""
+
+def cvtVector_d3(coeffs):
+    ss0 = "("+get_CoeffExp_d3(coeffs[0])
+    last = coeffs[1:]
+    for c in last:
+        ss0 = ss0+","+get_CoeffExp_d3(c)
+    return ss0+")"
+#######################################################################
+
 #translate field expression to something written in firedrake program
 def translate_exp(field):
-
     fldty = field.fldty
     dim = fldty.dim
+    coeffs = field.coeff
     if(dim==1):
         raise Exception ("missing dim")
     elif(fldty.id == ty_scalarF_d2.id):
-        return get_CoeffExp(field.coeff)
-    elif(fldty.id == ty_vec2F_d2.id):
-        return cvtVector(field.coeff)
-    elif(fldty.id == ty_vec3F_d2.id):
-        return cvtVector(field.coeff)
-    elif(fldty.id == ty_vec4F_d2.id):
-        return cvtVector(field.coeff)
-    elif(fldty.id == ty_mat2x2F_d2.id):
-        [coeffA, coeffB] = field.coeff
-        [coeff0, coeff1] = coeffA
-        ss0A= get_CoeffExp(coeff0)
-        ss1A = get_CoeffExp(coeff1)
-        [coeff0, coeff1] = coeffB
-        ss0B = get_CoeffExp(coeff0)
-        ss1B =get_CoeffExp(coeff1)
-        return "(("+ss0A+","+ss1A+")"+","+"("+ss0B+","+ss1B+"))"
+        return get_CoeffExp_d2(coeffs)
     elif(fldty.id == ty_scalarF_d3.id):
-        [coeff0, coeff1, coeff2] = field.coeff
-        ss="0"
-        tE = translate_expSingle(coeff0)
-        for (var_n, var_c) in tE:
-            ss=ss+translate_coeff(var_n, var_c)
-        tE = translate_expSingle(coeff1)
-        z="x[2]"
-        for (var_n, var_c) in tE:
-            ss=ss+translate_coeff(var_n, var_c+"*"+z)
-        tE = translate_expSingle(coeff2)
-        zz = z+"*"+z
-        for (var_n, var_c) in tE:
-            ss=ss+translate_coeff(var_n, var_c+"*"+zz)
-        return "\""+ss+"\""
+        return  get_CoeffExp_d3(coeffs)
+    elif(fty.is_Vector(fldty)):
+        if(dim==2):
+            return cvtVector_d2(coeffs)
+        elif(dim==3):
+            return cvtVector_d3(coeffs)
+    elif(fldty.id == ty_mat2x2F_d2.id):
+        # Need to check when matrix field is implemented
+        [coeffA, coeffB] = coeffs
+        [coeff0, coeff1] = coeffA
+        ss0A= get_CoeffExp_d2(coeff0)
+        ss1A = get_CoeffExp_d2(coeff1)
+        [coeff0, coeff1] = coeffB
+        ss0B = get_CoeffExp_d2(coeff0)
+        ss1B =get_CoeffExp_d2(coeff1)
+        return "(("+ss0A+","+ss1A+")"+","+"("+ss0B+","+ss1B+"))"
     else:
         raise Exception ("not supported")
 
-
+#######################################################################
 def get_exp(field, field_name):
     exp_name = "exp"+field_name
     foo = "\n"+exp_name+" = "+translate_exp(field)

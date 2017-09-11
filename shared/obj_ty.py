@@ -7,6 +7,7 @@ nonefield_k= -1
 nonefield_dim = 0
 
 from base_constants import *
+from obj_space import *
 #tensor types
 class tty:
     def __init__(self, id, name, shape):
@@ -69,7 +70,6 @@ class tty:
             [v,m,l] = s
             return "t"+str(v)+"x"+str(m)+"x"+str(l)
         return "t"
-
 
 # field types
 class fty:
@@ -165,6 +165,11 @@ class fty:
         return  fty(const.id,const.name, const.dim, const.shape, const.tensorType, k, space)
     def convertToTensor(self):
         return fty(200, "T", nonefield_dim, self.shape, self.tensorType, None, const.space)
+    def addSpace(self,g_element,g_ucoeff, g_length):
+        tspace = getSpace(self,g_element,g_ucoeff, g_length )
+        return fty(self.id, self.name, self.dim, self.shape, self.tensorType, self.k, tspace)
+
+
 # ------------------------------ type name to other properties ------------------------------
 # shorthand used to refer to different types
 # the helper functions match shorthand to other properties and creates ty object

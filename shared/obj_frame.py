@@ -1,7 +1,8 @@
 from base_constants import *
 
 class frame:
-    def __init__(self, name, branch, revision, precision, path, coeff_style, in_tys, rst_ty, ucoeff_range, lpos, upos, num_pos, samples, krn, random_range, random_limit, space, layer, template):
+    def __init__(self, name, branch, revision, precision, path, coeff_style, in_tys, rst_ty, ucoeff_range, lpos, upos, num_pos, samples, krn, random_range, random_limit, space, layer, template, element,length):
+        print "coeff_style",coeff_style
         self.name = name
         # branch information
         self.branch = branch
@@ -29,6 +30,20 @@ class frame:
         if(num_pos>150):
             return Exception ("Too many samples: ", samples)
         self.samples = samples
+        if((coeff_style==coeff_linear) and (length<4)):
+            return Exception ("Need a longer cell for linear coeff ", length)
+        elif(coeff_style==coeff_quadratic):
+            if ((element==elem_Lagrange)and (length<4)):
+                return Exception ("Need a longer cell for linear coeff ", length)
+            elif (length<3):
+                return Exception ("Need a longer cell for linear coeff ", length)
+        elif(coeff_style==coeff_cubic):
+            if ((element==elem_Lagrange)and (length<4)):
+                return Exception ("Need a longer cell for linear coeff ", length)
+            elif (length<2):
+                return Exception ("Need a longer cell for linear coeff ", length)
+        
+        
         # some hardcoded pieces
         p_Observ = "observ"
         stash  = rst_data 
@@ -49,8 +64,12 @@ class frame:
         self.space = space
         #------------------- layer of operators
         self.layer = layer
-
         self.template = template
+        self.element=element
+        self.length =length
+
+
+
     #-------------------- translation --------------------
     def get_name(self):
         return self.name
@@ -64,6 +83,8 @@ class frame:
         return self.samples
     def g_ucoeff(self):
         return self.ucoeff_range
+    def g_coeff_style(self):
+        return self.g_coeff_style
     def get_lpos(self):
         return self.lpos
     def get_upos(self):
@@ -96,7 +117,10 @@ class frame:
         return self.layer
     def get_template(self):
         return  self.template
-    
+    def get_element(self):
+        return  self.element
+    def get_length(self):
+        return self.length
     def transform_fullpath(self,  branch, precision):
         path = self.path
         if(branch == branch_vis15):

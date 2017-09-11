@@ -15,9 +15,10 @@ from cte_iter_cmd import main_set
 n_template = 0
 shift = 1 # next command number
 
-
+os.system("rm  -r rst/stash/*")
 os.system("mkdir rst")
 os.system("cp  -R clean/rst  .")
+
 
 os.system("mkdir rst")
 os.system("mkdir rst/tmp")

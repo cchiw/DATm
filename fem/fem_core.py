@@ -87,22 +87,6 @@ def mk_choice_range(testing_frame, cnt):
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
     print "############################################inside central############################################"
-    
-    
-
-    
-    exps = apply.get_all_Fields(app)
-    
-    # limit core fields by the ones we can rep.
-    for e in exps:
-        m = e.fldty
-        print "m:",m.name
-        dim  = 2
-        if(not ((m.id==ty_scalarF_d2.id) or (m.id==ty_scalarF_d3.id)or (m.id==ty_vec2F_d2.id)or (m.id==ty_vec3F_d2.id)or (m.id==ty_vec4F_d2.id))):
-            return None
-
-    print "continued"
-    
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
     g_upos = frame.get_upos(testing_frame)
@@ -112,15 +96,41 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     g_samples = frame.get_samples(testing_frame)
     g_branch = frame.get_branch(testing_frame)
     g_space = frame.get_space(testing_frame)
+    g_element = frame.get_element(testing_frame)
+    g_length = frame.get_length(testing_frame)
+    g_ucoeff = frame.g_ucoeff(testing_frame)
+    g_coeff_style = frame.get_coeff_style(testing_frame)
     # transform from global variables
     t_isNrrd = frame.transform_isNrrd(testing_frame)
     t_nrrdbranch = frame.transform_nrrdpath(testing_frame)
     t_runtimepath = frame.transform_runtimepath(testing_frame)
     
+    core_fieldsOrig = apply.get_all_Fields(app)
+    core_fields = []
+    # limit core fields by the ones we can rep.
+    for e in core_fieldsOrig:
+        ty = e.fldty
+        #print "ty name:",ty.name,ty.space
+        dim =ty.dim
+        shapen = len(ty.shape)
+        if(dim==1):
+            return None
+        elif(shapen>1):
+            return None
+        core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length ))
+        
+
+    for e in core_fields:
+        ty = e.fldty
+        print "ty name:",ty.name,ty.space
+    
+    
+
+    counter.inc_cumulative(cnt)
     #print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
-    print (x)
+    #print (x)
     writetys(x)
     name_describe = app.name
 
@@ -131,13 +141,12 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     positions = get_positions(dimF, l_lpos, l_rpos, g_num_pos)
     # samples
     #create synthetic field data with diderot
-    flds = apply.get_all_Fields(app)
-    (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(flds, g_samples, coeffs, t_nrrdbranch, g_space)
+    (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(core_fields, g_samples, coeffs, t_nrrdbranch, g_space)
     #create diderot program with operator
     endall = time.time()
     startall=endall
     cleanup(g_output, g_p_Observ)
-    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new)
+    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields)
     if(isRun == None):
         if(isCompile == None):
             counter.inc_compile(cnt)
@@ -150,7 +159,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
             return 2
     else:
-        print "read observed data"
+        #print "read observed data"
         observed_data = observed(app, g_output)
         print "observed", observed_data
         if(check(app, observed_data)):
@@ -176,16 +185,15 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     counter.inc_cnt(cnt)
     if(mk_choice_range(testing_frame, cnt)):
-        counter.inc_cumulative(cnt)
-        
+        # counter.inc_cumulative(cnt)
         rtn = core2(app, coeffs, dimF, names, testing_frame, cnt)
-        if(rtn==None):
-            fnames = apply.get_all_FieldTys(app)
-            x = "_"+fnames +" |"+names
-            name_describe = app.name
-            g_branch = frame.get_branch(testing_frame)
-            counter.inc_NA(cnt)
-            rst_NA(names, x, name_describe, g_branch)
+            #if(rtn==None):
+            #fnames = apply.get_all_FieldTys(app)
+            #x = "_"+fnames +" |"+names
+            #name_describe = app.name
+            #g_branch = frame.get_branch(testing_frame)
+            #counter.inc_NA(cnt)
+            #rst_NA(names, x, name_describe, g_branch)
 
     else:
         return
@@ -373,7 +381,6 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
 
     #writeTime(9)
     # adjusting to accept 2|3 layers of operators
-    print "in get-tshape print ishape"
 
     opr_inner = oprs[0]
     opr_outer = oprs[1]
@@ -387,7 +394,7 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     xy = get_tshape(opr_outer,es,pde_test)
   
     (tf2, tshape2) =xy
-    print "tf2:", tf2, " tshape2:", tshape2
+    #print "tf2:", tf2, " tshape2:", tshape2
     #print "tf2", tf2
     if(tf2==true):# if it works continue
         #create app object

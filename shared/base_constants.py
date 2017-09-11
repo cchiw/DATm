@@ -33,6 +33,18 @@ h_mixcbt = "mixt"
 h_bs5 = "bspln5"
 
 
+elem_Lagrange = "Lagrange"
+elem_P = "P"
+elem_random ="r" #randomly select element
+
+mesh_UnitSquareMesh = "UnitSquareMesh"
+mesh_UnitCubeMesh = "UnitCubeMesh"
+
+fnspace_sca = "FunctionSpace"
+fnspace_vec = "VectorFunctionSpace"
+fnspace_ten = "TensorFunctionSpace"
+
+
 template_isPlain = "t_plain"
 template_isMipMax = "t_mipMax"
 template_isMipSum = "t_mipSum"

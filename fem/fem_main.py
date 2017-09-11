@@ -22,23 +22,20 @@ from fem_writeDiderot import readDiderot
 from fem_helper import *
 from fem_writeFire import writeFem
 
-
-def get_fieldinfo(app):
-    exps = apply.get_all_Fields(app)
-    #print "exps:",exps
-    #name of init file
+#core_fields: apply get all fields+space conversion
+def get_fieldinfo(app,core_fields):
     init_name = "fem/"
     num_fields = 0
-    n = len(exps)
+    n = len(core_fields)
     exp_fields = []
-    for e in (exps[:n-1]):
+    for e in (core_fields[:n-1]):
         if(fty.is_Field(e.fldty)):
             init_name = init_name+"f"
             num_fields +=1
             exp_fields.append(e)
         else:
             init_name =init_name+"t"
-    last = exps[n-1]
+    last = core_fields[n-1]
     if(fty.is_Field(last.fldty)):
         init_name = init_name+"f"
         num_fields +=1
@@ -102,7 +99,7 @@ def makeProgram(p_out, output, target, init_name):
 
 
 ################################ write annd run test program ################################
-def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new):
+def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields):
     template = c_template     # default/main template
     # note here(creating different program)
     if(test_new):
@@ -112,9 +109,9 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
     target ="ex1"
 
     # write new diderot program
-    readDiderot(p_out, app, pos,template)
+    readDiderot(p_out, app, pos,template,core_fields)
 
-    (init_name, num_fields, fields) = get_fieldinfo(app)
+    (init_name, num_fields, fields) = get_fieldinfo(app, core_fields)
     # output type
     oty = app.oty
     shape = oty.shape

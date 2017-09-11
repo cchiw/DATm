@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from base_constants import *
 adj = (opr_adj)
-
+pde_test  = c_pde_test
 class operator:
     def __init__(self, id, name, arity, symb, placement, limit, fieldop):
         self.id=id
@@ -62,13 +62,15 @@ id=id+len(op_reg)
 op_add = operator(id,"addition", 2,"+", place_middle, limit_none, False)
 op_subtract = operator(id+1,"subtraction", 2, "-", place_middle, limit_none, False)
 op_cross = operator(id+2,"cross_product", 2, u'×', place_middle, limit_none, False)
-op_outer = operator(id+3,"outer_product", 2, u'⊗', place_middle, limit_none, False)
-op_inner = operator(id+4,"inner_product", 2, u'•', place_middle, limit_none, False)
-op_scale = operator(id+5,"multiplication", 2, u'*', place_middle, limit_none, False)
-op_division = operator(id+6,"division", 2, u'/', place_middle, limit_small, False)
-op_modulate = operator(id+7,"modulate", 2, "modulate",  place_left, limit_none, False)
-op_doubledot= operator(id+8,"op_doubledot", 2, u':', place_middle, limit_none, False)
-op_binary = [op_add, op_subtract, op_cross, op_outer, op_inner, op_scale, op_division, op_modulate, op_doubledot]
+op_scale = operator(id+3,"multiplication", 2, u'*', place_middle, limit_none, False)
+op_division = operator(id+4,"division", 2, u'/', place_middle, limit_small, False)
+op_modulate = operator(id+5,"modulate", 2, "modulate",  place_left, limit_none, False)
+op_doubledot= operator(id+6,"op_doubledot", 2, u':', place_middle, limit_none, False)
+op_outer = operator(id+7,"outer_product", 2, u'⊗', place_middle, limit_none, False)
+op_inner = operator(id+8,"inner_product", 2, u'•', place_middle, limit_none, False)
+op_binary = [op_add, op_subtract, op_cross, op_scale, op_division, op_modulate, op_doubledot]
+if(not pde_test):
+    op_binary =op_binary+[op_outer, op_inner]
 id=id+len(op_binary)
 #----------------- trig -----------------
 op_cosine = operator(id, "cosine", 1, u'cos', place_left, limit_none, True)
@@ -100,12 +102,14 @@ op_hessian = operator(id+1, "hessian", 1, u'∇⊗∇', place_left, limit_none, 
 op_jacob= operator(id+2, "jacob", 1, u'∇⊗', place_left, limit_none, True)
 op_divergence = operator(id+3, "div", 1, u'∇•', place_left, limit_none, True)
 op_curl= operator(id+4, "curl", 1, u'∇×',place_left, limit_none, True)
-op_diff =[op_divergence, op_curl, op_jacob]
+op_diff =[op_gradient, op_hessian]
+if(not pde_test):
+    op_diff = op_diff+[op_jacob,op_divergence,op_curl]
 id=id+len(op_diff)
 
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_reg+op_binary+op_trig+op_new+[op_gradient, op_hessian, op_jacob]
+op_all = op_reg+op_binary+op_trig+op_new+op_diff
 id=id+len(op_all)
 #------------------------------ operators not included -----------------------------------------------------
 

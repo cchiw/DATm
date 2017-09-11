@@ -20,39 +20,8 @@ from base_var_ty import *
 from base_observed import observed
 
 
-def ty_toMesh(fldty):
-    dim =  fldty.dim
-    if(fldty.dim == 2):
-        return "UnitSquareMesh(2,2)"
-    elif(fldty.dim== 3):
-        return "UnitCubeMesh(2,2,2)"
-    else:
-        raise Exception ("unsupported mesh")
-
-def ty_toK():
-    k_order = "2"
-    return k_order
-
-def ty_toElement():
-    return "Lagrange"
 
 
-def ty_fnSpaceParts(fldty):
-    dim =  fldty.dim
-    mesh = ty_toMesh(fldty)
-    element = ty_toElement()
-    k_order = ty_toK()
-    return (mesh, element, k_order)
-
-def ty_fnSpace(fldty, exp, isDiderot):
-    if(fty.is_Scalar(fldty)):
-        return "FunctionSpace("+exp+")"
-    elif(fty.is_Vector(fldty)):
-        n = fty.get_vecLength(fldty)
-        if(isDiderot):
-            return "TensorFunctionSpace("+exp+",{"+str(n)+"})"
-        else:
-            return "VectorFunctionSpace("+exp+", dim="+str(n)+")"
 
 def ty_fnSpace_forFire(fldty):
     (mesh, element, k_order) = ty_fnSpaceParts(fldty)

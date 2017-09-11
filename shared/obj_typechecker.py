@@ -45,7 +45,7 @@ def applyUnaryOp(op1,ityps):
             return err()
     # differentiation was used, k has a limit
     def mkTyp_deductk(k_limit, shape):
-        print "inside mktyp deduct k "
+        #print "inside mktyp deduct k "
         if(k<k_limit or len(shape)>3):
              return err()
         else:
@@ -92,7 +92,7 @@ def applyUnaryOp(op1,ityps):
         else:
             return err()
     elif(fty.is_Scalar(ityp1)):
-        print "tshape-scalar"
+        #print "tshape-scalar"
         if(op_sqrt==op1):
             return same()
         elif(op_cosine==op1) or (op_sine==op1)or (op_tangent==op1) or (op_acosine==op1) or (op_asine==op1)or (op_atangent==op1):
@@ -110,7 +110,7 @@ def applyUnaryOp(op1,ityps):
             else:
                 return mkTyp_deductk(1, [dim])
         elif (op_hessian==op1):
-            print "hessian mark"
+            #print "hessian mark"
             if(not fty.is_Field(ityp1)):
                 return err()
             if (dim==1):
@@ -201,7 +201,7 @@ def applyBinaryOp(op1,ityps):
 
     ##print "---------------------  applyBinaryOp ---------"
 
-    print "---------------------  applyBinaryOp ---------"
+#print "---------------------  applyBinaryOp ---------"
 
     name =  "op1 "+op1.name
     ityp1 = ityps[0]
@@ -231,7 +231,7 @@ def applyBinaryOp(op1,ityps):
             return err()
         else:
             (tf, rty1) = isShapeOk(shape, dim)
-            print tf, rty1
+            #print tf, rty1
             if(tf):
                 rtn1 = fty.convertTySpace(rty1, k, space)
 
@@ -251,14 +251,14 @@ def applyBinaryOp(op1,ityps):
         else:
             return err()
     elif(op_cross==op1):
-        print "here found cross"
+        
         if(fty.is_Vector(ityp1) and fty.is_Vector(ityp2)):
             n1 = fty.get_vecLength(ityp1)
             n2 = fty.get_vecLength(ityp2)
             if(not (n1==n2)):
                 return err()
             if(fty.is_Field(fldty)):
-                print "found a field"
+                #print "found a field"
                 if ((dim==2) and (n1==2)):
                     return mkTyp([])
                 elif((dim==3) and (n1==3)):
@@ -266,7 +266,7 @@ def applyBinaryOp(op1,ityps):
                 else:
                     return err()
             else:
-                print "found a tensor"
+
                 if(n1==2):
                     return mkTyp([])
                 elif((n1==3)):
@@ -298,14 +298,12 @@ def applyBinaryOp(op1,ityps):
             else:
                 return err()
     else:
-
-        print "made it to else"
         # rest of operators are non scalar
         if(fty.is_Scalar(ityp1) or fty.is_Scalar(ityp2)):
             if(op_scale==op1):
                 return mkTyp(ashape+bshape)
             elif(op_max.id==op1.id or op_min.id==op1.id):
-                print "inside max"
+
                 if(fty.is_ScalarField(ityp1) and fty.is_ScalarField(ityp2)):
                     return mkTyp ([])
                 else:
@@ -408,8 +406,8 @@ def get_tshape(opr1, ishape, pde_test):
         return (true, ty_mat3x3F_d3)
     elif(arity==1):
         (a,b) =  applyUnaryOp(opr1, ishape)
-        if(a):
-            print fty.toDiderot(b,pde_test)
+        #if(a):
+            #print fty.toDiderot(b,pde_test)
         return (a,b)
     elif(arity==2):
         print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name

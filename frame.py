@@ -5,7 +5,7 @@ from base_constants import *
 
 s_layer = 2
 
-s_random_range = 0
+s_random_range = 3
 from obj_frame import *
 
 cpath =  "/Users/chariseechiw/diderot/"
@@ -17,21 +17,26 @@ cpath =  "/Users/chariseechiw/diderot/"
 
 name = "vis branch"
 # branch information
-s_branch  = branch_vis15
+#s_branch  = branch_vis15
 #s_branch  = branch_ein16
-#s_branch  = branch_other
+s_branch  = branch_other
 #s_branch = branch_chiw17
 
 s_revision = "r current"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
+
 # order of coefficients
-#s_coeff_style = coeff_quadratic
-
-s_coeff_style = coeff_cubic
 #s_coeff_style = coeff_linear
-#s_coeff_style = coeff_cubic
+#s_coeff_style = coeff_quadratic
+s_coeff_style = coeff_cubic
 
+
+#s_element = elem_Lagrange
+s_element = elem_P
+#s_element = elem_random
+
+s_length = 4
 # kernel
 #s_krn = h_bs5
 s_krn = h_hex
@@ -44,17 +49,15 @@ s_krn = h_hex
 #ty_T ="all tensors"
 #ty_All ="mix of tensors and fields"
 # what type of arguments do we want to test?
-s_in_tys  = ty_All
-#s_in_tys  = ty_F
+#s_in_tys  = ty_All
+s_in_tys  = ty_F
 #s_in_tys  = ty_T
 
 # op1(t1) -> t2, what is the type of t2?
 
 #s_rst_ty  = ty_All  #ty_F #ty_T
 s_rst_ty  =  ty_F #ty_T
-#s_rst_ty  = ty_All  #ty_F #ty_T
-#s_rst_ty  =  ty_F #ty_T
-
+#s_rst_ty  =  ty_T
 
 
 #-------------- randomize ----------------------
@@ -93,32 +96,14 @@ def mk_default(name, s_coeff_style, krn):
     s_space = False
     s_layer = 2
     s_template = template_isPlain
-    t_frame = frame(name, s_branch, "current", s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, krn, s_random_range,s_random_limit, s_space, s_layer,s_template)
+    t_frame = frame(name, s_branch, "current", s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, krn, s_random_range,s_random_limit, s_space, s_layer,s_template,s_element,s_length)
     return t_frame
 
 ########## frames ######
-t_new = frame(name, s_branch, s_revision, s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, s_krn,s_random_range,s_random_limit, s_space, s_layer,template_isPlain)
+t_new = frame(name, s_branch, s_revision, s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, s_krn,s_random_range,s_random_limit, s_space, s_layer,template_isPlain,s_element,s_length)
 
 
-t_hex_cub = mk_default("t_hex_cub ", coeff_cubic, h_hex)
-t_hex_quad = mk_default("t_hex_quad", coeff_quadratic, h_hex)
-t_hex_lin = mk_default("t_hex_quad", coeff_linear, h_hex)
-
-
-t_bs3_cub = mk_default("bspln3", coeff_cubic, h_bs3)
-t_bs3_quad = mk_default("bspln3", coeff_quadratic, h_bs3)
-t_bs3_lin = mk_default("bspln3", coeff_quadratic, h_bs3)
-
-
-t_tent_cub = mk_default("bspln3", coeff_cubic, h_tent)
-t_tent_quad = mk_default("bspln3", coeff_quadratic , h_tent)
-t_tent_lin = mk_default("bspln3", coeff_linear, h_tent)
-
-t_ctmr_cub = mk_default("bspln3", coeff_cubic,  h_ctmr)
-t_ctmr_quad = mk_default("bspln3", coeff_quadratic,  h_ctmr)
-t_ctmr_lin = mk_default("bspln3", coeff_linear ,  h_ctmr)
-
-frames = [t_new, t_hex_cub, t_hex_quad, t_hex_lin, t_bs3_cub, t_bs3_quad, t_bs3_lin, t_ctmr_lin, t_ctmr_quad, t_ctmr_cub, t_tent_lin, t_tent_quad , t_tent_cub]
+frames = [t_new]
 
 
 def get_testing_frame(n_frame):
@@ -136,4 +121,4 @@ def set_template(template):
         t= template_isMipSum
     elif (template==3):
         t= template_isIso
-    return frame(name, s_branch, s_revision, s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, s_krn,s_random_range,s_random_limit, s_space, s_layer,t)
+    return frame(name, s_branch, s_revision, s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, s_krn,s_random_range,s_random_limit, s_space, s_layer,t,s_element,s_length)

@@ -285,7 +285,7 @@ def rst_compile(names, x, extraname,  branch,  positions, PARAMS):
     labl = dir+"__"+names
     x = extraname+x
 
-    writeToRst(labl, None, None,  positions, PARAMS, branch, x)
+    #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 
 # does not execute
@@ -294,7 +294,7 @@ def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
     dir = "r"
     write_rst(names, x, extraname, rtn1)
     labl = dir+"__"+names
-    writeToRst(labl, None, None,  positions, PARAMS, branch, x)
+    #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 #raise Exception( "caught did not compile")
 # not available
@@ -315,7 +315,7 @@ def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  pos
     labl = dir+"__"+names
     write_rst(names, x, extraname, "rtn:terrible")
 
-    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
+    #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
 def rst_good(names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "p"

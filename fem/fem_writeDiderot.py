@@ -13,13 +13,13 @@ from obj_apply import *
 from obj_ty import *
 from obj_operator import *
 from obj_field import *
+from obj_space import *
 from base_write import * 
 from base_writeDiderot import *
 from base_constants import *
 
 from nc_writeDiderot import nc_compileandRun, nc_setLength
 
-from fem_helper import *
 
 
 #strings in diderot template
@@ -54,11 +54,9 @@ def fem_fieldShape(f, fldty):
 #k:continuity
 #itypes: types for input field
 #inputlist: name for input data
-def fem_inShape(f, appC):
-    exps = apply.get_all_Fields(appC)
-    #app = apply.get_root_app(appC)
+def fem_inShape(f, core_fields):
     i=0
-    for exp in exps:
+    for exp in core_fields:
         #print "current fld",field.toStr(exp)
         dim = field.get_dim(exp)
         if (field.get_isField(exp)):
@@ -69,7 +67,7 @@ def fem_inShape(f, appC):
             
             foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
             foo = foo+ "\n //"+field.toStr(exp)
-            fnspace = ty_toSpace_forDiderot(exp.fldty)
+            fnspace = space.ty_toSpace_forDiderot(exp.fldty.space)
             foo = foo+"\n fnspace "+V+" = "+fnspace +";"
         
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
@@ -140,7 +138,7 @@ def cte_update_method(f, pos, app):
 #itype: shape of fields
 #otype: output tensor
 #op1: unary operation involved
-def readDiderot(p_out, app, pos, template):
+def readDiderot(p_out, app, pos, template,core_fields):
     #read diderot template
     # FIXME hardcode different fem limit here
     ftemplate = open(template, 'r')
@@ -156,7 +154,7 @@ def readDiderot(p_out, app, pos, template):
         a0 = re.search(foo_in, line)
         if a0:
             #replace field input line
-            fem_inShape(f,app)
+            fem_inShape(f,core_fields)
             continue
         # is it output tensor line?
         b0 = re.search(foo_outTen, line)
