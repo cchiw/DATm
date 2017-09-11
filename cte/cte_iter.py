@@ -64,14 +64,12 @@ def mk_choice_limit(testing_frame, cnt):
 ##################################################################################################
 def embed_base_specific_ex(ex, tshape1, ishape0, oprs, tys, testing_frame, cnt):
     # adjusting to accept 2|3 layers of operators
-    print "in embed_base_specific_ex, tys",tys
-    for j in ishape0:
-        print "-ishape -", j.name
+
     opr_outer = oprs[1]
 
     #writeCumulative(cnt)
     def get_fty():
-        #print "-->get_fty  ex_ty2", ex_ty2
+       
         arity = opr_outer.arity
         g_krn = frame.get_krn(testing_frame)
         id = len(ishape0)-1
@@ -98,8 +96,7 @@ def embed_base_specific_ex(ex, tshape1, ishape0, oprs, tys, testing_frame, cnt):
 # already given type for extra argument
 # transforms that type to kernel specific type
 def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, testing_frame, cnt):
-    print "inside embed_giventy2_specific_ex"
-    print "tys_num", tys_num
+
     #writeTime(8)
     fty=[]
     g_krn = frame.get_krn(testing_frame)
@@ -136,7 +133,7 @@ def oprToEx(opr_inner, testing_frame, cnt):
 #iterates over extra type
 #inter_num, and iter_ty2
 def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
-    print "embed base iter ty2"
+
     #writeTime(5)
     opr_inner = oprs[0]
     opr_outer = oprs[1]
@@ -185,7 +182,7 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
 #iterating ex_outer from 0...l
 # iterate over outer operator and extra type
 def embed_base_iter_outer2(ex, name, ishape, opr_inner, t_num, testing_frame, cnt):
-    print "embed iter outer 2"
+
     # set local counters to zero
     counter.zero_locals(cnt)
     n_outer = getN()
@@ -214,7 +211,7 @@ def embed_base_iter_outer2(ex, name, ishape, opr_inner, t_num, testing_frame, cn
 
 # same as embed_base_iter_ty1, except already given extra type (t_ty2)
 def embed_base_iter_ty2_wihty2(ex, name, ishape, oprs, tys, testing_frame, cnt):
-    print "embed base-iter ty2-with2", tys
+
     # adjusting to accept 2|3 layers of operators
     opr_inner = oprs[0]
     opr_outer = oprs[1]

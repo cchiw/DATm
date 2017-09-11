@@ -160,8 +160,8 @@ def rtn_rhs(f, op1, typ_inner, e, i):
     # next arguments are [e, fi, fi+1]
     f1 = fieldName(i)
     f2 = fieldName(i+1)
-    print "op1:", op1.name, "typ-inner", typ_inner.name
-    print "e: ", e, " i:", i
+    #print "op1:", op1.name, "typ-inner", typ_inner.name
+    #print "e: ", e, " i:", i
     if (arity==1):
         #if(op1.placement==place_right):
         #    write_shape("\t", f, typ_inner, f1, e)
@@ -200,14 +200,14 @@ def gotop1(f, app, pre, lhs):
 ################## apply 2 layers of operators ##################
 #write operation between fields
 def gotop2(f, app_outer, pre, lhs):
-    print "gotop2"
+
     opr_outer=app_outer.opr
     app_inner=apply.get_unary(app_outer)
     opr_inner=app_inner.opr
     # type of output of each app
     typ_outer = app_outer.oty
     typ_inner = app_inner.oty
-    print "typ_outer", typ_outer.name
+
     # names of lhs variables
     f0 = fieldName(0)
     #first operator
@@ -302,7 +302,7 @@ def innerF(app, i):
     exp0 = fieldName(i)
     return  innerL(app, exp0, i+1)
 def get_args2(app, app_inner, i):
-    print "get_args 2", i
+
     opr_inner =app_inner.opr
     exp0 = fieldName(i)
     exp1 = fieldName(i+1)
@@ -323,7 +323,7 @@ def get_args2(app, app_inner, i):
             third = app.lhs.lhs
             return innerF(third, i)
 def get_args3(app):
-    print "inside ger args 3"
+ 
     if(app.opr.limit==limit_small):# op_division.id):
         if((app.lhs).isrootlhs):
             #2 layers
@@ -409,7 +409,7 @@ def check_conditional(f, ff, app):
 ##################################### inside field test  #####################################
 #probes field at variable position
 def check_inside(f, ff, app, pde_test):
-    print "inside check inside"
+
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";"
     exps = apply.get_all_Fields(app)
@@ -543,7 +543,7 @@ def check_inside(f, ff, app, pde_test):
         # inside if
         # check none inside test
     if(app.isrootlhs):
-        print "inside if"
+
         foo = wrap(outerif,set, oty)
         f.write(foo.encode('utf8'))
     else:
@@ -560,7 +560,7 @@ def check_inside(f, ff, app, pde_test):
 # set positions variables
 # index field at position
 def create_position(f,  dim):
-    print "index at positions"
+   
     i=0
     foo="\t\t"
     if(dim==1):
@@ -573,7 +573,7 @@ def create_position(f,  dim):
 
 
 def base_index_field_at_positions(f, pos, dim):
-    print "index at positions"
+
     i=0
     foo="\t\t"
     if(dim==1):

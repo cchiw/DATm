@@ -68,7 +68,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #writeTime(100,"\n\n\n\n")
     #startall = time.time()
     #writeTime(125, str(startall))
-    print "############################################inside central############################################"
+    #print "############################################inside central############################################"
 
     
     # get global variables from testing framework
@@ -88,7 +88,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
-    print (x)
+    #print (x)
     writetys(x)
     name_describe = app.name
 
@@ -299,8 +299,7 @@ def create_apply2(ishape, tshape1, tshape2, opr_inner, opr_outer,  testing_frame
     g_krn = frame.get_krn(testing_frame)
     g_template = frame.get_template(testing_frame)
     (app, coeffs) = mkApply_twice(opr_inner,opr_outer, ishape, g_inputfile, tshape1, tshape2, g_coeff_style, g_ucoeff, g_krn, g_template )
-    print "___________________", app.oty.name
-    print "___________________", app.lhs.oty.name
+
     return (app, coeffs)
 
 
@@ -325,10 +324,7 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, 
     # third layer operator, and second type it is applied to (incase it is a binary)
     tmpshape = []
     s = ""
-    print "opr_outer2", opr_outer2.name
-    print "opr_outer1", opr_outer1.name
-    print "opr_inner:", opr_inner.name
-    print "tys", tys
+
     if(opr_outer2.arity==2):
         ty3 = get_all_extra(testing_frame)
         [i] = newtys
@@ -348,9 +344,7 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, 
     ishape_outer2 = [tshape2] + tmpshape
     ishape_all = ishape + tmpshape
     ishape_all = convert_fields(ishape_all, testing_frame)
-    print "trying to match opr_outer2", opr_outer2.name ,"with ",tshape2.name
-    for j in tmpshape:
-        print "-- shape", j.name
+
     # ok now back to regular programming
     (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2,pde_test)
     if(tf3==true):#
@@ -382,7 +376,7 @@ def iter_ty3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
 
 # iterating over third operator
 def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt):
-    print "gettshap3-iterop3"
+
     for opr_outer2 in op_all:
         # next function will type check it and get type
         iter_ty3(app, coeffs, ishape, tshape2, oprs+[opr_outer2], tys, testing_frame, cnt)
@@ -391,24 +385,15 @@ def get_tshape3_iterop3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, 
 
 # checks to see if specific ex works
 def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
-    
-    print "inside get_tshape 2"
-    print "tys:", tys
-
     #writeTime(9)
     # adjusting to accept 2|3 layers of operators
     #print "in get-tshape print ishape"
-    for j in ishape:
-        print "-ishape -", j.name
-    print "in get tshape1 ",tshape1.name
     opr_inner = oprs[0]
     opr_outer = oprs[1]
 
     # get value of k from kernels
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
-    #print "tshape1", tshape1
-    #print "fty", fty
     es = [tshape1]+fty
     xy = get_tshape(opr_outer,es,pde_test)
   

@@ -82,7 +82,7 @@ def shapeToSpace(shape):
     else:
         return fnspace_ten
 def coeff_tok(g_coeff_style):
-    print "g"
+
     if(g_coeff_style==coeff_linear):
         return 1
     elif(g_coeff_style ==coeff_quadratic):

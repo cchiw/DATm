@@ -22,7 +22,7 @@ class tty:
         p = 1
         for i in self.shape:
             p = p*i
-        print self.name+"psize", p 
+
         return p
     def isSca(self):
         s = self.shape
@@ -134,7 +134,7 @@ class fty:
         return (a.id==b.id)
     #string for diderot program
     def toDiderot(self, pde_test):
-        print "in to diderot",self.name,"-",self.space
+        
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
@@ -428,9 +428,9 @@ l_all1 =  l_all_T1+l_all_F1
 #print " l_all_T1: ",len(l_all_T1)," l_all_F1: ",len(l_all_F1)," l_all1: ",len(l_all1)
 
 def print_tys(str, es):
-    print str 
+    print (str )
     for i in es:
-        print i.name
+        print (i.name)
 
 
 # check equal dim

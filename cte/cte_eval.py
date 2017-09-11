@@ -22,14 +22,6 @@ def simple_apply(c_layer, app, pos):
     if (arity ==1):
         b = unary(app)
         rtn = probeField(app.oty, pos, b)
-        #print "after applying: ",app.opr.name," rtn:", rtn
-        #tmp = apply(app.name, op_norm, app.lhs, app.rhs, app.third, ty_scalarF_d3, app.isrootlhs, app.isrootrhs)
-        # rtn = probeField(tmp.oty, pos, unary(tmp))
-        #print "after applying: ",tmp.opr.name," rtn:", rtn
-        #tmp = apply(app.name, op_copy, app.lhs, app.rhs, app.third, app.oty, app.isrootlhs, app.isrootrhs)
-        #rtn = probeField(tmp.oty, pos, unary(tmp))
-        #print "after applying: ",tmp.opr.name," rtn:", rtn
-        
         return (oty, b)
     elif (arity ==2):
         b = binary(app)
@@ -96,7 +88,7 @@ def eval(app, pos):
 ##############################################################################
 ######################## get max or min
 def getMaxOrMin(opr, lhs, rhs):
-    print "\n\t **** result from probing field: \n\tlhs: ",lhs, "\n\trhs:",rhs
+
     rtn = []
     fncall = Max
     if(opr.id==op_max.id):
@@ -119,7 +111,6 @@ def applyProbe(exp, app, pos):
     appL = apply("tmp", app.opr, exp, app.rhs, app.third, app.oty, true, true)
     (otyp1L, ortnL) = simple_apply(0, appL, pos)
     rtnL = probeField(otyp1L, pos, ortnL)
-    #print "\n\n\nto apply operator:", app.opr.name, " on \n\t", exp.data, "\n\t",app.rhs.data,"\n\tresult:", ortnL, "\n\tprobed:", rtnL
     
     return rtnL
 
@@ -147,7 +138,7 @@ def getGradMax(opr, app, pos, lhs, rhs, e3,e4):
                 rtn.append(ar)
             else:
                 rtn.append(al)
-    print "rtn:", rtn
+
     return rtn
 
 
@@ -169,8 +160,8 @@ def getMaxTwice(op1,op2,e0, e1, e2):
 def multipleProbe(app, pos):
     lhs = probeField(app.oty, pos, app.lhs.data)
     rhs = probeField(app.oty, pos, app.rhs.data)
-    print "\n\nresult of multiple probe \n\t lhs exp:", app.lhs.data, "\n\tlhs:",lhs
-    print "\n\nresult of multiple probe \n\t rhs:", app.rhs.data, "\n\trhs:",rhs
+    #print "\n\nresult of multiple probe \n\t lhs exp:", app.lhs.data, "\n\tlhs:",lhs
+    #print "\n\nresult of multiple probe \n\t rhs:", app.rhs.data, "\n\trhs:",rhs
     return (lhs, rhs)
 # ***************************  main  ***************************
 # evaluate an applicaiton at positions. returns the resulting expression.
@@ -203,7 +194,6 @@ def eval(app, pos):
     elif((app.lhs.isrootlhs) and ((app.lhs.opr.id == op_max.id) or (app.lhs.opr.id == op_min.id))):
         # layer is 2
         # inner layer is a max or min
-            print "layer 2 with inner layer being max/min"
             shift = app.lhs
             (e1, e2) = multipleProbe(shift, pos)
             rtn = getGradMax(app.lhs.opr, app, pos, e1,e2, shift.lhs, shift.rhs)

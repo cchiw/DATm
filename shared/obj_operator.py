@@ -88,30 +88,23 @@ op_tangent = operator(id+6, "tangent", 1, u'tan', place_left, limit_none, True)
 op_trig=[ op_cosine, op_sine, op_acosine, op_asine, op_sqrt]#,op_atangent, op_tangent]
 id=id+len(op_trig)
 
-#----------------- new features that work on branch -----------------
-op_max = operator(id,"max", 2,"maxF", place_left, limit_none, True)
-op_min = operator(id+1,"min", 2,"minF", place_left, limit_none, True)
-op_concat2 = operator(id+2,"concat2", 2,"concat", place_left, limit_none, True)
-op_new = [op_max, op_min, op_concat2]
-id=id+len(op_new)
-
 #----------------- differentiation -----------------
 #differentiation
 op_gradient = operator(id, "grad", 1, u'∇', place_left, limit_none, True)
 op_hessian = operator(id+1, "hessian", 1, u'∇⊗∇', place_left, limit_none, True)
-op_jacob= operator(id+2, "jacob", 1, u'∇⊗', place_left, limit_none, True)
-op_divergence = operator(id+3, "div", 1, u'∇•', place_left, limit_none, True)
-op_curl= operator(id+4, "curl", 1, u'∇×',place_left, limit_none, True)
 op_diff =[op_gradient, op_hessian]
-if(not pde_test):
-    op_diff = op_diff+[op_jacob,op_divergence,op_curl]
 id=id+len(op_diff)
 
-#----------------- list of all operators -----------------
-# all the operators
-op_all = op_reg+op_binary+op_trig+op_new+op_diff
-id=id+len(op_all)
-#------------------------------ operators not included -----------------------------------------------------
+#----------------- new features that work on branch -----------------
+op_max = operator(id,"max", 2,"maxF", place_left, limit_none, True)
+op_min = operator(id+1,"min", 2,"minF", place_left, limit_none, True)
+op_concat2 = operator(id+2,"concat2", 2,"concat", place_left, limit_none, True)
+op_zeros_add22 = operator(id+3, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
+op_zeros_scale3 = operator(id+4, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
+op_zeros_outer2 = operator(id+5, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
+op_new1 = [op_max, op_min, op_concat2,op_zeros_add22, op_zeros_scale3, op_zeros_outer2]
+id=id+len(op_new1)
+
 
 #----------------- slicing -----------------
 op_slicem0 = operator(id,"slicem0", 1, u'[1,:]', place_right, limit_none, False)
@@ -122,14 +115,27 @@ op_slicet0 = operator(id+4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, Fa
 op_slicet1 = operator(id+5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
 op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
 id=id+len(op_slice)
-#----------------- new  operators -----------------
+
+
+### new features that have yet to be compoleted on fem.
 op_comp = operator(id,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
-op_zeros_add22 = operator(id+1, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
-# op_zeros_scale3: scalar-> [3,3]
-op_zeros_scale3 = operator(id+2, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
-op_zeros_outer2 = operator(id+3, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
-op_specialized = [op_comp, op_zeros_add22, op_zeros_scale3, op_zeros_outer2, op_concat2]
-id=id+len(op_specialized)
+op_jacob= operator(id+1, "jacob", 1, u'∇⊗', place_left, limit_none, True)
+op_divergence = operator(id+2, "div", 1, u'∇•', place_left, limit_none, True)
+op_curl= operator(id+3, "curl", 1, u'∇×',place_left, limit_none, True)
+op_new2 = [op_comp, op_jacob,op_divergence,op_curl]
+id=id+len(op_new2)
+
+
+
+#----------------- list of all operators -----------------
+# all the operators
+op_all = op_reg+op_binary+op_trig+op_diff+op_new1
+if(not pde_test):
+    op_all=op_all+op_new2+op_slice
+
+
+#------------------------------ operators not included -----------------------------------------------------
+
 #----------------- embedded  operators -----------------
 #### more than one operator or unsupported operation
 op_probe= operator(id,"probe", 1,"(pos)", place_right, limit_none, True)

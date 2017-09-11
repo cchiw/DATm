@@ -410,9 +410,9 @@ def get_tshape(opr1, ishape, pde_test):
             #print fty.toDiderot(b,pde_test)
         return (a,b)
     elif(arity==2):
-        print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
+        #print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
         (m,n) = applyBinaryOp(opr1, ishape)
-        print m, "->", n
+        #print m, "->", n
         return (m,n)
     elif(arity==3):
         return applyThirdOp(opr1, ishape)

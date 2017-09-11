@@ -2,7 +2,7 @@ from base_constants import *
 
 class frame:
     def __init__(self, name, branch, revision, precision, path, coeff_style, in_tys, rst_ty, ucoeff_range, lpos, upos, num_pos, samples, krn, random_range, random_limit, space, layer, template, element,length):
-        print "coeff_style",coeff_style
+
         self.name = name
         # branch information
         self.branch = branch
