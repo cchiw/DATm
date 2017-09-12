@@ -108,6 +108,9 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     core_fieldsOrig = apply.get_all_Fields(app)
     core_fields = []
     # limit core fields by the ones we can rep.
+    if(not (fty.is_Field(app.oty))):
+        return None
+    
     for e in core_fieldsOrig:
         ty = e.fldty
         #print "ty name:",ty.name,ty.space
@@ -117,6 +120,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             return None
         elif(shapen>1):
             return None
+
         core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length ))
         
 

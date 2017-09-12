@@ -8,6 +8,8 @@ nonefield_dim = 0
 
 from base_constants import *
 from obj_space import *
+
+pde_test = c_pde_test 
 #tensor types
 class tty:
     def __init__(self, id, name, shape):
@@ -133,12 +135,12 @@ class fty:
     def isEq_id(a,b):
         return (a.id==b.id)
     #string for diderot program
-    def toDiderot(self, pde_test):
+    def toDiderot(self, pde_test2):
         
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            if(fty.is_OField(self) or pde_test):
+            if(pde_test):
                 return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
             else:
                 return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
@@ -166,7 +168,9 @@ class fty:
     def convertToTensor(self):
         return fty(200, "T", nonefield_dim, self.shape, self.tensorType, None, const.space)
     def addSpace(self,g_element,g_ucoeff, g_length):
-        tspace = getSpace(self,g_element,g_ucoeff, g_length )
+        tspace = None
+        if(not (self.dim==nonefield_dim)):
+            tspace = getSpace(self,g_element,g_ucoeff, g_length )
         return fty(self.id, self.name, self.dim, self.shape, self.tensorType, self.k, tspace)
 
 
