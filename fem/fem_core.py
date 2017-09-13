@@ -86,7 +86,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
-    print "############################################inside central############################################"
+    print ("############################################inside central############################################")
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
     g_upos = frame.get_upos(testing_frame)
