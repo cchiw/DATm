@@ -24,6 +24,7 @@ class space:
         shape =  self.shape
         shapen = len(shape)
         fnspace = self.fnspace
+        mesh = self.mesh
         center = ""
         if(shapen==0):
             fnspace = fnspace_sca
@@ -46,7 +47,7 @@ class space:
             else:
 
                 center = exp+", dim="+nms
-        return fnspace+"("+center+")"
+        return  fnspace+"("+center+")" + "\n"
 
     def ty_fnSpace_forFire(self):
         mesh = self.mesh
