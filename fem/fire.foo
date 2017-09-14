@@ -25,7 +25,7 @@ import numpy.ctypeslib as npct
 # init diderot program
 # single field
 def init1(name, f,target):
-    init_file = target+'_init.so'
+    init_file = "/home/teodoro/gitcode/DATm/" + target+'_init.so'
     _call = ctypes.CDLL(init_file)
     type = 1
     data = organizeData(f)
@@ -34,7 +34,7 @@ def init1(name, f,target):
     return(result)
 
 def init1Sample(name, f,target,res, stepSize, limit):
-    init_file = target+'_init.so'
+    init_file = "/home/teodoro/gitcode/DATm/" + target+'_init.so'
     _call = ctypes.CDLL(init_file)
     type = 1
     data = organizeData(f)
