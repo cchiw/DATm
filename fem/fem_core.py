@@ -31,7 +31,7 @@ sys.path.insert(0, 'cte/')
 from cte_eval import eval
 
 pde_test=true # test pdes in femprime branche
-test_new = false # new type of test
+test_new = true # new type of test
 
 def cleanup(output, p_out):
     os.system("rm ex1.o")

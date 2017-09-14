@@ -47,7 +47,8 @@ def get_fieldinfo(app,core_fields):
 
 # create firedrake field
 def useFem(p_out, shape, pos, output, target,dim, res, test_new):
-    
+    print("About to call Python")
+    print(p_out+".py")
     os.system("python "+p_out+".py")
     s13 = "cp "+p_out+".py" +output+".py"
     es = [s13]
@@ -90,16 +91,18 @@ def makeProgram(p_out, output, target, init_name):
     
     es = [s0, s1, s2, s3, s4, s5, s6,s10, s11, s12]
     for i in es:
+        print(i)
         os.system(i)
     es = [s10, s11, s12]
     for i in es:
+        print(i)
         os.system(i)
 # read output of firedrake program
 
 
 
 ################################ write annd run test program ################################
-def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields):
+def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields, max_coords=[0.0,0.0]):
     template = c_template     # default/main template
     # note here(creating different program)
     if(test_new):
@@ -121,18 +124,21 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
     if(test_new):
         initPyname = initPyname+"Sample"
         init_name = init_name+"Sample"
-    writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res)
+    max_test_cord= [0.0,0.0]
+    writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max_test_cord)
     #run firedrake program and cvt to txt file
     makeProgram(p_out, output, target, init_name)
 
     # check if the program was executed
     if(os.path.exists(target+".o") and os.path.exists(target+"_init.so")):
         shape = app.oty.shape
+        print("The dot o files exist.")
   
         useFem(p_out, shape, pos, output, target,dim, res, test_new)
         print "pos:",pos
-        if(os.path.exists(output+".txt")):
-           return (1,1, startall)
+        if (os.path.exists(output+".txt")):
+            print("Created a text file")
+            return (1,1, startall)
         else:
            return (1, None, startall)
     else:
