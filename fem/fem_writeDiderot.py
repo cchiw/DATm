@@ -116,7 +116,7 @@ def fem_limits(f, dim):
         foo = "tensor [2] pos = [i,j]*stepSize;"
     elif(dim==3):
         foo = "tensor [3] pos = [i,j,k]*stepSize;"
-    foo =foo+ "\n\t\t tensor [] current = inst(div(grad(G),pos);"
+    foo =foo+ "\n\t\t tensor [] current = inst(∇•(∇G),pos);"
     foo = foo+"\n\t\t if(current > limit){out= 1;}"
     foo = foo+"\n\t\t else{out= 0;}"
     f.write(foo.encode('utf8'))
