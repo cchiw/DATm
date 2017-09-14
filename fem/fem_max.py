@@ -1,7 +1,8 @@
 
 
 def max_test(test):
-    solve_string = """
+    if test == "biharmonic":
+        solve_string = """
 # Define Dirichlet boundary
 def inside(x, on_boundary):
     return on_boundary
