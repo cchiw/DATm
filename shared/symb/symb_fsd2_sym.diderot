@@ -1,3 +1,4 @@
+input int which;
 input int sz0 ("# samples on faster axis") = 101;
 input int sz1 ("# samples on slower axis") = 100;
 input real width ("approx width of world-space region sampled") = 1;
@@ -21,8 +22,14 @@ vec2 orig = -(edge0*(sz0-1) + edge1*(sz1-1))/2 + off;
 
 
 function real func(vec2 pos) {
-
-return 1 - pos•pos;
+   real ret = 0;
+    if(which==0){
+        ret= 1 - pos•pos;
+    }
+    else if(which==1){
+        ret= |pos|;
+    }
+return ret ;
 }
 
 strand sample(int idx0, int idx1) {

@@ -8,7 +8,8 @@ s_layer = 2
 s_random_range = 99
 from obj_frame import *
 
-cpath =  "/Users/chariseechiw/diderot/"
+cpath =  "/Users/chariseechiw/diderot/tmp/"
+# note need to change path in fem/Makefile
 
 # want to make your own testing frame?
 # go for it!
@@ -33,8 +34,8 @@ s_coeff_style = coeff_cubic
 
 
 #s_element = elem_Lagrange
-s_element = elem_P
-#s_element = elem_random
+#s_element = elem_P
+s_element = elem_random
 
 s_length = 4
 # kernel
@@ -49,14 +50,14 @@ s_krn = h_hex
 #ty_T ="all tensors"
 #ty_All ="mix of tensors and fields"
 # what type of arguments do we want to test?
-s_in_tys  = ty_All
-#s_in_tys  = ty_F # when doing PDE
+#s_in_tys  = ty_All
+s_in_tys  = ty_F # when doing PDE
 #s_in_tys  = ty_T
 
 # op1(t1) -> t2, what is the type of t2?
 
-s_rst_ty  = ty_All  #ty_F #ty_T # when doing pDE
-#s_rst_ty  =  ty_F #ty_T
+#s_rst_ty  = ty_All  #ty_F #ty_T # when doing pDE
+s_rst_ty  =  ty_F #ty_T
 #s_rst_ty  =  ty_T
 
 

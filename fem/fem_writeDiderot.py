@@ -37,7 +37,7 @@ foo_out = "out"
 foo_pos = "pos"
 const_out = "7.2"
 pde_test = true 
-
+pde_Inside = c_pde_Inside
 
 ####### FIXME: need to create fem-inside/conditional
 ##################################### input tensor/field #####################################
@@ -129,9 +129,12 @@ def cte_update_method(f, pos, app):
     if(fty.is_Field(oty)):
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
-        check_inside(f, opfieldname1, app, pde_test)
-    #foo= "\n\t\tout = inst(G,pos);"
-    #f.write(foo.encode('utf8'))
+        # check if position is inside
+        if(c_pde_Inside):
+            check_inside(f, opfieldname1, app, pde_test)
+        else:
+            foo= "\n\t\tout = inst(G,pos);"
+            f.write(foo.encode('utf8'))
     else:
         check_conditional(f,  foo_out, app)
 ################################ search Diderot template and replace foo variable name ################################

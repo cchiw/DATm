@@ -1,7 +1,7 @@
 import sys
 import os
 
-
+#os.system("source ../../fire/firedrake/bin/activate")
 
 sys.path.insert(0, 'base/')
 sys.path.insert(0,'fem/')

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 # constants
 nonefield_k= -1
 nonefield_dim = 0
-
+import random
 from base_constants import *
 
 class space:
@@ -98,7 +98,8 @@ def getSpace(fldty,g_element, g_coeff_style, g_length):
     # element indicated by frame
     element = g_element
     if(g_element==elem_random):
-        element = elem_Lagrange
+        elements = [elem_Lagrange, elem_P]
+        element= elements[(random.randint(0,1))]
     k_order = coeff_tok(g_coeff_style)+1
 
     shape = fldty.shape

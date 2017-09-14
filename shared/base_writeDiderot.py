@@ -31,8 +31,9 @@ const_out ="7.2"
 opfieldname1="G"
 eps = "0.01"
 
-# remove conditional if statetment
+# constants from contants file
 removeCond = flag_vis_test
+pde_Test = c_pde_test
 ##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)
@@ -106,7 +107,7 @@ def outLineF(f, type):
 
 ##################################### field declaration helpers #####################################
 # checks inside a field but not inside a tensor term
-def getInside(exp, pos, name, pde_test):
+def getInside(exp, pos, name, pde_test2):
     inside ="inside"
     if (pde_test):
         inside ="insideF"
@@ -117,7 +118,7 @@ def getInside(exp, pos, name, pde_test):
         return ""
 # probes field at variable position
 def isProbe(exp, fld):
-    if(fty.is_OField(fld)):
+    if(fty.is_OField(fld) or pde_Test):
         return "inst("+exp+", pos)"
     elif(fty.is_Field(fld)):
         return "("+exp+")(pos)"
