@@ -50,16 +50,17 @@ void callDiderot_ex1(char *Outfile, int type, void *valF, int res, float stepSiz
     if (ex1_input_set_FF0 (wrld, valF)) {
         fail ("unable to initialize imgRed", wrld);
     }
-    if (ex1_input_set_limit (wrld, limit)) {
-        fail ("unable to initialize limit", wrld);
-    }
+
     if (ex1_input_set_res (wrld, res)) {
         fail ("unable to initialize res", wrld);
     }
     if (ex1_input_set_stepSize (wrld, stepSize)) {
-        fail ("unable to initialize stepSize", wrld);
+        fail ("unable to initialize res", wrld);
     }
-
+    if (ex1_input_set_limit (wrld, limit)) {
+        fail ("unable to initialize limit", wrld);
+    }
+    
     if (ex1_create_strands (wrld)) {
         fail ("unable to create initial strands", wrld);
     }

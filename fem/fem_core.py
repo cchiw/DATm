@@ -31,7 +31,7 @@ sys.path.insert(0, 'cte/')
 from cte_eval import eval
 
 pde_test=true # test pdes in femprime branche
-test_new = true # new type of test
+test_new = false # new type of test
 
 def cleanup(output, p_out):
     os.system("rm ex1.o")
@@ -179,7 +179,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
                 analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             return 3
         else:
-            
+            counter.inc_NA(cnt)
             return None
 
 
@@ -191,7 +191,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     if(mk_choice_range(testing_frame, cnt)):
         # counter.inc_cumulative(cnt)
         rtn = core2(app, coeffs, dimF, names, testing_frame, cnt)
-            #if(rtn==None):
+        #if(rtn==None):
             #fnames = apply.get_all_FieldTys(app)
             #x = "_"+fnames +" |"+names
             #name_describe = app.name

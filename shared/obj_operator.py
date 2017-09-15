@@ -66,11 +66,7 @@ op_scale = operator(id+3,"multiplication", 2, u'*', place_middle, limit_none, Fa
 op_division = operator(id+4,"division", 2, u'/', place_middle, limit_small, False)
 op_modulate = operator(id+5,"modulate", 2, "modulate",  place_left, limit_none, False)
 op_doubledot= operator(id+6,"op_doubledot", 2, u':', place_middle, limit_none, False)
-op_outer = operator(id+7,"outer_product", 2, u'⊗', place_middle, limit_none, False)
-op_inner = operator(id+8,"inner_product", 2, u'•', place_middle, limit_none, False)
 op_binary = [op_add, op_subtract, op_cross, op_scale, op_division, op_modulate, op_doubledot]
-if(not pde_test):
-    op_binary =op_binary+[op_outer, op_inner]
 id=id+len(op_binary)
 #----------------- trig -----------------
 op_cosine = operator(id, "cosine", 1, u'cos', place_left, limit_none, True)
@@ -117,18 +113,21 @@ op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slice
 id=id+len(op_slice)
 
 
-### new features that have yet to be compoleted on fem.
+### features not fully supported on fem. expected errors
 op_comp = operator(id,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
 op_jacob= operator(id+1, "jacob", 1, u'∇⊗', place_left, limit_none, True)
 op_divergence = operator(id+2, "div", 1, u'∇•', place_left, limit_none, True)
 op_curl= operator(id+3, "curl", 1, u'∇×',place_left, limit_none, True)
-op_new2 = [op_comp, op_jacob,op_divergence,op_curl]
+op_outer = operator(id+4,"outer_product", 2, u'⊗', place_middle, limit_none, False)
+op_inner = operator(id+5,"inner_product", 2, u'•', place_middle, limit_none, False)
+op_new2 = [op_comp, op_jacob,op_divergence,op_curl,op_outer, op_inner]
 id=id+len(op_new2)
 
 
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_reg+op_binary+op_trig+op_diff+op_new1
+#op_all = op_reg+op_binary+op_trig+op_diff+op_new1
+op_all = op_reg+op_binary+op_trig+op_diff+op_new1+op_slice+op_new2
 if(not pde_test):
     op_all=op_all+op_slice+op_new2
 

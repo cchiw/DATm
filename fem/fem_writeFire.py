@@ -18,11 +18,10 @@ from base_write import *
 from base_writeDiderot import *
 from base_constants import *
 
-
 # fem specific programs
 from fem_writeDiderot import readDiderot
 from fem_helper import *
-from fem_max import * 
+
 foo_femfields = "foo_femfield"
 foo_femGen = "foo_femGen"
 
@@ -146,7 +145,7 @@ def get_exp(field, field_name):
     return  foo+translate_ty(field, exp_name, field_name)
 
 # write fem
-def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max_test_cords=None):
+def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res):
     #read firedrake template
     template = "fem/fire.foo"
     ftemplate = open(template, 'r')
@@ -163,33 +162,16 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max
             foo = "\nname = \"cat\""
             foo = foo+"\ntarget =\"ex1\""
             foo = foo+"\nnamenrrd = name+'.nrrd'"
-            if test_new:
-                if len(max_test_cords) != 2:
-                    print("Abort as no data regarding PDE boundary conditions not supplied")
-                    exit(1)
-
+            
             names = ""
             i = 0
             for field in fields:
                 field_name = "f"+str(i)
                 names = names+field_name+", "
-                e = get_exp(field,  field_name)
-                foo = foo+ e
+                foo = foo+ get_exp(field,  field_name)
                 i +=1
             if(test_new):
-               
-                foo = foo+"\nf1={0}\n".format(max_test_cords[0])
-                foo = foo+"f2={0}\n".format(max_test_cords[1])
-                foo = foo + "limit = f2\n"
-                testStrings =  max_test("biharmonic") #configure more
-                foo = foo + testStrings
-                lf = len(fields)
-                if lf != 1:
-                    print("Abort as max test works on one field")
-                    exit(1)
-                foo = foo+"\nf0=Function(V)\nsolve(a == L, f0, bc)"
                 foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target, res, stepSize ,limit)"
-                
             else:
                 foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target)"
             f.write(foo.encode('utf8'))
