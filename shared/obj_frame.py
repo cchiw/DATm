@@ -144,8 +144,9 @@ class frame:
     def transform_nrrdpath(self):
         # decides to use vis15 path to create nrrd files
         path = self.path
+
         if(self.branch==branch_other):
-            return frame.transform_fullpath(self, branch_vis15, precision_single)
+            return frame.transform_fullpath(self, branch_other, precision_single)
         else:
             return frame.transform_fullpath(self, branch_vis15, precision_single)
 

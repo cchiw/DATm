@@ -66,6 +66,6 @@ c_template="shared/template/foo.ddro"
 
 flag_vis_test = False
 #flag_vis_test = True
-#c_pde_test = False
-c_pde_test = True
+c_pde_test = False
+#c_pde_test = True
 c_pde_Inside = False #is inside implemented?
