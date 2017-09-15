@@ -1,0 +1,14 @@
+
+
+$(TARGET):	$(TARGET).o main.o
+	$(CXX) -o $(TARGET)  $(PTHREAD_FLAGS)  main.o $(TARGET).o $(LDFLAGS) $(INCLUDES) $(LIBS) $(PTHREAD_LIBS)
+
+main.o:		$(TARGET).o main.c
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(PTHREAD_FLAGS) main.c $(INCLUDES) $(LIBS)
+
+$(TARGET).o:	$(TARGET).diderot
+	$(DIDEROTC) $(DIDEROTC_FLAGS) $(TARGET).diderot
+
+clean:
+	rm -f $(TARGET) $(TARGET).o $(TARGET).cxx $(TARGET).cl $(TARGET).log $(TARGET).h
+	rm -f main.o out.nrrd out.txt

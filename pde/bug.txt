@@ -1,0 +1,71 @@
+bugs found with datm
+
+
+
+BUG (parameter not correc):
+ with args:FF0,VF0,posBuildFEM(T0)_1[1])HighToMid.expandEINAPP: error converting out041C = λ(T0[],F1[2],FNCSPACE2,FNCSPACE3,T4[2])<ArcCosine((T0 * Probe(BuildFEM(T1)_2[2]),T4)))> (_t03C4, FF003C6, VF003C9, pathF003CC, pos0357)
+uncaught exception Fail [Fail: expected rhs operator for VF00404 but found BuildSpace(_t03E5,_t03E7,_t03E3)]
+  raised at common/phase-timer.sml:78.57-78.59
+  raised at high-to-mid/high-to-mid.sml:216.7-216.9
+  raised at high-to-mid/data-fem.sml:52.24-55.11
+
+
+***rtn:compile __s_23__n_1_
+	 -: arccosine ( F_s_d2, )
+	-_F_s_d2 |s_23__n_1_
+	rtn:compile 
+
+***rtn:compile __s_23__n_2_
+	 -: arccosine ( F_s_d3, )
+	-_F_s_d3 |s_23__n_2_
+	rtn:compile 
+
+***rtn:compile __s_24__n_1_
+	 -: arcsine ( F_s_d2, )
+	-_F_s_d2 |s_24__n_1_
+	rtn:compile 
+
+***rtn:compile __s_24__n_2_
+	 -: arcsine ( F_s_d3, )
+	-_F_s_d3 |s_24__n_2_
+	rtn:compile 
+
+
+
+
+
+BUG
+MidToLow.expand: error converting λ(V0(3)[],H1,V2(3)[],H3,T4[])<Probe(
+if(V0⊛H1>V2⊛H3) then V0⊛H1 else V2⊛H3,T4)>(promote_img1,_t,promote_img0,_t,pos)
+uncaught exception Fail [Fail: probe ein-exp: Probe(
+if(V0⊛H1>V2⊛H3) then V0⊛H1 else V2⊛H3,T4)]
+  raised at common/phase-timer.sml:78.57-78.59
+  raised at mid-to-low/mid-to-low.sml:232.29-232.31
+  raised at mid-to-low/ein-to-scalar.sml:128.42-128.90
+0.139142990112
+
+
+***rtn:compile __p_o22_o23_t2_t12__l2
+	 -: min(max)
+	-_F_s_d3,F_s_d3,F_s_d3 |p_o22_o23_t2_t12__l2
+	rtn:compile 
+
+	-_F_s_d3,F_s_d3,F_s_d3 |p_o22_o23_t2_t12__l2
+	rtn:compile 
+
+ min(max) |22_23- chiw17 did not compile: 1 ran: 1 iterations-l: 0 iterations-t: 0 cumulative: 1
+**********************
+
+                  | E.If(E.GT(e1,e2), e3, e4) => E.If(E.GT(rewrite e1, rewrite e2), rewrite e3, rewrite e4)
+                  | E.If(E.LT(e1,e2), e3, e4) => E.If(E.GT(rewrite e1, rewrite e2), rewrite e3, rewrite e4)
+
+needs internal rewriting of GT/LT sign
+*****************************************
+
+
+***rtn:terrible__p_o0_o23_t6_t6_tN__l2
+	 -: min(neg)
+	-
+-p_o0_o23_t6_t6_tN__l2 min(neg)| F_s_d2,F_s_d2| 
+		Rst: Z-3 RD  max diff: 1.14 sumdiff: 0.4857 200.0% c:-0.570000000000000 o:0.56999999
+	rtn:terrible

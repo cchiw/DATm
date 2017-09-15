@@ -1,0 +1,13 @@
+$(TARGET)_init.so:  $(TARGET)_init.o $(TARGET).o
+	$(CXX) -shared -o $(TARGET)_init.so  $(PTHREAD_FLAGS)  $(TARGET)_init.o $(TARGET).o $(LDFLAGS) $(INCLUDES) $(LIBS) $(PTHREAD_LIBS)
+
+$(TARGET)_init.o:	$(TARGET).o $(TARGET)_init.c
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(PTHREAD_FLAGS) $(TARGET)_init.c $(INCLUDES) $(LIBS)
+
+$(TARGET).o:	$(TARGET).diderot
+	$(DIDEROTC) $(DIDEROTC_FLAGS) $(TARGET).diderot
+
+
+clean:
+	rm -f $(TARGET)_init.so $(TARGET).o $(TARGET).cxx $(TARGET).cl $(TARGET).log $(TARGET).h $(TARGET)_init.o
+	rm -f main.o out.nrrd out.txt
