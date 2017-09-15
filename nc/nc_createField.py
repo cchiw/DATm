@@ -339,12 +339,12 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     #os.system(" rm "+e_Orig)
     # compile program
 
-    #os.system(nrrdbranch+" --log "+p_Orig)
+    os.system(nrrdbranch+" --log "+p_Orig)
 
 
     # comment out if executable exists
-    #os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
-    #os.system(nrrdbranch+" --log "+p_Orig)
+    os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
+    os.system(nrrdbranch+" --log "+p_Orig)
     # does executable exist
 
     endall = time.time()
