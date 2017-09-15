@@ -126,8 +126,8 @@ id=id+len(op_new2)
 
 #----------------- list of all operators -----------------
 # all the operators
-#op_all = op_reg+op_binary+op_trig+op_diff+op_new1
-op_all = op_reg+op_binary+op_trig+op_diff+op_new1+op_slice+op_new2
+op_all = op_reg+op_binary+op_trig+op_diff+op_new1
+#op_all = op_reg+op_binary+op_trig+op_diff+op_new1+op_slice+op_new2
 if(not pde_test):
     op_all=op_all+op_slice+op_new2
 
