@@ -20,9 +20,7 @@ def polyString(variable_names, coords):
         raise ValueError("Number of coordinate arrays not in accordane with number of variables")
     if (vname == 1):
         v = variable_names[0]
-        print(cs[0])
-        print(len(coords))
-        print(range(cs[0]))
+      
         terms = map(lambda x: str(coords[x]) + " * " + mult(v,x), range(cs[0]))
         temp = " + ".join(terms)
         return("(" + temp + ")")
@@ -69,3 +67,6 @@ def kill_odd_indices(array):
     for x in ix:
         if any(map(lambda u: u % 2 == 1,x)):
             array[x]=0
+
+    return(array)
+

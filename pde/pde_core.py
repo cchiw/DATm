@@ -121,8 +121,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             return None
         elif(shapen>1):
             return None
-
-        core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length )) #add to list of core fields -> add space -> add relevant everything relevat to what we want-> Lagrange, P, random -> vary elements and 
+        f= field.addSpace(e, g_element,g_coeff_style, g_length,pde_test=test_new )
+        core_fields.append(f) #add to list of core fields -> add space -> add relevant everything relevat to what we want-> Lagrange, P, random -> vary elements and 
         
 
     for e in core_fields:

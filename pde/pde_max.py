@@ -1,6 +1,7 @@
 
 
-def max_test(test):
+def max_test(test,dim):
+    c = 8.0 if dim==2 else 32.0
     if test == "biharmonic":
         solve_string = """
 # Define Dirichlet boundary
@@ -24,7 +25,7 @@ x = SpatialCoordinate(V.mesh())
 f = Constant(f1) #interpolate(Expression("(x[0]*x[0]+x[1]*x[1])*(x[0]*x[0]+x[1]*x[1])"),V)
 
 # Penalty parameter that must be played around with
-alpha = Constant(8.0) #dependent on the mesh, I think???
+alpha = Constant({0}) #dependent on the mesh, I think???
 
 # Define bilinear form
 a = inner(div(grad(u)), div(grad(v)))*dx \
@@ -37,5 +38,5 @@ a = inner(div(grad(u)), div(grad(v)))*dx \
 # Define linear form
 L = f*v*dx
 b = assemble(L)
-                """
+                """.format(c)
     return(solve_string)

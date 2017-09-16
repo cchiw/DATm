@@ -20,9 +20,9 @@ from base_constants import *
 
 
 # fem specific programs
-from fem_writeDiderot import readDiderot
-from fem_helper import *
-from fem_max import * 
+from pde_writeDiderot import readDiderot
+from pde_helper import *
+from pde_max import * 
 foo_femfields = "foo_femfield"
 foo_femGen = "foo_femGen"
 
@@ -184,7 +184,7 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max
                 foo = foo+"\nf1={0}\n".format(max_test_cords[0])
                 foo = foo+"f2={0}\n".format(max_test_cords[1])
                 foo = foo + "limit = f2\n"
-                testStrings =  max_test("biharmonic") #configure more
+                testStrings =  max_test("biharmonic",dim) #configure more
                 foo = foo + testStrings
                 lf = len(fields)
                 if lf != 1:

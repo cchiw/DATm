@@ -178,8 +178,13 @@ class field:
     def is_Ten3(ty0):
         shape = ty0.fldty.shape
         return  (len(shape)==3)
-    def addSpace(self,g_element,g_ucoeff, g_length ):
-        return field(self.isField, self.name, fty.addSpace(self.fldty,g_element,g_ucoeff, g_length ), self.krn, self.data, self.inputfile, self.coeff)
+    def addSpace(self,g_element,g_ucoeff, g_length,pde_test=False ):
+        f = field(self.isField, self.name, fty.addSpace(self.fldty,g_element,g_ucoeff, g_length ), self.krn, self.data, self.inputfile, self.coeff)
+        if pde_test:
+            f.set_pde()
+        return(f)
+            
+        
 
 #  i_fty: field type
 def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_template):
