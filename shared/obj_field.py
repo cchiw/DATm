@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import sympy
 from sympy import *
+import numpy as np
 #symbols
 x,y,z =symbols('x y z')
 import sys
@@ -12,6 +13,8 @@ import os
 from base_constants import *
 from obj_ty import *
 from obj_coeff import mk_exp, mk_exp_debug1, mk_exp_debug2
+from gen_poly import *
+
 class kernel:
     def __init__(self, str, continuity, order):
         # str: string used in diderot program for kernel
@@ -91,10 +94,18 @@ def set_ks_ofield(g_krn, ishapes, space):
         id+=1
     return rtn
 
+#some constants for random number generation:
+#todo: move and think more about statistics
+pde_boundary_sign = lambda x : 1 if np.random.random([]) > 0.5 else (-1)
+pde_boundary_type = lambda x: 2* np.random.random_integers(0,2) #constant, quadatic, quartic 
+positive_poly_coeffs_bounds = [0.0,10.0]
+positive_poly_coeffs_scale = 10.0
+
+
 
 #returns expression created with coefficients
 class field:
-    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff):
+    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff,pde_coeffs=None):
         self.isField = isField
         self.name = name
         self.fldty = fldty
@@ -102,6 +113,15 @@ class field:
         self.data = data
         self.inputfile = inputfile
         self.coeff = coeff
+
+        #pde specific stuff:
+        dim = fldty.dim
+        d= pde_boundary_type()
+        s = pde_boundary_sign()
+        coords = positive_poly_coeffs_scale* np.random.rand(tuple([d for x in range(dim)]))
+        coords = kill_odd_indices(coords)
+        self.pde_boundary = poly(dim,d,coords)
+        self.pde_coeffs = pde_coeffs
     def toStr(self):
         if (self==None):
             return "field is none"
