@@ -32,13 +32,15 @@ def polyString(variable_names, coords):
         terms = map(lambda x : polyString(new_variable_names, coords[x]) + " * " + mult(v,x), range(cs[0]))
         temp = " + ".join(terms)
         return("(" + temp + ")" )
-        
+
+
+    
         
 
 class poly:
     def __init__(self,dim,degree,coords):
         """
-        This class is deserving of 
+        This function holds various representations for a polynomial. The dim is number of variables. The degree is the degree. Coords is an array so that the coefficient on the term x^n * y^m * z^p is at coords[n][m][p]. This class exports a sympy expression, a python lambda, and a diderot expression. 
         """
         d = degree +1
         spec_shape = tuple([(d) for x in range(dim)])
@@ -59,3 +61,11 @@ class poly:
 
     def did_function (self,name):
         "function " + "tensor[{0}] ".format(self.dim) + name + "(x) = " + self.array_poly + " ;"
+
+
+#This function exists to create only positive polynomials
+def kill_odd_indices(array):
+    ix = np.ndindex(array.shape)
+    for x in ix:
+        if any(map(lambda u: u % 2 == 1,x)):
+            array[x]=0
