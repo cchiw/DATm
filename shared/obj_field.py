@@ -107,7 +107,7 @@ pde_coeffs_vec = lambda dim :  positive_poly_coeffs_scale*np.random.random(dim)
 
 #returns expression created with coefficients
 class field:
-    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff,pde=False):
+    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff):
         self.isField = isField
         self.name = name
         self.fldty = fldty
@@ -115,19 +115,26 @@ class field:
         self.data = data
         self.inputfile = inputfile
         self.coeff = coeff
-        print(coeff)
+        #pde specific stuff
+        self.pde_boundary = None
+        self.pde_coeffs = None
+        self.s = None
 
-        #pde specific stuff:
-        if pde:
-            dim = fldty.dim #ought to be 2 or 3?
-            d= pde_boundary_type(0)
-            s = pde_boundary_sign(0)
+       
+       
 
-            coords = s*positive_poly_coeffs_scale* np.random.random(tuple([d for x in range(dim)]))
-            coords = kill_odd_indices(coords)
-            print(dim,d,coords.shape)
-            self.pde_boundary = poly(dim,d,coords)
-            self.pde_coeffs = (pde_coeffs_mat(dim),de_coeffs_vec(dim))
+    def set_pde(self):
+        dim = fldty.dim #ought to be 2 or 3?
+        d= pde_boundary_type(0)
+        s = pde_boundary_sign(0)
+        self.s = s
+        
+        coords = s*positive_poly_coeffs_scale* np.random.random(tuple([d for x in range(dim)]))
+        coords = kill_odd_indices(coords)
+        # print(dim,d,coords.shape)
+        self.pde_boundary = poly(dim,d,coords)
+        self.pde_coeffs = (pde_coeffs_mat(dim),de_coeffs_vec(dim))
+        
     def toStr(self):
         if (self==None):
             return "field is none"
