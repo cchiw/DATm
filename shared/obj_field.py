@@ -98,14 +98,16 @@ def set_ks_ofield(g_krn, ishapes, space):
 #todo: move and think more about statistics
 pde_boundary_sign = lambda x : 1 if np.random.random([]) > 0.5 else (-1)
 pde_boundary_type = lambda x: 2* np.random.random_integers(0,2) #constant, quadatic, quartic 
-positive_poly_coeffs_bounds = [0.0,10.0]
 positive_poly_coeffs_scale = 10.0
+from scipy.stats import wishart
+pde_coeffs_mat = lambda dim:  wishart.rvs(dim,positive_poly_coeffs_scale*np.identity(dim))
+pde_coeffs_vec = lambda dim :  positive_poly_coeffs_scale*np.random.random(dim)
 
 
 
 #returns expression created with coefficients
 class field:
-    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff,pde_coeffs=None):
+    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff,pde=False):
         self.isField = isField
         self.name = name
         self.fldty = fldty
@@ -115,13 +117,14 @@ class field:
         self.coeff = coeff
 
         #pde specific stuff:
-        dim = fldty.dim
-        d= pde_boundary_type()
-        s = pde_boundary_sign()
-        coords = positive_poly_coeffs_scale* np.random.rand(tuple([d for x in range(dim)]))
-        coords = kill_odd_indices(coords)
-        self.pde_boundary = poly(dim,d,coords)
-        self.pde_coeffs = pde_coeffs
+        if pde:
+            dim = fldty.dim #ought to be 2 or 3?
+            d= pde_boundary_type(0)
+            s = pde_boundary_sign(0)
+            coords = positive_poly_coeffs_scale* np.random.random(tuple([d for x in range(dim)]))
+            coords = kill_odd_indices(coords)
+            self.pde_boundary = poly(dim,d,coords)
+            self.pde_coeffs = (pde_coeffs_mat(dim),de_coeffs_vec(dim))
     def toStr(self):
         if (self==None):
             return "field is none"
