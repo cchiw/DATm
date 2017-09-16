@@ -126,7 +126,7 @@ class field:
     def set_pde(self):
         if self.s != None: #do not allow to happen twice
             return
-        dim = fldty.dim #ought to be 2 or 3?
+        dim = self.fldty.dim #ought to be 2 or 3?
         d= pde_boundary_type(0)
         s = pde_boundary_sign(0)
         self.s = s
@@ -135,7 +135,7 @@ class field:
         coords = kill_odd_indices(coords)
         # print(dim,d,coords.shape)
         self.pde_boundary = poly(dim,d,coords)
-        self.pde_coeffs = (pde_coeffs_mat(dim),de_coeffs_vec(dim))
+        self.pde_coeffs = (pde_coeffs_mat(dim),pde_coeffs_vec(dim))
         
     def toStr(self):
         if (self==None):

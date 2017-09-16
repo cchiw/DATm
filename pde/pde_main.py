@@ -18,9 +18,9 @@ from base_writeDiderot import *
 from base_constants import *
 
 # fem specific programs
-from fem_writeDiderot import readDiderot
-from fem_helper import *
-from fem_writeFire import writeFem
+from pde_writeDiderot import readDiderot
+from pde_helper import *
+from pde_writeFire import writeFem
 
 #core_fields: apply get all fields+space conversion
 def get_fieldinfo(app,core_fields):
@@ -105,6 +105,8 @@ def makeProgram(p_out, output, target, init_name):
 def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields, max_coords=[0.0,0.0]):
     template = c_template     # default/main template
     # note here(creating different program)
+
+
     if(test_new):
         template =  "shared/template/foo_limit.ddro"
             

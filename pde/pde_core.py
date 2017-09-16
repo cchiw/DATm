@@ -23,7 +23,7 @@ from nc_continue import check
 from nc_createField import sortField
 
 # specific fem programs
-from fem_main import writeTestPrograms
+from pde_main import writeTestPrograms
 
 
 #from fem_eval import eval
@@ -87,6 +87,7 @@ def mk_choice_range(testing_frame, cnt):
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
     print ("############################################inside central############################################")
+
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
     g_upos = frame.get_upos(testing_frame)
@@ -105,13 +106,13 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     t_nrrdbranch = frame.transform_nrrdpath(testing_frame)
     t_runtimepath = frame.transform_runtimepath(testing_frame)
     
-    core_fieldsOrig = apply.get_all_Fields(app)
+    core_fieldsOrig = apply.get_all_Fields(app) #Orig -> collection of all fields and kaking lists
     core_fields = []
     # limit core fields by the ones we can rep.
     if(not (fty.is_Field(app.oty))):
         return None
     
-    for e in core_fieldsOrig:
+    for e in core_fieldsOrig: #go through fields and pick the kosher ones 
         ty = e.fldty
         #print "ty name:",ty.name,ty.space
         dim =ty.dim
@@ -121,7 +122,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         elif(shapen>1):
             return None
 
-        core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length ))
+        core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length )) #add to list of core fields -> add space -> add relevant everything relevat to what we want-> Lagrange, P, random -> vary elements and 
         
 
     for e in core_fields:

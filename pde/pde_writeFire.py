@@ -148,7 +148,7 @@ def get_exp(field, field_name):
 # write fem
 def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max_test_cords=None):
     #read firedrake template
-    template = "fem/fire.foo"
+    template = "pde/fire.foo"
     ftemplate = open(template, 'r')
     ftemplate.readline()
     #write firedrake program
@@ -174,8 +174,11 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max
                 field_name = "f"+str(i)
                 names = names+field_name+", "
                 e = get_exp(field,  field_name)
+                field.set_pde()
+                #exit(0) for test
                 foo = foo+ e
                 i +=1
+
             if(test_new):
                
                 foo = foo+"\nf1={0}\n".format(max_test_cords[0])

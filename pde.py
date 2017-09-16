@@ -4,9 +4,9 @@ import os
 #os.system("source ../../fire/firedrake/bin/activate")
 
 sys.path.insert(0, 'base/')
-sys.path.insert(0,'fem/')
+sys.path.insert(0,'pde/')
 
-from fem_iter_cmd import main_set
+from pde_iter_cmd import main_set
 
 
 # for quick use

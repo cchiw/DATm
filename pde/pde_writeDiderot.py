@@ -110,7 +110,7 @@ def posIn(f, dim):
     foo =foo+"){"
     f.write(foo.encode('utf8'))
 
-def fem_limits(f, dim):
+def fem_limits(f, dim,application): # look at base_writeDierot at 270 and getCond -> hand it set -> frame 
     foo = "\n"
     if(dim==2):
         foo = "tensor [2] pos = [i,j]*stepSize;"
@@ -186,7 +186,7 @@ def readDiderot(p_out, app, pos, template,core_fields):
             continue
         f0 = re.search(foo_limits, line)
         if f0:
-            fem_limits(f,dim)
+            fem_limits(f,dim,0)
             continue
         # nothing is being replaced
         g0 = re.search(foo_posIn, line)
