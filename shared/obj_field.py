@@ -124,6 +124,8 @@ class field:
        
 
     def set_pde(self):
+        if self.s != None: #do not allow to happen twice
+            return
         dim = fldty.dim #ought to be 2 or 3?
         d= pde_boundary_type(0)
         s = pde_boundary_sign(0)
