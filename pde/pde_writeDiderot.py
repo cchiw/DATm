@@ -23,6 +23,7 @@ from nc_writeDiderot import nc_compileandRun, nc_setLength
 
 
 #strings in diderot template
+foo_basis = "foo_basis"
 foo_in = "foo_in"
 foo_outTen = "foo_outTen"
 foo_op = "foo_op"
@@ -65,14 +66,16 @@ def fem_inShape(f, core_fields):
             path = "path"+fi
             V = "V"+fi
             
-            foo = "\n input "+fty.toFemDiderot(exp.fldty)+ " "+F+";"
+            foo = "\n input "+fty.toFemDiderot(exp.fldty,sub=(-1))+ " "+F+";"
             foo = foo+ "\n //"+field.toStr(exp)
             fnspace = space.ty_toSpace_forDiderot(exp.fldty.space)
             foo = foo+"\n fnspace "+V+" = "+fnspace +";"
         
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"
-            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
+            FF = exp.operator.replace("F",fi+"0")
+            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty,sub=(-1))+" "+fi+"0"+" = convert("+F+","+V+","+ path+");\n"
+            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = " + FF +";\n"
             f.write(foo.encode('utf8'))
         else: #tensor type
             fem_fieldShape(f, exp.fldty)
@@ -116,7 +119,8 @@ def fem_limits(f, dim,application): # look at base_writeDierot at 270 and getCon
         foo = "tensor [2] pos = [i,j]*stepSize;"
     elif(dim==3):
         foo = "tensor [3] pos = [i,j,k]*stepSize;"
-    foo =foo+ "\n\t\t tensor [] current = inst(∇•(∇G),pos);"
+    foo =foo+ "\n\t\t tensor [] current = inst(G,pos);"
+    #foo = foo + "\n\t\tofield#3(2)[2,2] a = ∇⊗∇F00;\n\t\t print(inst(a,pos),current);"
     foo = foo+"\n\t\t if(current > limit){out= 1;}"
     foo = foo+"\n\t\t else{out= 0;}"
     f.write(foo.encode('utf8'))
@@ -150,10 +154,16 @@ def readDiderot(p_out, app, pos, template,core_fields):
     f = open(p_out+".diderot", 'w+')
     oty = app.oty
     dim = oty.dim
+    basis = "\ntensor[2] e1 = [1,0];\ntensor[2] e2 = [0,1];" if dim==2 else "\ntensor[3] e1 = [1,0,0];\ntensor[3] e2 = [0,1,0];\ntensor[3] e3 = [0,0,1];\n"
 
     #output type
     for line in ftemplate:
         # is it initial field line?
+        z0 = re.search(foo_basis,line)
+        if z0:
+            f.write(basis)
+            continue
+        
         a0 = re.search(foo_in, line)
         if a0:
             #replace field input line

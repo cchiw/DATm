@@ -127,6 +127,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
     for e in core_fields:
         ty = e.fldty
+        e.set_pde()
         print "ty name:",ty.name,ty.space
     
     

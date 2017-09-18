@@ -22,7 +22,8 @@ from base_constants import *
 # fem specific programs
 from pde_writeDiderot import readDiderot
 from pde_helper import *
-from pde_max import * 
+from pde_max import *
+from itertools import repeat
 foo_femfields = "foo_femfield"
 foo_femGen = "foo_femGen"
 
@@ -174,27 +175,31 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max
                 field_name = "f"+str(i)
                 names = names+field_name+", "
                 e = get_exp(field,  field_name)
-                field.set_pde()
+                
                 #exit(0) for test
                 foo = foo+ e
                 i +=1
 
-            if(test_new):
+                if(test_new):
                
-                foo = foo+"\nf1={0}\n".format(max_test_cords[0])
-                foo = foo+"f2={0}\n".format(max_test_cords[1])
-                foo = foo + "limit = f2\n"
-                testStrings =  max_test("biharmonic",dim) #configure more
-                foo = foo + testStrings
-                lf = len(fields)
-                if lf != 1:
-                    print("Abort as max test works on one field")
-                    exit(1)
-                foo = foo+"\nf0=Function(V)\nsolve(a == L, f0, bc)"
-                foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target, res, stepSize ,limit)"
+                    foo = foo+"\nf1"+str(i)+"=interpolate(Expression(\"{0}\"),V)\n".format(field.pde_ground_state.array_poly)
+                    foo = foo + "\nbexpf"+str(i)+" = Expression(\"{0}\")".format(field.pde_boundary.array_poly)
+                    
+                    foo = foo+"\nf2"+str(i)+"={0}\n".format(field.m)
+                    foo = foo + "limit = f2"+str(i)+"\n"
+                    foo = foo + field.aoperator
+                    testStrings =  max_test("biharmonic",dim,str(i)) #configure more
+                    foo = foo + testStrings
+                    lf = len(fields)
+                    if lf != 1:
+                        print("Abort as max test works on one field")
+                        exit(1)
+                    foo = foo+"\nf{0}=Function(V)\nsolve(a == L, f{0}, bc)".format(i)
+                    foo =foo+"\n"+initPyname+"(namenrrd, f{0}, target, res, stepSize ,limit)".format(i)
+                    #foo = foo + "\nfile = File(\"biharmonic.pvd\")\nfile << u"
                 
-            else:
-                foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target)"
+                else:
+                    foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target)"
             f.write(foo.encode('utf8'))
             continue
         b0 = re.search(foo_femGen, line)
