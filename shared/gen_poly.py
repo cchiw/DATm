@@ -43,23 +43,31 @@ class poly:
         d = degree +1
         spec_shape = tuple([(d) for x in range(dim)])
         array_var_names = map(lambda x: "x["+str(x)+"]",range(dim))
-        array_poly = polyString(array_var_names,coords)
+        self.coords = kill_extra_indicies(coords,d)
+        array_poly = polyString(array_var_names,self.coords)
         self.array_poly = array_poly
         normal_var_names = map(lambda x: "x"+str(x),range(dim))
-        normal_poly = polyString(normal_var_names,coords)
+        normal_poly = polyString(normal_var_names,self.coords)
         self.normal_poly = normal_poly
         
-      
+        test=spec_shape==coords.shape
         
-        if(spec_shape == coords.shape):
+        if not(test):
             raise ValueError("Polynomial coords shape not in accordance with dim and degree")
-        self.coords = coords
         self.python_func = "lambda x: " + array_poly
         self.sympy_exp = parse_expr(normal_poly)
 
     def did_function (self,name):
         "function " + "tensor[{0}] ".format(self.dim) + name + "(x) = " + self.array_poly + " ;"
 
+    def eval(self,x):
+        d = dict()
+        for x in range(len(x)):
+            xi = "x"+str(x)
+            d[xi] = x
+        print(self.sympy_exp)
+
+        return(self.sympy_exp.evalf(subs=d))
 
 #This function exists to create only positive polynomials
 def kill_odd_indices(array):
@@ -68,5 +76,13 @@ def kill_odd_indices(array):
         if any(map(lambda u: u % 2 == 1,x)):
             array[x]=0
 
+    return(array)
+
+
+def kill_extra_indicies(array,d):
+    ix = np.ndindex(array.shape)
+    for x in ix:
+        if sum(x) >= d:
+            array[x]=0
     return(array)
 

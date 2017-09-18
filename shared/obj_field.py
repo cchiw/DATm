@@ -98,7 +98,7 @@ def set_ks_ofield(g_krn, ishapes, space):
 #todo: move and think more about statistics
 pde_boundary_sign = lambda x : 1 if np.random.random([]) > 0.5 else (-1)
 pde_boundary_type = lambda x: 2* np.random.random_integers(0,2) #constant, quadatic, quartic 
-positive_poly_coeffs_scale = 10.0
+positive_poly_coeffs_scale = 1.5
 from scipy.stats import wishart
 pde_coeffs_mat = lambda dim:  wishart.rvs(dim,positive_poly_coeffs_scale*np.identity(dim))
 pde_coeffs_vec = lambda dim :  positive_poly_coeffs_scale*np.random.random(dim)
@@ -127,15 +127,39 @@ class field:
         if self.s != None: #do not allow to happen twice
             return
         dim = self.fldty.dim #ought to be 2 or 3?
-        d= pde_boundary_type(0)
+        d= pde_boundary_type(0)+1
         s = pde_boundary_sign(0)
         self.s = s
         
-        coords = s*positive_poly_coeffs_scale* np.random.random(tuple([d for x in range(dim)]))
-        coords = kill_odd_indices(coords)
+        coords = positive_poly_coeffs_scale* np.random.random(tuple([(d+1) for x in range(dim)]))
+        coords2 = (-1.0)*positive_poly_coeffs_scale* np.random.random(tuple([(d+1) for x in range(dim)]))
+        #coords = kill_odd_indices(coords)
         # print(dim,d,coords.shape)
         self.pde_boundary = poly(dim,d,coords)
-        self.pde_coeffs = (pde_coeffs_mat(dim),pde_coeffs_vec(dim))
+        self.pde_ground_state  = poly(dim,d,coords2)
+        self.m = np.sum(coords)
+        from itertools import repeat
+        t = True
+        self.pde_coeffs = (np.identity(dim), np.array(list(repeat(0,dim)))) if t else (pde_coeffs_mat(dim),pde_coeffs_vec(dim)) #add I
+
+
+        #operator?
+
+        operators = []
+        aoperators = []
+
+        for x in range(dim):
+            f = "{1}*(e{0}•(∇F))".format(x+1,self.pde_coeffs[1][x])
+            operators.append(f)
+            f1 = "{1}*q.dx({0})".format(x,self.pde_coeffs[1][x])
+            aoperators.append(f1)
+            for y in range(dim):
+                g = ( "{2}*(e{1}•(e{0}•(∇⊗(∇F))))".format(x+1,y+1,self.pde_coeffs[0][x][y]))
+                operators.append(g)
+                g1 = "{2}*q.dx({0}).dx({1})".format(x,y,self.pde_coeffs[0][x][y])
+                aoperators.append(g1)
+        self.operator = "∇•(∇F)" if t else " + ".join(operators)
+        self.aoperator = "\ndef L(q):\n\t" + ("a = div(grad(q))" if t else ("a = "+ "+".join(aoperators))) + "\n\treturn(a)"
         
     def toStr(self):
         if (self==None):
@@ -183,6 +207,7 @@ class field:
         if pde_test:
             f.set_pde()
         return(f)
+
             
         
 

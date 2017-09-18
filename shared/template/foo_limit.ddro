@@ -1,9 +1,9 @@
 int cat = 0;
-
+foo_basis
 foo_in
 foo_op;
 input int res;
-input int stepSize;
+input real stepSize;
 input real limit;
 
 strand f(foo_posIn) {

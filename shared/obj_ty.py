@@ -144,16 +144,16 @@ class fty:
                 return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
             else:
                 return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
-    def toFemDiderot(self):
+    def toFemDiderot(self,sub=0):
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            return "fem#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
-    def toOFieldDiderot(self):
+            return "fem#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
+    def toOFieldDiderot(self,sub=0):
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+            return "ofield#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
 
     def toStr(self):
         if(self.dim==nonefield_dim):
