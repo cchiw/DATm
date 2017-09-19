@@ -57,7 +57,7 @@ def applyUnaryOp(op1,ityps):
                 return err()
     if(op_probe==op1):
         return (true, fty.convertToTensor(ityp1))
-    elif ((op_copy==op1) or (op_negation==op1) or (op1==op_negationT)):
+    elif ((op_copy==op1) or (op_none==op1) or (op_negation==op1) or (op1==op_negationT)):
         return same() #type unaffected by operation
     elif (op_normalize==op1):
         ##print "made it to normalize"

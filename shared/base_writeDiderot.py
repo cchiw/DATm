@@ -118,12 +118,15 @@ def getInside(exp, pos, name, pde_test2):
         return ""
 # probes field at variable position
 def isProbe(exp, fld):
-    if(fty.is_OField(fld) or pde_Test):
-        return "inst("+exp+", pos)"
-    elif(fty.is_Field(fld)):
-        return "("+exp+")(pos)"
-    else:
+    print "\n\n***************************  exp", exp
+    print "fld.ty:",fld.name
+    if(fty.is_Tensor(fld)):
         return "("+exp+")"
+    elif(pde_Test):
+        return "inst("+exp+", pos)"
+    else:
+        return "("+exp+")(pos)"
+
 ##################################### print unary,binary,n-arity op #####################################
 ################## place operator symbol in args ##################
 # print operator between arguments
@@ -482,7 +485,7 @@ def check_inside(f, ff, app, pde_test):
     ################## checks app for composition operator ##################
     #either comp inspired probing or regular probing
     if(app.opr==op_comp):
-        if(app.lhs.opr == op_comp):
+        if( (not app.isrootlhs)  and (app.lhs.opr == op_comp)):
             if(not app.lhs.isrootlhs):
                 #3 layers
                 arity = app.lhs.lhs.opr.arity

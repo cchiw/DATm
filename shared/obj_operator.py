@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
 
+
 from __future__ import unicode_literals
 from base_constants import *
 adj = (opr_adj)
 pde_test  = c_pde_test
+
+import sys
+import re
+import os
+import time
+
 class operator:
     def __init__(self, id, name, arity, symb, placement, limit, fieldop):
         self.id=id
@@ -47,16 +54,16 @@ limit_nonzero = "positive" # |x|>0
 #----------------- algebra -----------------
 id=0
 #op_none= operator(id,"none", 1,"", place_left, limit_none, False)
-op_negationT = operator(0,"negT", 1,"-", place_left, limit_none, False)
-op_negation = operator(id,"neg", 1,"-", place_left, limit_none, False)
-op_trace = operator(id+1,"trace", 1, u'trace', place_left, limit_none, False)
-op_transpose = operator(id+2,"transpose", 1, u'transpose', place_left, limit_none, False)
-op_det = operator(id+3,"det", 1, u'det', place_left, limit_none, False)
+op_none= operator(id,"none", 1,"", place_right, limit_none, False)
+op_negation = operator(id+1,"neg", 1,"-", place_left, limit_none, False)
+op_trace = operator(id+2,"trace", 1, u'trace', place_left, limit_none, False)
+op_transpose = operator(id+3,"transpose", 1, u'transpose', place_left, limit_none, False)
 op_copy= operator(id+4,"copy", 1,"", place_left, limit_none, False)
-op_inverse = operator(id+5, "inverse", 1, u'inv', place_left, limit_det, False)
-op_norm = operator(id+6,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
-op_normalize = operator(id+7,"normalize", 1, u'normalize', place_left, limit_none, False)
-op_reg = [op_negation, op_trace, op_transpose, op_det,op_copy,op_inverse, op_norm, op_normalize]
+op_det = operator(id+5,"det", 1, u'det', place_left, limit_none, False)
+op_inverse = operator(id+6, "inverse", 1, u'inv', place_left, limit_det, False)
+op_norm = operator(id+7,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
+op_normalize = operator(id+8,"normalize", 1, u'normalize', place_left, limit_none, False)
+op_reg = [op_none, op_negation, op_trace, op_transpose,op_copy, op_det,op_inverse, op_norm, op_normalize]
 id=id+len(op_reg)
 #----------------- binary -----------------
 op_add = operator(id,"addition", 2,"+", place_middle, limit_none, False)
@@ -66,7 +73,9 @@ op_scale = operator(id+3,"multiplication", 2, u'*', place_middle, limit_none, Fa
 op_division = operator(id+4,"division", 2, u'/', place_middle, limit_small, False)
 op_modulate = operator(id+5,"modulate", 2, "modulate",  place_left, limit_none, False)
 op_doubledot= operator(id+6,"op_doubledot", 2, u':', place_middle, limit_none, False)
-op_binary = [op_add, op_subtract, op_cross, op_scale, op_division, op_modulate, op_doubledot]
+op_outer = operator(id+7,"outer_product", 2, u'⊗', place_middle, limit_none, False)
+op_inner = operator(id+8,"inner_product", 2, u'•', place_middle, limit_none, False)
+op_binary = [op_add, op_subtract, op_cross, op_scale, op_division, op_modulate, op_doubledot,op_outer,op_inner ]
 id=id+len(op_binary)
 #----------------- trig -----------------
 op_cosine = operator(id, "cosine", 1, u'cos', place_left, limit_none, True)
@@ -118,16 +127,14 @@ op_comp = operator(id,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split
 op_jacob= operator(id+1, "jacob", 1, u'∇⊗', place_left, limit_none, True)
 op_divergence = operator(id+2, "div", 1, u'∇•', place_left, limit_none, True)
 op_curl= operator(id+3, "curl", 1, u'∇×',place_left, limit_none, True)
-op_outer = operator(id+4,"outer_product", 2, u'⊗', place_middle, limit_none, False)
-op_inner = operator(id+5,"inner_product", 2, u'•', place_middle, limit_none, False)
-op_new2 = [op_comp, op_jacob,op_divergence,op_curl,op_outer, op_inner]
+op_new2 = [op_comp, op_jacob,op_divergence,op_curl]
 id=id+len(op_new2)
 
 
 #----------------- list of all operators -----------------
 # all the operators
-op_all = op_reg+op_binary+op_trig+op_diff+op_new1
-#op_all = op_reg+op_binary+op_trig+op_diff+op_new1+op_slice+op_new2
+#op_all = op_reg+op_binary+op_trig+op_diff+op_new1
+op_all = op_reg+op_binary+op_trig+op_diff+op_new1+op_slice+op_new2
 if(not pde_test):
     op_all=op_all+op_slice+op_new2
 
@@ -139,17 +146,24 @@ if(not pde_test):
 op_probe= operator(id,"probe", 1,"(pos)", place_right, limit_none, True)
 op_crossT3 = operator(id+1,"cross product twice", 1, (u'([9, 7, 8] ×', u')'), place_split, limit_none, False)
 op_concat3 = operator(id+3,"concat3", 3,"concat", place_left, limit_none, True)
+op_negationT = operator(0,"negT", 1,"-", place_left, limit_none, False)
 #------------------------------ helpers -----------------------------------------------------
 # print all the ops names and ids
 def pnt_ops():
+    e=""
     i=0
     for op1 in op_all:
         x= "\n-"+op1.name+"("+str(op1.id)+") "
         print (x)
+        e =e+x
         # see if id matches placement in list
         if(not (op1.id==i)):
             raise Exception(x+" does not match placement "+str(i))
         i+=1
+    f = open("rst/stash/results_final.txt", 'a+')
+    f.write(e)
+    f.close()
+
 # get operator from id
 def id_toOpr(n):
     opr = op_all[n]

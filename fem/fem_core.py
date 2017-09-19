@@ -118,7 +118,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         shapen = len(ty.shape)
         if(dim==1):
             return None
-        elif(shapen>1):
+        elif(shapen>2):
             return None
 
         core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length ))

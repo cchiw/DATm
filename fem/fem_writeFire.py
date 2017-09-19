@@ -29,9 +29,14 @@ foo_femGen = "foo_femGen"
 
 def translate_ty(field, exp_name, field_name):
     fldty = field.fldty
-    fnspace = space.ty_fnSpace_forFire(fldty.space)
+    fspace = fldty.space
+    fnspace = space.ty_fnSpace_forFire(fspace)
     foo = "\nV= "+fnspace 
     foo = foo+"\n"+field_name+" = Function(V).interpolate(Expression("+exp_name+"))"
+    k = fspace.k_order
+    if(k>5):
+        namedata = ""+space.ty_Json(fspace,fldty.dim) #name of json file
+        foo = foo+"\nmakejson(V, \""+namedata+"\")"
     return foo
 
 def translate_coeff(a, xyz):
@@ -114,6 +119,7 @@ def translate_exp(field):
     fldty = field.fldty
     dim = fldty.dim
     coeffs = field.coeff
+    print "coeffs", len(coeffs)
     if(dim==1):
         raise Exception ("missing dim")
     elif(fldty.id == ty_scalarF_d2.id):
@@ -135,6 +141,52 @@ def translate_exp(field):
         ss0B = get_CoeffExp_d2(coeff0)
         ss1B =get_CoeffExp_d2(coeff1)
         return "(("+ss0A+","+ss1A+")"+","+"("+ss0B+","+ss1B+"))"
+    elif(fldty.id == ty_mat3x3F_d2.id):
+        # Need to check when matrix field is implemented
+        [coeffA, coeffB, coeffC] = coeffs
+        [coeff0, coeff1, coeff2] = coeffA
+        ss0A= get_CoeffExp_d2(coeff0)
+        ss1A = get_CoeffExp_d2(coeff1)
+        ss2A = get_CoeffExp_d2(coeff2)
+        [coeff0, coeff1, coeff2] = coeffB
+        ss0B = get_CoeffExp_d2(coeff0)
+        ss1B = get_CoeffExp_d2(coeff1)
+        ss2B = get_CoeffExp_d2(coeff2)
+        [coeff0, coeff1, coeff2] = coeffC
+        ss0C = get_CoeffExp_d2(coeff0)
+        ss1C = get_CoeffExp_d2(coeff1)
+        ss2C = get_CoeffExp_d2(coeff2)
+        return "(("+ss0A+","+ss1A+","+ss2A+")"+","+"("+ss0B+","+ss1B+","+ss2B+")"+","+"("+ss0C+","+ss1C+","+ss2C+"))"
+        #return "(("+ss0A+","+ss0B+","+ss0C+")"+","+"("+ss0A+","+ss1B+","+ss1C+")"+","+"("+ss2A+","+ss2B+","+ss2C+"))"
+    elif(fldty.id == ty_mat2x2F_d3.id):
+        # works
+        # Need to check when matrix field is implemented
+        [coeffA, coeffB] = coeffs
+        [coeff0, coeff1] = coeffA
+        ss0A= get_CoeffExp_d3(coeff0)
+        ss1A = get_CoeffExp_d3(coeff1)
+        [coeff0, coeff1] = coeffB
+        ss0B = get_CoeffExp_d3(coeff0)
+        ss1B =get_CoeffExp_d3(coeff1)
+        return "(("+ss0A+","+ss1A+")"+","+"("+ss0B+","+ss1B+"))"
+    elif(fldty.id == ty_mat3x3F_d3.id):
+        # Need to check when matrix field is implemented
+        [coeffA, coeffB, coeffC] = coeffs
+        [coeff0, coeff1, coeff2] = coeffA
+        ss0A = get_CoeffExp_d3(coeff0)
+        ss1A = get_CoeffExp_d3(coeff1)
+        ss2A = get_CoeffExp_d3(coeff2)
+        [coeff0, coeff1, coeff2] = coeffB
+        ss0B = get_CoeffExp_d3(coeff0)
+        ss1B = get_CoeffExp_d3(coeff1)
+        ss2B = get_CoeffExp_d3(coeff2)
+        [coeff0, coeff1, coeff2] = coeffC
+        ss0C = get_CoeffExp_d3(coeff0)
+        ss1C = get_CoeffExp_d3(coeff1)
+        ss2C = get_CoeffExp_d3(coeff2)
+        return "(("+ss0A+","+ss1A+","+ss2A+")"+","+"("+ss0B+","+ss1B+","+ss2B+")"+","+"("+ss0C+","+ss1C+","+ss2C+"))"
+
+
     else:
         raise Exception ("not supported")
 

@@ -322,7 +322,7 @@ def oprToArgs(op1, tys):
 
 
     if(op1.arity==1):
-        if((op1.id==op_negation.id) or  (op1.id==op_copy.id)):
+        if((op1.id==op_negation.id) or  (op1.id==op_copy.id) or  (op1.id==op_none.id)):
             return (ps_unu_all)
         elif((op1.id==op_norm.id) or (op1.id==op_normalize.id)):
             return  ps_unu_all                # probe

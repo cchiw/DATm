@@ -28,20 +28,17 @@ def get_fieldinfo(app,core_fields):
     num_fields = 0
     n = len(core_fields)
     exp_fields = []
-    for e in (core_fields[:n-1]):
+    tags = ""
+    for e in (core_fields[::-1]):
         if(fty.is_Field(e.fldty)):
-            init_name = init_name+"f"
+            tags = "f"+tags
             num_fields +=1
             exp_fields.append(e)
         else:
-            init_name =init_name+"t"
-    last = core_fields[n-1]
-    if(fty.is_Field(last.fldty)):
-        init_name = init_name+"f"
-        num_fields +=1
-        exp_fields.append(last)
-    #print "init_name:",init_name,
-    #print "num_fields:", num_fields
+            if(num_fields>0):
+                tags= "t"+tags
+
+    init_name =init_name +tags
     return (init_name, num_fields,exp_fields)
 
 
@@ -104,7 +101,7 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
     # note here(creating different program)
     if(test_new):
         template =  "shared/template/foo_limit.ddro"
-            
+    shape = app.oty.shape
     res = 10
     target ="ex1"
 
@@ -118,16 +115,14 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
     dim = oty.dim
     #write python firedrake program
     initPyname = "init"+str(num_fields)
-    if(test_new):
-        initPyname = initPyname+"Sample"
-        init_name = init_name+"Sample"
     writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res)
     #run firedrake program and cvt to txt file
     makeProgram(p_out, output, target, init_name)
-
+    # if we need to make k file first
+    #useFem(p_out, shape, pos, output, target,dim, res, test_new)
     # check if the program was executed
     if(os.path.exists(target+".o") and os.path.exists(target+"_init.so")):
-        shape = app.oty.shape
+
   
         useFem(p_out, shape, pos, output, target,dim, res, test_new)
         print "pos:",pos
