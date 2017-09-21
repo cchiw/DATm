@@ -145,6 +145,8 @@ def cte_update_method(f, pos, app):
 #itype: shape of fields
 #otype: output tensor
 #op1: unary operation involved
+from sympy import diff
+import sympy as sp
 def readDiderot(p_out, app, pos, template,core_fields):
     #read diderot template
     # FIXME hardcode different fem limit here

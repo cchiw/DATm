@@ -50,7 +50,7 @@ def useFem(p_out, shape, pos, output, target,dim, res, test_new):
     print("About to call Python")
     print(p_out+".py")
     os.system("python "+p_out+".py")
-    s13 = "cp "+p_out+".py" +output+".py"
+    s13 = "cp "+p_out+".py " +output+".py"
     es = [s13]
     for i in es:
         os.system(i)

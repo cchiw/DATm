@@ -185,7 +185,7 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
     print "opname:",opname
     os.system("cp "+path+"/test.png "+path+"/"+opname+tmp)
 
-    os.system("cp "+"rst/data/vis_color.png "+path+"/"+opname+"_color"+tmp)
+    os.system("cp "+" rst/data/vis_color.png "+path+"/"+opname+"_color"+tmp)
     os.system("rm "+path+"/test.png ")
     for i in range(3):
         os.system("cp "+rst_data+"/inputfile"+str(i)+".nrrd "+path+"/inputfile_"+str(i)+".nrrd")
@@ -244,6 +244,7 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     #copy of observ programs
     filename =["observ", "vis_sample_out", "vis_color"]
     for n in filename:
+
         copyFiles(n, rst_data+"/", path+"/")
 
     # added for fem

@@ -94,14 +94,6 @@ def set_ks_ofield(g_krn, ishapes, space):
         id+=1
     return rtn
 
-#some constants for random number generation:
-#todo: move and think more about statistics
-pde_boundary_sign = lambda x : 1 if np.random.random([]) > 0.5 else (-1)
-pde_boundary_type = lambda x: 2* np.random.random_integers(0,2) #constant, quadatic, quartic 
-positive_poly_coeffs_scale = 1.5
-from scipy.stats import wishart
-pde_coeffs_mat = lambda dim:  wishart.rvs(dim,positive_poly_coeffs_scale*np.identity(dim))
-pde_coeffs_vec = lambda dim :  positive_poly_coeffs_scale*np.random.random(dim)
 
 
 
@@ -118,29 +110,48 @@ class field:
         #pde specific stuff
         self.pde_boundary = None
         self.pde_coeffs = None
-        self.s = None
+        self.m = None
+        
 
        
        
 
     def set_pde(self):
-        if self.s != None: #do not allow to happen twice
+        #some constants for random number generation:
+        boundary_poly_degree = 6 #6 is random, below 6 is a poly of this degree
+        sol_poly_degree = 6 # ibid 
+        max_boundary_poly_coeff = 1.5
+        max_sol_poly_coeff = 1.5
+        min_matrix_coeff = 0.0
+        max_matrix_coeff = 1.5
+        pde_type = 2 #0 for biharmonic, 1 for ellitpic, 2 for random
+
+        #todo:Some helper functions to generate random stuff
+        #pde_boundary_sign = lambda x : 1 if np.random.random([]) > 0.5 else (-1)
+        pde_boundary_type = lambda x:  np.random.random_integers(0,4) #constant, quadatic, quartic 
+        def r(dim):
+            A = np.random.uniform(low=min_matrix_coeff,high=max_matrix_coeff,size=(dim,dim))+np.identity(dim)
+            B = A.dot(A.T)
+            return(B)
+        pde_coeffs_mat = lambda dim:  r(dim)#wishart.rvs(dim,positive_poly_coeffs_scale*np.identity(dim))
+        pde_coeffs_vec = lambda dim : np.random.uniform(low=min_matrix_coeff,high=max_matrix_coeff,size=(dim,))
+
+        if self.m != None: #do not allow to happen twice
             return
         dim = self.fldty.dim #ought to be 2 or 3?
         d= pde_boundary_type(0)+1
-        s = pde_boundary_sign(0)
-        self.s = s
+
         
-        coords = positive_poly_coeffs_scale* np.random.random(tuple([(d+1) for x in range(dim)]))
-        coords2 = (-1.0)*positive_poly_coeffs_scale* np.random.random(tuple([(d+1) for x in range(dim)]))
+        coords = np.random.uniform(low=0.0,high=max_boundary_poly_coeff,size=tuple([(d+1) for x in range(dim)]))
+        coords2 = (-1.0)* np.random.uniform(low=0.0,high=max_sol_poly_coeff,size=tuple([(d+1) for x in range(dim)]))
         #coords = kill_odd_indices(coords)
         # print(dim,d,coords.shape)
         self.pde_boundary = poly(dim,d,coords)
         self.pde_ground_state  = poly(dim,d,coords2)
         self.m = np.sum(coords)
         from itertools import repeat
-        t = True
-        self.pde_coeffs = (np.identity(dim), np.array(list(repeat(0,dim)))) if t else (pde_coeffs_mat(dim),pde_coeffs_vec(dim)) #add I
+        t = (True if np.random.random([]) >= 0.5 else False) if pde_type==2 else (True if pde_type== 0 else False)
+        self.pde_coeffs = (np.identity(dim), np.array(list(repeat(0,dim)))) if t else (pde_coeffs_mat(dim)+np.identity(dim),pde_coeffs_vec(dim)) #add I+np.array([1.0,1.0])
 
 
         #operator?
