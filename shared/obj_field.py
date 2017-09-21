@@ -128,7 +128,8 @@ class field:
 
         #todo:Some helper functions to generate random stuff
         #pde_boundary_sign = lambda x : 1 if np.random.random([]) > 0.5 else (-1)
-        pde_boundary_type = lambda x:  np.random.random_integers(0,4) #constant, quadatic, quartic 
+        pde_boundary_type = lambda x:  np.random.random_integers(0,4) if boundary_poly_degree==6 else boundary_poly_degree #constant, quadatic, quartic
+        pde_sol_type = lambda x:  np.random.random_integers(0,4) if sol_poly_degree==6 else sol_poly_degree #constant, quadatic, quartic
         def r(dim):
             A = np.random.uniform(low=min_matrix_coeff,high=max_matrix_coeff,size=(dim,dim))+np.identity(dim)
             B = A.dot(A.T)
@@ -140,10 +141,11 @@ class field:
             return
         dim = self.fldty.dim #ought to be 2 or 3?
         d= pde_boundary_type(0)+1
+        d1 = pde_sol_type(0)+1
 
         
         coords = np.random.uniform(low=0.0,high=max_boundary_poly_coeff,size=tuple([(d+1) for x in range(dim)]))
-        coords2 = (-1.0)* np.random.uniform(low=0.0,high=max_sol_poly_coeff,size=tuple([(d+1) for x in range(dim)]))
+        coords2 = (-1.0)* np.random.uniform(low=0.0,high=max_sol_poly_coeff,size=tuple([(d1+1) for x in range(dim)]))
         #coords = kill_odd_indices(coords)
         # print(dim,d,coords.shape)
         self.pde_boundary = poly(dim,d,coords)
