@@ -58,9 +58,10 @@ def checkdiff(name, obv):
     size =len(obv[0])
     #print "no ",no," size: ",size
     pre =""
-    t= 0
+    ti= 0
 
     for i in range(no):
+        tj = 0
         for j in range(size):
             length+=1
             o1=obv[i][j]
@@ -76,15 +77,14 @@ def checkdiff(name, obv):
                     if(abs(o1-divConstant)<0.01) :
                         continue
                     else:
-                        t+=1
+                        tj+=1
                 else:
                     continue
             else:
                 continue
-
-
-    if(t==0):
-
+        if(tj>size-2):
+            ti=ti+1
+    if(ti<3):
         return  False
     else:
         return True

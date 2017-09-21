@@ -421,7 +421,8 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
                 # user specified 3 operators
                 if(len(tys)==3):
                     #specific third argument
-                    get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt)
+                    newtys = []
+                    get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, cnt)
                 else:
                     # iterate over third argument
                     iter_ty3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt)

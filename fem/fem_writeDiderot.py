@@ -81,7 +81,7 @@ def fem_inShape(f, core_fields):
             fnspace = space.ty_toSpace_forDiderot(exp.fldty.space)
             foo = foo+"\n fnspace "+V+" = "+fnspace +";"
         
-            foo = foo+"\n string "+path+" = \"fnspace_data/\";"
+            foo = foo+"\n string "+path+" = \"fnspace_data"+c_version+"/\";"
             #+exp.inputfile+"\";"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
             f.write(foo.encode('utf8'))

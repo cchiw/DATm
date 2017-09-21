@@ -93,17 +93,26 @@ def check_float(o1, c1):
             if(abs(o1-divConstant)<0.01) :
                return false
             else:
+                print "checking:", c1
                 if(not (c1.compare(zoo))):
-                    return false
-                if(not (c1.compare(I))):
+                    print "FalseA"
                     return false
                 if(c1=="nan" or c1=="inf" or c1=="-inf"):
+                    print "FalseB"
                     return false
                 elif (float('nan')==c1):
+                    print "FalseC"
+                    return false
+                (r, i) =c1.as_real_imag()
+                print "xx:",(r,i)
+                if(not (i==0)):
+                    print "FalseD"
                     return false
                 elif(math.isnan(c1)):
+                    print "FalseE"
                     return false
                 elif (float('-inf') < float(c1) < float('inf')):
+                    print "true"
                     return true
                 else:
                     return false
