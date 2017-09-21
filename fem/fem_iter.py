@@ -292,7 +292,7 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
 #        oprs = [opr_inner, opr_outer]
 #        embed_base_iter_ty2(ex, oprs, testing_frame, cnt)
 #        writeResults_outer(opr_inner, opr_outer, testing_frame, cnt)
-#    return
+    return
 #run all possible examples from 0...n
 def embed2_iter_inner(testing_frame, cnt):
     #writeTime(2)

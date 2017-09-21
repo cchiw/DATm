@@ -46,15 +46,15 @@ class space:
                 center = exp+",{"+nms+"}"
             else:
 
-                center = exp+", dim="+nms
-        return  fnspace+"("+center+")" + "\n"
+                center = exp+", shape =("+nms+")"
+        return  fnspace+"("+center+")"
 
     def ty_fnSpace_forFire(self):
         mesh = self.mesh
         element = self.element
         k_order = self.k_order
         exp = mesh+",\""+element+"\",degree="+str(k_order)
-        fnspace = space.ty_fnSpace(self, exp,False)
+        fnspace = space.ty_fnSpace(self, exp,False)+ "\n"
         return fnspace
     def ty_toSpace_forDiderot(self):
         mesh = self.mesh
@@ -64,7 +64,18 @@ class space:
         exp = mesh+", "+element+"(), "+str(k_order)
         fnspace= space.ty_fnSpace(self, exp, True)
         return fnspace
-
+    def ty_Json(self,dim):
+        mesh =""
+        if(dim==2):
+            mesh = mesh_UnitSquareMesh
+        elif(dim==3):
+            mesh =mesh_UnitCubeMesh
+        element = self.element
+        k_order = self.k_order
+        fnspace = self.fnspace
+        
+        exp = mesh+"_"+element+"_"+str(k_order)+".json"
+        return exp
 
 def dimToMesh(dim, length):
     n = str(length)
@@ -82,8 +93,8 @@ def shapeToSpace(shape):
         return fnspace_vec
     else:
         return fnspace_ten
-def coeff_tok(g_coeff_style):
-
+def coeff_tok(g_coeff_style, dim):
+    #return 4
     if(g_coeff_style==coeff_linear):
         return 1
     elif(g_coeff_style ==coeff_quadratic):
@@ -100,7 +111,7 @@ def getSpace(fldty,g_element, g_coeff_style, g_length):
     if(g_element==elem_random):
         elements = [elem_Lagrange, elem_P]
         element= elements[(random.randint(0,1))]
-    k_order = coeff_tok(g_coeff_style)+1
+    k_order = coeff_tok(g_coeff_style, dim)*dim
 
     shape = fldty.shape
     fnspace = shapeToSpace(shape)

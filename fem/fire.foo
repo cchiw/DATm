@@ -11,7 +11,7 @@ sys.path.insert(0, 'fem/')
 
 from init import *
 #from connect import *
-#from makejson import *
+from makejson import *
 
 import ctypes
 from ctypes import POINTER, c_int, c_double, c_void_p, c_float

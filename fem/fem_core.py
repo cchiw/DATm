@@ -118,7 +118,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         shapen = len(ty.shape)
         if(dim==1):
             return None
-        elif(shapen>1):
+        elif(shapen>2):
             return None
 
         core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length ))
@@ -421,7 +421,8 @@ def get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
                 # user specified 3 operators
                 if(len(tys)==3):
                     #specific third argument
-                    get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt)
+                    newtys = []
+                    get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, cnt)
                 else:
                     # iterate over third argument
                     iter_ty3(app, coeffs, ishape, tshape2, oprs, tys, testing_frame, cnt)

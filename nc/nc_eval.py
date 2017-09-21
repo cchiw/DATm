@@ -1019,7 +1019,7 @@ def unary(e):
     fn_name=e.opr
     exp = field.get_data(fld)
     dim = field.get_dim(fld)
-    if(op_copy==fn_name): #probing
+    if(op_copy.id==fn_name.id or op_none.id==fn_name.id): #probing
         return exp
     if(op_norm==fn_name):#norm
         return fn_norm(fld, dim)

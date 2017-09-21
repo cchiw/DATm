@@ -49,6 +49,17 @@ def fem_fieldShape(f, fldty):
     f.write(foo.encode('utf8'))
 
 
+def getConvertLine(f, oty, opfieldname1, i):
+    fi = fieldName(i)
+    F = "F"+fi
+    path = "path"+fi
+    V = "V"+fi
+    c="convert("+F+","+V+","+ path+");\n"
+    t = fty.toDiderot(oty, pde_test)
+    foo = t+" "+opfieldname1+" = " +c
+    f.write(foo.encode('utf8'))
+
+
 #field input line
 #f: file to write to
 #k:continuity
@@ -70,7 +81,7 @@ def fem_inShape(f, core_fields):
             fnspace = space.ty_toSpace_forDiderot(exp.fldty.space)
             foo = foo+"\n fnspace "+V+" = "+fnspace +";"
         
-            foo = foo+"\n string "+path+" = \"fnspace_data/\";"
+            foo = foo+"\n string "+path+" = \"fnspace_data"+c_version+"/\";"
             #+exp.inputfile+"\";"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
             f.write(foo.encode('utf8'))
@@ -167,6 +178,18 @@ def readDiderot(p_out, app, pos, template,core_fields):
             continue
         # operation on field
         c0 = re.search(foo_op,line)
+        if c0:
+            if((app.opr.id==op_none.id)):
+                if(app.isrootlhs):
+                    getConvertLine(f, oty, opfieldname1, 0)
+                else:
+                    if(app.lhs.opr.id==op_none.id):
+                        getConvertLine(f, oty, opfieldname1, 0)
+                    else:
+                        replaceOp(f, app)
+            else:
+                replaceOp(f, app)
+            continue
         if c0:
             #print "replace op"
             replaceOp(f, app)
