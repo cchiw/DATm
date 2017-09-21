@@ -149,7 +149,7 @@ class field:
         #coords = kill_odd_indices(coords)
         # print(dim,d,coords.shape)
         self.pde_boundary = poly(dim,d,coords)
-        self.pde_ground_state  = poly(dim,d,coords2)
+        self.pde_ground_state  = poly(dim,d1,coords2)
         self.m = np.sum(coords)
         from itertools import repeat
         t = (True if np.random.random([]) >= 0.5 else False) if pde_type==2 else (True if pde_type== 0 else False)
