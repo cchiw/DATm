@@ -295,6 +295,12 @@ def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
     dir = "r"
     write_rst(names, x, extraname, rtn1)
     labl = dir+"__"+names
+
+def rst_fp(names, x, extraname,  branch,  positions, PARAMS):
+    rtn1 = "rtn:fp "
+    dir = "r"
+    write_rst(names, x, extraname, rtn1)
+    labl = dir+"__"+names
     #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
 #raise Exception( "caught did not compile")

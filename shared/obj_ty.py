@@ -171,7 +171,7 @@ class fty:
         tspace = None
         if(not (self.dim==nonefield_dim)):
             tspace = getSpace(self,g_element,g_ucoeff, g_length )
-        return fty(self.id, self.name, self.dim, self.shape, self.tensorType, self.k, tspace)
+        return fty(self.id, self.name, self.dim, self.shape, self.tensorType, min(self.k,4), tspace)
 
 
 # ------------------------------ type name to other properties ------------------------------

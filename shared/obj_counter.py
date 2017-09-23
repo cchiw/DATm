@@ -19,6 +19,7 @@ class counter:
         self.rst_cumulative = 0
         self.rst_NA = 0
         self.rst_run = 0
+        self.rst_fp = 0
         self.cnt21=0
         self.cnt22=0
         self.cnt23=0
@@ -53,6 +54,8 @@ class counter:
     def inc_total(self):
         self.rst_l+= 1
         self.rst_t+= 1
+    def inc_fp(self):
+        self.rst_fp += 1
     def inc_locals(self, rtn):
         # collect results
         (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) = rtn
@@ -90,6 +93,7 @@ class counter:
         rst_l = self.rst_l
         rst_t = self.rst_t
         rst_cnt = self.rst_cnt
+        rst_fp = self.rst_fp
         x= "\n\n # cumulative break down  # "+str(rst_cumulative)
         if(rst_t_good >0):
             x+=" total A:"+str(rst_t_good) +"|"+str(rst_cumulative)
@@ -105,6 +109,9 @@ class counter:
             x+=" total  did not compile :"+str(rst_t_compile)+"|"+str(rst_cumulative)
         if(rst_t_run>0):
             x+=" total  did not run :"+str(rst_t_run)+"|"+str(rst_cumulative)
+        if (rst_fp >0):
+            x+= "total ran but delivered a false positive:" + str(rst_t_run)+"|"+str(rst_cumulative)
+        
         x+= " total  iterations-t: " +str(rst_t)
         x+= " total  cumulative: "+str(rst_cumulative)
         x+= " total  cnt: "+str(rst_cnt)

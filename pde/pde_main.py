@@ -49,7 +49,9 @@ def get_fieldinfo(app,core_fields):
 def useFem(p_out, shape, pos, output, target,dim, res, test_new):
     print("About to call Python")
     print(p_out+".py")
-    os.system("python "+p_out+".py")
+    a = os.system("python "+p_out+".py")
+    #ummm
+
     s13 = "cp "+p_out+".py " +output+".py"
     es = [s13]
     for i in es:
@@ -70,8 +72,12 @@ def useFem(p_out, shape, pos, output, target,dim, res, test_new):
 
     w_shape=" -s "+str(product)+" "+str(m2)
     print "w-shape:",w_shape
-    os.system("unu reshape -i cat.nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
-    #raise Exception ("stop")
+    if a == 0:
+        os.system("unu reshape -i cat.nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
+        return(a)
+    else:
+        return(1)
+        #raise Exception ("stop")
 # make program
 def makeProgram(p_out, output, target, init_name):
     
@@ -126,8 +132,8 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
     if(test_new):
         initPyname = initPyname+"Sample"
         init_name = init_name+"Sample"
-    max_test_cord= [0.0,0.0]
-    writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max_test_cord)
+
+    writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res)
     #run firedrake program and cvt to txt file
     makeProgram(p_out, output, target, init_name)
 
@@ -136,13 +142,16 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
         shape = app.oty.shape
         print("The dot o files exist.")
   
-        useFem(p_out, shape, pos, output, target,dim, res, test_new)
-        print "pos:",pos
-        if (os.path.exists(output+".txt")):
-            print("Created a text file")
-            return (1,1, startall)
+        r = useFem(p_out, shape, pos, output, target,dim, res, test_new)
+        if (r==0):
+            print "pos:",pos
+            if (os.path.exists(output+".txt")):
+                print("Created a text file")
+                return (1,1, startall,None)
+            else:
+                return (1, None, startall,None)
         else:
-           return (1, None, startall)
+            return (1,None,startall,1)
     else:
         # did not compile
-        return (None,None, startall)
+        return (None,None, startall,None)

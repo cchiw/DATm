@@ -99,7 +99,10 @@ def set_ks_ofield(g_krn, ishapes, space):
 
 #returns expression created with coefficients
 class field:
-    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff):
+    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff,boundary_poly_degree = 6, sol_poly_degree = 10,pde_type = 2):
+        #boundary_poly degree should be 6 if you rand random but otherwise in 1..5
+        #sol_poly_degree  should be 10 if you want random but otherwise anything
+        #pde type is 2 for random, but should be 1 or 0
         self.isField = isField
         self.name = name
         self.fldty = fldty
@@ -111,25 +114,28 @@ class field:
         self.pde_boundary = None
         self.pde_coeffs = None
         self.m = None
+        self.boundary_poly_degree = boundary_poly_degree
+        self.sol_poly_degree = sol_poly_degree
+        self.pde_type = pde_type
         
 
        
        
 
-    def set_pde(self):
+    def set_pde(self, boundary_poly_degree = 6, sol_poly_degree = 10,pde_type = 2):
         #some constants for random number generation:
-        boundary_poly_degree = 6 #6 is random, below 6 is a poly of this degree
-        sol_poly_degree = 6 # ibid 
+         #6 is random, below 6 is a poly of this degree
+         # ibid 
         max_boundary_poly_coeff = 1.5
         max_sol_poly_coeff = 1.5
         min_matrix_coeff = 0.0
         max_matrix_coeff = 1.5
-        pde_type = 2 #0 for biharmonic, 1 for ellitpic, 2 for random
+         #0 for biharmonic, 1 for ellitpic, 2 for random
 
         #todo:Some helper functions to generate random stuff
         #pde_boundary_sign = lambda x : 1 if np.random.random([]) > 0.5 else (-1)
-        pde_boundary_type = lambda x:  np.random.random_integers(0,4) if boundary_poly_degree==6 else boundary_poly_degree #constant, quadatic, quartic
-        pde_sol_type = lambda x:  np.random.random_integers(0,4) if sol_poly_degree==6 else sol_poly_degree #constant, quadatic, quartic
+        pde_boundary_type = lambda x:  np.random.random_integers(1,5) if boundary_poly_degree==6 else min(boundary_poly_degree,5) #constant, quadatic, quartic
+        pde_sol_type = lambda x:  np.random.random_integers(1,9) if sol_poly_degree==10 else sol_poly_degree #constant, quadatic, quartic
         def r(dim):
             A = np.random.uniform(low=min_matrix_coeff,high=max_matrix_coeff,size=(dim,dim))+np.identity(dim)
             B = A.dot(A.T)
@@ -140,8 +146,9 @@ class field:
         if self.m != None: #do not allow to happen twice
             return
         dim = self.fldty.dim #ought to be 2 or 3?
-        d= pde_boundary_type(0)+1
-        d1 = pde_sol_type(0)+1
+        d= pde_boundary_type(0)
+        d1 = pde_sol_type(0)
+        print(d,d1)
 
         
         coords = np.random.uniform(low=0.0,high=max_boundary_poly_coeff,size=tuple([(d+1) for x in range(dim)]))
@@ -152,7 +159,7 @@ class field:
         self.pde_ground_state  = poly(dim,d1,coords2)
         self.m = np.sum(coords)
         from itertools import repeat
-        t = (True if np.random.random([]) >= 0.5 else False) if pde_type==2 else (True if pde_type== 0 else False)
+        t = (True if np.random.random([]) >= 0.3 else False) if pde_type==2 else (True if pde_type== 0 else False)
         self.pde_coeffs = (np.identity(dim), np.array(list(repeat(0,dim)))) if t else (pde_coeffs_mat(dim)+np.identity(dim),pde_coeffs_vec(dim)) #add I+np.array([1.0,1.0])
 
 
@@ -217,8 +224,8 @@ class field:
         return  (len(shape)==3)
     def addSpace(self,g_element,g_ucoeff, g_length,pde_test=False ):
         f = field(self.isField, self.name, fty.addSpace(self.fldty,g_element,g_ucoeff, g_length ), self.krn, self.data, self.inputfile, self.coeff)
-        if pde_test:
-            f.set_pde()
+        if pde_test: #boundary_poly_degree = 6, sol_poly_degree = 10,pde_type = 2
+            f.set_pde(boundary_poly_degree=self.boundary_poly_degree, sol_poly_degree=self.sol_poly_degree,pde_type=self.pde_type )
         return(f)
 
             

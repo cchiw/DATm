@@ -164,10 +164,10 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max
             foo = "\nname = \"cat\""
             foo = foo+"\ntarget =\"ex1\""
             foo = foo+"\nnamenrrd = name+'.nrrd'"
-            if test_new:
-                if len(max_test_cords) != 2:
-                    print("Abort as no data regarding PDE boundary conditions not supplied")
-                    exit(1)
+            #if test_new:
+                # if len(max_test_cords) != 2:
+                #     print("Abort as no data regarding PDE boundary conditions not supplied")
+                #     exit(1)
 
             names = ""
             i = 0

@@ -86,6 +86,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
+    
     print ("############################################inside central############################################")
 
     # get global variables from testing framework
@@ -111,11 +112,12 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     # limit core fields by the ones we can rep.
     if(not (fty.is_Field(app.oty))):
         return None
-    
+    dimSave = 0
     for e in core_fieldsOrig: #go through fields and pick the kosher ones 
         ty = e.fldty
         #print "ty name:",ty.name,ty.space
         dim =ty.dim
+        dimSave = dim
         shapen = len(ty.shape)
         if(dim==1):
             return None
@@ -129,8 +131,17 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         ty = e.fldty
         e.set_pde()
         print "ty name:",ty.name,ty.space
-    
-    
+
+
+    # from obj_operator import op_gradient
+    # from obj_apply import *
+    # from itertools import repeat
+    #grad_otype = list(repeat(app.oty,dimSave))
+    #g_otype = isValid(op_gradient,grad_otype)
+    #newapp = set_UnaryApp(op_gradient,app,list(repeat(app.oty,dimSave)))
+    #newapp = apply("opr",op_gradient,app,None,None,grad_otype,False,True)
+    #print(newapp.toStr(0))
+
 
     counter.inc_cumulative(cnt)
     #print "*******************************************"
@@ -145,6 +156,9 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     l_lpos = 0.0
     l_rpos = 1.0
     positions = get_positions(dimF, l_lpos, l_rpos, g_num_pos)
+    #a = eval(newapp,positions)
+    #print(a)
+    #exit(0)
     # samples
     #create synthetic field data with diderot
     (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(core_fields, g_samples, coeffs, t_nrrdbranch, g_space)
@@ -152,18 +166,24 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     endall = time.time()
     startall=endall
     cleanup(g_output, g_p_Observ)
-    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields)
+    (isCompile, isRun, startall,fp) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields)
     if(isRun == None):
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
             #raise Exception("stop")
+            
             return 1
         else:
-            counter.inc_run(cnt)
-            rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
+            if (fp == 1):
+                counter.inc_fp(cnt)
+                rst_fp(names, x, name_describe, g_branch,  positions, PARAMS)
+                return 1
+            else:
+                counter.inc_run(cnt)
+                rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
+                return 2
 
-            return 2
     else:
         #print "read observed data"
         observed_data = observed(app, g_output)

@@ -232,4 +232,3 @@ def main_set(n_template, shift):
     tt_standard  = " time all _standard "+str(end_standard  - start_standard )
     writeall(tt_standard )
     print (tt_standard )
-

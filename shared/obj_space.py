@@ -60,8 +60,9 @@ class space:
         mesh = self.mesh
         element = self.element
         k_order = self.k_order
+        self.k_order = min(k_order,4)
         fnspace = self.fnspace
-        exp = mesh+", "+element+"(), "+str(k_order)
+        exp = mesh+", "+element+"(), "+str(min(k_order,4))
         fnspace= space.ty_fnSpace(self, exp, True)
         return fnspace
     def ty_Json(self,dim):
