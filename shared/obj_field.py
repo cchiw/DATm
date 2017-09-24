@@ -222,10 +222,10 @@ class field:
     def is_Ten3(ty0):
         shape = ty0.fldty.shape
         return  (len(shape)==3)
-    def addSpace(self,g_element,g_ucoeff, g_length,pde_test=False ):
+    def addSpace(self,g_element,g_ucoeff, g_length,pde_test=False,bpd=6,spd=10,pde=2 ):
         f = field(self.isField, self.name, fty.addSpace(self.fldty,g_element,g_ucoeff, g_length ), self.krn, self.data, self.inputfile, self.coeff)
         if pde_test: #boundary_poly_degree = 6, sol_poly_degree = 10,pde_type = 2
-            f.set_pde(boundary_poly_degree=self.boundary_poly_degree, sol_poly_degree=self.sol_poly_degree,pde_type=self.pde_type )
+            f.set_pde(boundary_poly_degree=bpd, sol_poly_degree=spd,pde_type=pde )
         return(f)
 
             

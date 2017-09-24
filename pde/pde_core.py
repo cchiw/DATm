@@ -85,7 +85,7 @@ def mk_choice_range(testing_frame, cnt):
 
 
 # already created app object
-def core2(app, coeffs, dimF, names, testing_frame, cnt):
+def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
     
     print ("############################################inside central############################################")
 
@@ -112,18 +112,22 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     # limit core fields by the ones we can rep.
     if(not (fty.is_Field(app.oty))):
         return None
-    dimSave = 0
-    for e in core_fieldsOrig: #go through fields and pick the kosher ones 
+
+    for e in core_fieldsOrig: #go through fields and pick the kosher ones #1
         ty = e.fldty
         #print "ty name:",ty.name,ty.space
         dim =ty.dim
-        dimSave = dim
+
         shapen = len(ty.shape)
-        if(dim==1):
+        
+        if(dim != 2):
             return None
         elif(shapen>1):
             return None
-        f= field.addSpace(e, g_element,g_coeff_style, g_length,pde_test=test_new )
+        f= field.addSpace(e, g_element,g_coeff_style, g_length,pde_test=test_new,bpd=bpd,spd=spd,pde=pde )
+        if(not(f.fldty.is_ScalarField())):
+            return None
+        
         core_fields.append(f) #add to list of core fields -> add space -> add relevant everything relevat to what we want-> Lagrange, P, random -> vary elements and 
         
 
@@ -210,16 +214,25 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     writetys("\n\t***"+app.name)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     counter.inc_cnt(cnt)
+    reps = 1
+    bdp = 6
+    spd = 10
+    pde = 2
     if(mk_choice_range(testing_frame, cnt)):
-        # counter.inc_cumulative(cnt)
-        rtn = core2(app, coeffs, dimF, names, testing_frame, cnt)
-            #if(rtn==None):
-            #fnames = apply.get_all_FieldTys(app)
-            #x = "_"+fnames +" |"+names
-            #name_describe = app.name
-            #g_branch = frame.get_branch(testing_frame)
-            #counter.inc_NA(cnt)
-            #rst_NA(names, x, name_describe, g_branch)
+        for x in range(reps):
+            for bpds in range(1,bdp+1):
+                for spds in range(1,spd+1):
+                    for pdes in range(1,pde+1):
+                
+                        # counter.inc_cumulative(cnt)
+                        rtn = core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=bpds,spd=spds,pde=pdes)
+                        #if(rtn==None):
+                        #fnames = apply.get_all_FieldTys(app)
+                        #x = "_"+fnames +" |"+names
+                        #name_describe = app.name
+                        #g_branch = frame.get_branch(testing_frame)
+                        #counter.inc_NA(cnt)
+                        #rst_NA(names, x, name_describe, g_branch)
 
     else:
         return

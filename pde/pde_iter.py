@@ -23,6 +23,7 @@ from base_var_ty import *
 # specific fem programs
 from pde_core import *
 pde_test=true # test pdes in femprime branche
+num_runs = 1
 
 
 #    Iterate over defined types and operators
@@ -138,7 +139,7 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
     opr_inner = oprs[0]
     opr_outer = oprs[1]
     # core
-    n_num = len(ex.tys)
+    n_num = num_runs*len(ex.tys) #a key line
     for t_num  in range(n_num):
         # current example
         (name, ishape) = get_single_exampleEx(ex, t_num)
@@ -337,7 +338,7 @@ def single_all_ops(opr_inner, testing_frame, cnt):
 
     # get built-in example
     ex = oprToEx(opr_inner, testing_frame, cnt)
-    n_num = len(ex.tys)
+    n_num =  num_runs* len(ex.tys)
 
     
     if (n_num==0):
