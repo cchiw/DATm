@@ -214,7 +214,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     writetys("\n\t***"+app.name)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     counter.inc_cnt(cnt)
-    reps = 1
+    reps = 2
     bdp = 6
     spd = 10
     pde = 2
@@ -227,7 +227,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
                         # counter.inc_cumulative(cnt)
                         rtn = core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=bpds,spd=spds,pde=pdes)
                         #if(rtn==None):
-                        #fnames = apply.get_all_FieldTys(app)
+                        #fnames = apply.gvet_all_FieldTys(app)
                         #x = "_"+fnames +" |"+names
                         #name_describe = app.name
                         #g_branch = frame.get_branch(testing_frame)
