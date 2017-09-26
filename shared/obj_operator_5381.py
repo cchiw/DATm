@@ -60,24 +60,26 @@ op_negation = operator(True,id+1,"neg", 1,"-", place_left, limit_none, False)
 op_copy= operator(True,id+2,"copy", 1,"", place_left, limit_none, False)
 op_norm = operator(True,id+3,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
 op_normalize = operator(True,id+4,"normalize", 1, u'normalize', place_left, limit_none, False)
-op_transpose = operator(True, id+5,"transpose", 1, u'transpose', place_left, limit_none, False)
-op_trace = operator(False,id+6,"trace", 1, u'trace', place_left, limit_none, False)
-op_det = operator(False,id+7,"det", 1, u'det', place_left, limit_none, False)
-op_inverse = operator(False,id+8, "inverse", 1, u'inv', place_left, limit_det, False)
-op_reg = [op_none, op_negation, op_copy, op_norm, op_normalize,op_transpose,op_trace,op_det,op_inverse]
+
+
+op_trace = operator(False,-1,"trace", 1, u'trace', place_left, limit_none, False)
+op_transpose = operator(False,-1,"transpose", 1, u'transpose', place_left, limit_none, False)
+op_det = operator(False,-1,"det", 1, u'det', place_left, limit_none, False)
+op_inverse = operator(False,-1, "inverse", 1, u'inv', place_left, limit_det, False)
+op_reg = [op_none, op_negation, op_copy, op_norm, op_normalize]
 id=id+len(op_reg)
 #----------------- binary -----------------
 op_add = operator(True,id,"addition", 2,"+", place_middle, limit_none, False)
 op_subtract = operator(True,id+1,"subtraction", 2, "-", place_middle, limit_none, False)
 op_scale = operator(True,id+2,"multiplication", 2, u'*', place_middle, limit_none, False)
 op_division = operator(True,id+3,"division", 2, u'/', place_middle, limit_small, False)
-op_cross = operator(True,id+4,"cross_product", 2, u'×', place_middle, limit_none, False)
-op_modulate = operator(True,id+5,"modulate", 2, "modulate",  place_left, limit_none, False)
 
-op_doubledot= operator(False,id+6,"op_doubledot", 2, u':', place_middle, limit_none, False)
-op_outer = operator(False,id+7,"outer_product", 2, u'⊗', place_middle, limit_none, False)
-op_inner = operator(False,id+8,"inner_product", 2, u'•', place_middle, limit_none, False)
-op_binary = [op_add, op_subtract,op_scale, op_division, op_cross, op_modulate, op_doubledot,op_outer,op_inner ]
+op_cross = operator(False,-1,"cross_product", 2, u'×', place_middle, limit_none, False)
+op_modulate = operator(False,-1,"modulate", 2, "modulate",  place_left, limit_none, False)
+op_doubledot= operator(False,-1,"op_doubledot", 2, u':', place_middle, limit_none, False)
+op_outer = operator(False,-7,"outer_product", 2, u'⊗', place_middle, limit_none, False)
+op_inner = operator(False,-8,"inner_product", 2, u'•', place_middle, limit_none, False)
+op_binary = [op_add, op_subtract,op_scale, op_division]#, op_cross, op_modulate, op_doubledot,op_outer,op_inner ]
 id=id+len(op_binary)
 #----------------- trig -----------------
 op_cosine = operator(True,id, "cosine", 1, u'cos', place_left, limit_none, True)
@@ -108,28 +110,28 @@ op_zeros_scale3 = operator(True,id+1, "zeros_scale", 1, (u'(', u'*zeros[3, 3])')
 op_max = operator(True,id+2,"max", 2,"maxF", place_left, limit_none, True)
 op_min = operator(True,id+3,"min", 2,"minF", place_left, limit_none, True)
 op_concat2 = operator(True,id+4,"concat2", 2,"concat", place_left, limit_none, True)
-op_zeros_outer2 = operator(False,id+5, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
-op_new1 = [op_zeros_add22, op_zeros_scale3,op_max, op_min, op_concat2, op_zeros_outer2]
+op_zeros_outer2 = operator(False,-5, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
+op_new1 = [op_zeros_add22, op_zeros_scale3,op_max, op_min, op_concat2]#, op_zeros_outer2]
 id=id+len(op_new1)
 
 
 #----------------- slicing -----------------
-op_slicem0 = operator(False,id,"slicem0", 1, u'[1,:]', place_right, limit_none, False)
-op_slicem1 = operator(False,id+1,"slicem1", 1, u'[:,0]', place_right, limit_none, False)
-op_slicev0 = operator(False,id+2,"slicev0", 1, u'[0]', place_right, limit_none, False)
-op_slicev1 = operator(False,id+3,"slicev1", 1, u'[1]', place_right, limit_none, False)
-op_slicet0 = operator(False,id+4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, False)
-op_slicet1 = operator(False,id+5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
-op_slice = [op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
+op_slicem0 = operator(False,-1,"slicem0", 1, u'[1,:]', place_right, limit_none, False)
+op_slicem1 = operator(False,-1,"slicem1", 1, u'[:,0]', place_right, limit_none, False)
+op_slicev0 = operator(False,-2,"slicev0", 1, u'[0]', place_right, limit_none, False)
+op_slicev1 = operator(False,-3,"slicev1", 1, u'[1]', place_right, limit_none, False)
+op_slicet0 = operator(False,-4,"slicet0", 1, u'[:,1,:]', place_right, limit_none, False)
+op_slicet1 = operator(False,-5,"slicet1", 1, u'[1,0,:]', place_right, limit_none, False)
+op_slice = []#[op_slicem0, op_slicem1, op_slicev0, op_slicev1, op_slicet0, op_slicet1]
 id=id+len(op_slice)
 
 
 ### features not fully supported on fem. expected errors
 op_jacob= operator(True,id, "jacob", 1, u'∇⊗', place_left, limit_none, True)
-op_comp = operator(True,id+1,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
-op_divergence = operator(False,id+2, "div", 1, u'∇•', place_left, limit_none, True)
-op_curl= operator(False,id+3, "curl", 1, u'∇×',place_left, limit_none, True)
-op_new2 = [op_jacob,op_comp,op_divergence,op_curl]
+op_comp = operator(False,-1,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
+op_divergence = operator(False,-2, "div", 1, u'∇•', place_left, limit_none, True)
+op_curl= operator(False,-3, "curl", 1, u'∇×',place_left, limit_none, True)
+op_new2 = [op_jacob]#[op_comp,op_divergence,op_curl]
 id=id+len(op_new2)
 
 
@@ -139,6 +141,10 @@ id=id+len(op_new2)
 op_all = op_reg+op_binary+op_trig+op_diff+op_new1+op_slice+op_new2
 
 
+
+
+if(not pde_test):
+    op_all=op_all+op_slice+op_new2
 
 
 #------------------------------ operators not included -----------------------------------------------------

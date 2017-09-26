@@ -124,6 +124,7 @@ def isProbe(exp, fld):
         return "("+exp+")"
     elif(pde_Test):
         return "inst("+exp+", pos)"
+        #return "[inst(F0, pos)[0],inst(F1, pos)[0]]"
     else:
         return "("+exp+")(pos)"
 
@@ -497,7 +498,7 @@ def check_inside(f, ff, app, pde_test):
                 # 2 layers
                 outerif = termH()
         else:
-            if(not app.lhs.isrootlhs):
+            if((not app.isrootlhs) and (not app.lhs.isrootlhs)):
                 arityO = app.lhs.opr.arity
                 arityI = app.lhs.lhs.opr.arity
                 if((arityI==2) and (arityO==2)):
@@ -506,12 +507,15 @@ def check_inside(f, ff, app, pde_test):
                     outerif = termC()
                 else:
                     outerif = termA()
-            else:
+            elif(not app.isrootlhs) :
                 arity = app.lhs.opr.arity
                 if(arity==1):
                     outerif = termA()
                 elif(arity==2):
                     outerif = termC()
+            else:
+                #fix me
+                outerif ="true"
     elif ((not app.isrootlhs) and  (app.lhs.opr==op_comp)):
         arityO = app.opr.arity
         if(not app.lhs.isrootlhs):

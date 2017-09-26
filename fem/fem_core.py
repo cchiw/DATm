@@ -191,7 +191,10 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     if(mk_choice_range(testing_frame, cnt)):
         # counter.inc_cumulative(cnt)
         rtn = core2(app, coeffs, dimF, names, testing_frame, cnt)
-        #if(rtn==None):
+        if(rtn==None):
+            print "none"
+            #else:
+            #raise Exception ("stop")
             #fnames = apply.get_all_FieldTys(app)
             #x = "_"+fnames +" |"+names
             #name_describe = app.name

@@ -144,7 +144,8 @@ def cte_update_method(f, pos, app):
         if(c_pde_Inside):
             check_inside(f, opfieldname1, app, pde_test)
         else:
-            foo= "\n\t\tout = inst(G,pos);"
+            #foo= "\n\t\tout = inst(G,pos);"
+            foo= "\n\t\tout = inst(F0,pos);"
             f.write(foo.encode('utf8'))
     else:
         check_conditional(f,  foo_out, app)
