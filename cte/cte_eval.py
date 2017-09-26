@@ -108,10 +108,12 @@ def getMaxOrMin(opr, lhs, rhs):
 # create a new app (using exp as lhs)
 # then probe at a position
 def applyProbe(exp, app, pos):
+    #print "pos: ",pos
+    #print "exp",exp.name, exp.data
     appL = apply("tmp", app.opr, exp, app.rhs, app.third, app.oty, true, true)
     (otyp1L, ortnL) = simple_apply(0, appL, pos)
     rtnL = probeField(otyp1L, pos, ortnL)
-    
+    #print "rtn",rtnL
     return rtnL
 
 #applying max|min to another operator
@@ -188,6 +190,8 @@ def eval(app, pos):
             return getMaxOrMin(app.opr,rtnL, rhs)
     elif(app.isrootlhs):
         # layer is 1
+        print app.lhs.name, app.lhs.data
+        print app.rhs.name, app.rhs.data
         (otyp1, ortn) = simple_apply(0, app, pos)
         rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
         return rtn
@@ -199,6 +203,16 @@ def eval(app, pos):
             rtn = getGradMax(app.lhs.opr, app, pos, e1,e2, shift.lhs, shift.rhs)
             return rtn
     else:
+
+
+        #print app.lhs.name, app.lhs.data
+        #print app.rhs.name, app.rhs.data
+        #rtnL = applyProbe(shift.lhs, shift, pos)
+        #rtnR = applyProbe(app.rhs, app, pos)
+        
+        #print "\n\t **** result from probing field: \n\tlhs: ",shift.name, "\n\tlhs exp:",shift.lhs.data,"\n\t apply then probe", rtnL
+        #print "\n\t **** result from probing field: \n\trhs: ",app.rhs, "\n\trhs exp:",app.rhs.data,"\n\t apply then probe", rtnR
+        
         (otyp1, ortn) = sort(app, pos) #apply operations to expressions
         rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
         return rtn
