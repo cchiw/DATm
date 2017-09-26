@@ -142,7 +142,7 @@ def cte_update_method(f, pos, app):
         base_index_field_at_positions(f, pos, dim)
         # check if position is inside
         if(c_pde_Inside):
-            check_inside(f, opfieldname1, app, pde_test)
+            check_inside(f, opfieldname1, app, true)
         else:
             #foo= "\n\t\tout = inst(G,pos);"
             foo= "\n\t\tout = inst(F0,pos);"

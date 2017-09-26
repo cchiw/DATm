@@ -428,9 +428,15 @@ def check_inside(f, ff, app, pde_test):
     def insideExpFld0(i):
         return getInside(exps[i], fieldName(i) , pos, pde_test)
     def insideExpFld1(i, j):
-        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+pos+")*"+adjs, pde_test)
+        if(c_pde_test):
+            return getInside(exps[i], fieldName(i) , "inst("+fieldName(j)+","+pos+")*"+adjs, pde_test)
+        else:
+            return getInside(exps[i], fieldName(i) , fieldName(j)+"("+pos+")*"+adjs, pde_test)
     def insideExpFld2(i, j, k):
-        return getInside(exps[i], fieldName(i) , fieldName(j)+"("+fieldName(k)+"("+pos+")*" +adjs+")*"+adjs, pde_test)
+        if(c_pde_test):
+            return getInside(exps[i], fieldName(i) , "inst("+fieldName(j)+","+"inst("+fieldName(k)+","+pos+")*" +adjs+")*"+adjs, pde_test)
+        else:
+            return getInside(exps[i], fieldName(i) , fieldName(j)+"("+fieldName(k)+"("+pos+")*" +adjs+")*"+adjs, pde_test)
     # inside expression for field in composition
     def i0():
         return insideExpFld0(0)
