@@ -79,7 +79,7 @@ def useFem(p_out, shape, pos, output, target,dim, res, test_new):
         return(1)
         #raise Exception ("stop")
 # make program
-def makeProgram(p_out, output, target, init_name):
+def makeProgram(p_out, output, target, init_name,t="d"):
     
     s0 = "cp "+init_name+"_init.c "+target+"_init.c"
     s1 = "cp observ.diderot "+target+".diderot"
@@ -91,6 +91,16 @@ def makeProgram(p_out, output, target, init_name):
     s10 = "cp "+target+".diderot "+output+".diderot"
     s11 = "cp "+target+".cxx "+output+".cxx"
     s12 = "cp "+target+"_init.c "+output+"_init.c"
+
+    #backup the program:
+    e= " rst2/"+t+"/"
+    s13 = "mkdir -p " + e
+    s14 = "cp "+target+".diderot "+e+"observ"+".diderot"
+    s15 = "cp "+target+".cxx "+e+"observ"+".cxx"
+    s16 = "cp "+target+"_init.c "+e+"observ"+"_init.c"
+    s17 = "cp "+"observ.py" + e + "observ.py"
+
+
     
     print "init_name:", init_name
     #print "target:", target
@@ -99,7 +109,7 @@ def makeProgram(p_out, output, target, init_name):
     for i in es:
         print(i)
         os.system(i)
-    es = [s10, s11, s12]
+    es = [s10, s11, s12,s13,s14,s15,s16,s17]
     for i in es:
         print(i)
         os.system(i)
@@ -108,7 +118,7 @@ def makeProgram(p_out, output, target, init_name):
 
 
 ################################ write annd run test program ################################
-def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields, max_coords=[0.0,0.0]):
+def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields, max_coords=[0.0,0.0],t="d"):
     template = c_template     # default/main template
     # note here(creating different program)
 
@@ -135,7 +145,7 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
 
     writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res)
     #run firedrake program and cvt to txt file
-    makeProgram(p_out, output, target, init_name)
+    makeProgram(p_out, output, target, init_name,t=t)
 
     # check if the program was executed
     if(os.path.exists(target+".o") and os.path.exists(target+"_init.so")):

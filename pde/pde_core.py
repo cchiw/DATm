@@ -26,6 +26,7 @@ from nc_createField import sortField
 from pde_main import writeTestPrograms
 
 
+
 #from fem_eval import eval
 sys.path.insert(0, 'cte/')
 from cte_eval import eval
@@ -51,10 +52,10 @@ def cleanup(output, p_out):
     os.system("rm  "+p_out+".txt")
 
 # results from testing
-def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
+def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch,t="d"):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
     #print "X", x
-    x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
+    x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| " + "stored additional data in rst2/" + t +" | " + rtn_1 
     writeall(x)
     print  x
 
@@ -86,6 +87,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
+    backup_lab = "d"+str(time.time())
     
     print ("############################################inside central############################################")
 
@@ -170,7 +172,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
     endall = time.time()
     startall=endall
     cleanup(g_output, g_p_Observ)
-    (isCompile, isRun, startall,fp) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields)
+    (isCompile, isRun, startall,fp) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields,t=backup_lab)
     if(isRun == None):
         if(isCompile == None):
             counter.inc_compile(cnt)
@@ -197,7 +199,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
             if(test_new):
                 correct_data = 0 #expects zero everywhere
                 rtn = compare_zero(app.oty, app.name, observed_data)
-                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
+                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch,t=backup_lab)
             else:
                 correct_data = eval(app, positions)
                 print "correct_data",correct_data
