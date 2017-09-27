@@ -122,7 +122,7 @@ def isProbe(exp, fld):
     print "fld.ty:",fld.name
     if(fty.is_Tensor(fld)):
         return "("+exp+")"
-    elif(pde_Test):
+    elif(c_pde_test):
         return "inst("+exp+", pos)"
         #return "[inst(F0, pos)[0],inst(F1, pos)[0]]"
     else:
@@ -563,7 +563,10 @@ def check_inside(f, ff, app, pde_test):
     else:
         t = ""
         if(removeCond):
-            t = "out=G(pos);"
+            if(c_pde_test):
+                t = "out = inst(G, pos);"
+            else:
+                t = "out = G(pos);"
         else:
             t = getCond(app,set)
         foo = wrap(outerif, t, oty)

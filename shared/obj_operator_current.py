@@ -61,8 +61,6 @@ op_copy= operator(True,id+2,"copy", 1,"", place_left, limit_none, False)
 op_norm = operator(True,id+3,"norm", 1, (u'|',u'|'), place_split, limit_none, False)
 op_normalize = operator(True,id+4,"normalize", 1, u'normalize', place_left, limit_none, False)
 op_transpose = operator(True, id+5,"transpose", 1, u'transpose', place_left, limit_none, False)
-
-
 op_trace = operator(False,id+6,"trace", 1, u'trace', place_left, limit_none, False)
 op_det = operator(False,id+7,"det", 1, u'det', place_left, limit_none, False)
 op_inverse = operator(False,id+8, "inverse", 1, u'inv', place_left, limit_det, False)
@@ -137,8 +135,10 @@ id=id+len(op_new2)
 
 #----------------- list of all operators -----------------
 # all the operators
-
+#op_all = op_reg+op_binary+op_trig+op_diff+op_new1
 op_all = op_reg+op_binary+op_trig+op_diff+op_new1+op_slice+op_new2
+
+
 
 
 #------------------------------ operators not included -----------------------------------------------------
