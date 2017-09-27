@@ -5,10 +5,10 @@ from base_constants import *
 
 s_layer = 1
 
-s_random_range = 0
+s_random_range =1
 from obj_frame import *
 
-cpath =  "/home/teodoro/gitcode/again/"
+cpath =  "/Users/chariseechiw/diderot/"
 # note need to change path in fem/Makefile
 
 # want to make your own testing frame?
@@ -28,9 +28,9 @@ s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
 
 # order of coefficients
-#s_coeff_style = coeff_linear
+s_coeff_style = coeff_linear
 #s_coeff_style = coeff_quadratic
-s_coeff_style = coeff_cubic
+#s_coeff_style = coeff_cubic
 
 
 #s_element = elem_Lagrange

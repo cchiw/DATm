@@ -70,11 +70,12 @@ def fem_inShape(f, core_fields):
             foo = foo+ "\n //"+field.toStr(exp)
             fnspace = space.ty_toSpace_forDiderot(exp.fldty.space)
             foo = foo+"\n fnspace "+V+" = "+fnspace +";"
-        
+    
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"
-            FF = exp.operator.replace("F",fi+"0")
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty,sub=(-1))+" "+fi+"0"+" = convert("+F+","+V+","+ path+");\n"
+            FF = exp.operator.replace("F",fi+"0")
+            #foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty,sub=(+2))+" "+fi+" = " + FF +";\n"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = " + FF +";\n"
             f.write(foo.encode('utf8'))
         else: #tensor type
