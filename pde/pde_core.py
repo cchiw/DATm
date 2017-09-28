@@ -95,7 +95,7 @@ def mk_choice_range(testing_frame, cnt):
     #newapp = apply("opr",op_gradient,app,None,None,grad_otype,False,True)
     #print(newapp.toStr(0))
 
-def core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
+def core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2,core_fields):
     backup_lab = "d"+str(time.time())
     
     print ("############################################inside central############################################")
@@ -186,7 +186,7 @@ def core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
             g_branch = frame.get_branch(testing_frame)
             counter.inc_NA(cnt)
             #rst_NA(names, x, name_describe, g_branch)
-            return 
+            return
 
 
 
@@ -252,7 +252,7 @@ def core_checktys(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=
         for bpds in range(1,bdp+1):
             for spds in range(1,spd+1):
                 for pdes in range(1,pde+1):
-                    core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2)
+                    core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2,core_fields)
 
 
 def core(app, coeffs, dimF, names, testing_frame, cnt):
