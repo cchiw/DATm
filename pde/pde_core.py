@@ -85,12 +85,23 @@ def mk_choice_range(testing_frame, cnt):
     return (not random.randint(0, random_range))
 
 
-# already created app object
-def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
+
+    # from obj_operator import op_gradient
+    # from obj_apply import *
+    # from itertools import repeat
+    #grad_otype = list(repeat(app.oty,dimSave))
+    #g_otype = isValid(op_gradient,grad_otype)
+    #newapp = set_UnaryApp(op_gradient,app,list(repeat(app.oty,dimSave)))
+    #newapp = apply("opr",op_gradient,app,None,None,grad_otype,False,True)
+    #print(newapp.toStr(0))
+
+def core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
     backup_lab = "d"+str(time.time())
     
     print ("############################################inside central############################################")
-
+    # making a test program
+    counter.inc_cumulative(cnt)
+    
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
     g_upos = frame.get_upos(testing_frame)
@@ -109,47 +120,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
     t_nrrdbranch = frame.transform_nrrdpath(testing_frame)
     t_runtimepath = frame.transform_runtimepath(testing_frame)
     
-    core_fieldsOrig = apply.get_all_Fields(app) #Orig -> collection of all fields and kaking lists
-    core_fields = []
-    # limit core fields by the ones we can rep.
-    if(not (fty.is_Field(app.oty))):
-        return None
+    
 
-    for e in core_fieldsOrig: #go through fields and pick the kosher ones #1
-        ty = e.fldty
-        #print "ty name:",ty.name,ty.space
-        dim =ty.dim
-
-        shapen = len(ty.shape)
-        
-        if(dim != 2):
-            return None
-        elif(shapen>1):
-            return None
-        f= field.addSpace(e, g_element,g_coeff_style, g_length,pde_test=test_new,bpd=bpd,spd=spd,pde=pde )
-        if(not(f.fldty.is_ScalarField())):
-            return None
-        
-        core_fields.append(f) #add to list of core fields -> add space -> add relevant everything relevat to what we want-> Lagrange, P, random -> vary elements and 
-        
-
-    for e in core_fields:
-        ty = e.fldty
-        e.set_pde()
-        print "ty name:",ty.name,ty.space
-
-
-    # from obj_operator import op_gradient
-    # from obj_apply import *
-    # from itertools import repeat
-    #grad_otype = list(repeat(app.oty,dimSave))
-    #g_otype = isValid(op_gradient,grad_otype)
-    #newapp = set_UnaryApp(op_gradient,app,list(repeat(app.oty,dimSave)))
-    #newapp = apply("opr",op_gradient,app,None,None,grad_otype,False,True)
-    #print(newapp.toStr(0))
-
-
-    counter.inc_cumulative(cnt)
     #print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
@@ -179,16 +151,16 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
             #raise Exception("stop")
             
-            return 1
+            return
         else:
             if (fp == 1):
                 counter.inc_fp(cnt)
                 rst_fp(names, x, name_describe, g_branch,  positions, PARAMS)
-                return 1
+                return
             else:
                 counter.inc_run(cnt)
                 rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
-                return 2
+                return
 
     else:
         #print "read observed data"
@@ -205,37 +177,92 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
                 print "correct_data",correct_data
                 rtn = compare(app.oty, app.name, observed_data, correct_data)
                 analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
-            return 3
+            return
         else:
-            
+            # NA
+            fnames = apply.gvet_all_FieldTys(app)
+            x = "_"+fnames +" |"+names
+            name_describe = app.name
+            g_branch = frame.get_branch(testing_frame)
+            counter.inc_NA(cnt)
+            #rst_NA(names, x, name_describe, g_branch)
+            return 
+
+
+
+# already created app object
+def core_checktys(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
+    backup_lab = "d"+str(time.time())
+    
+    print ("############################################inside central############################################")
+    
+    # get global variables from testing framework
+    g_lpos = frame.get_lpos(testing_frame)
+    g_upos = frame.get_upos(testing_frame)
+    g_num_pos = frame.get_num_pos(testing_frame)
+    g_p_Observ = frame.get_p_Observ(testing_frame)
+    g_output = frame.get_output(testing_frame)
+    g_samples = frame.get_samples(testing_frame)
+    g_branch = frame.get_branch(testing_frame)
+    g_space = frame.get_space(testing_frame)
+    g_element = frame.get_element(testing_frame)
+    g_length = frame.get_length(testing_frame)
+    g_ucoeff = frame.g_ucoeff(testing_frame)
+    g_coeff_style = frame.get_coeff_style(testing_frame)
+    # transform from global variables
+    t_isNrrd = frame.transform_isNrrd(testing_frame)
+    t_nrrdbranch = frame.transform_nrrdpath(testing_frame)
+    t_runtimepath = frame.transform_runtimepath(testing_frame)
+    
+    core_fieldsOrig = apply.get_all_Fields(app) #Orig -> collection of all fields and kaking lists
+    core_fields = []
+    # limit core fields by the ones we can rep.
+    if(not (fty.is_Field(app.oty))):
+        return None
+
+    for e in core_fieldsOrig: #go through fields and pick the kosher ones #1
+        ty = e.fldty
+        #print "ty name:",ty.name,ty.space
+        dim =ty.dim
+        
+        shapen = len(ty.shape)
+        
+        if(dim != 2):
             return None
+        elif(shapen>1):
+            return None
+        f= field.addSpace(e, g_element,g_coeff_style, g_length,pde_test=test_new,bpd=bpd,spd=spd,pde=pde )
+        if(not(f.fldty.is_ScalarField())):
+            return None
+        
+        core_fields.append(f) #add to list of core fields -> add space -> add relevant everything relevat to what we want-> Lagrange, P, random -> vary elements and
+
+
+    for e in core_fields:
+        ty = e.fldty
+        e.set_pde()
+        print "ty name:",ty.name,ty.space
+
+    # if we made it this far then the types are okay
+    reps = 2
+    bdp = 6
+    spd = 10
+    pde = 2
+    for x in range(reps):
+        for bpds in range(1,bdp+1):
+            for spds in range(1,spd+1):
+                for pdes in range(1,pde+1):
+                    core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2)
 
 
 def core(app, coeffs, dimF, names, testing_frame, cnt):
     #print "**** at core ***"
     writetys("\n\t***"+app.name)
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
-    counter.inc_cnt(cnt)
-    reps = 2
-    bdp = 6
-    spd = 10
-    pde = 2
+    #counter.inc_cnt(cnt)
     if(mk_choice_range(testing_frame, cnt)):
-        for x in range(reps):
-            for bpds in range(1,bdp+1):
-                for spds in range(1,spd+1):
-                    for pdes in range(1,pde+1):
-                
-                        # counter.inc_cumulative(cnt)
-                        rtn = core2(app, coeffs, dimF, names, testing_frame, cnt,bpd=bpds,spd=spds,pde=pdes)
-                        #if(rtn==None):
-                        #fnames = apply.gvet_all_FieldTys(app)
-                        #x = "_"+fnames +" |"+names
-                        #name_describe = app.name
-                        #g_branch = frame.get_branch(testing_frame)
-                        #counter.inc_NA(cnt)
-                        #rst_NA(names, x, name_describe, g_branch)
-
+        rtn = core_types(app, coeffs, dimF, names, testing_frame, cnt,bpd=bpds,spd=spds,pde=pdes)
+    
     else:
         return
 
