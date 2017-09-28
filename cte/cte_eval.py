@@ -190,8 +190,8 @@ def eval(app, pos):
             return getMaxOrMin(app.opr,rtnL, rhs)
     elif(app.isrootlhs):
         # layer is 1
-        print app.lhs.name, app.lhs.data
-        print app.rhs.name, app.rhs.data
+        #print app.lhs.name, app.lhs.data
+        #print app.rhs.name, app.rhs.data
         (otyp1, ortn) = simple_apply(0, app, pos)
         rtn = probeField(otyp1, pos, ortn) #evaluate expression at positions
         return rtn
