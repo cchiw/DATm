@@ -119,7 +119,7 @@ def translate_exp(field):
     fldty = field.fldty
     dim = fldty.dim
     coeffs = field.coeff
-    print "coeffs", len(coeffs)
+    #print "coeffs", len(coeffs)
     if(dim==1):
         raise Exception ("missing dim")
     elif(fldty.id == ty_scalarF_d2.id):
@@ -227,13 +227,13 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res):
                 foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target, res, stepSize ,limit)"
             else:
                 foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target)"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
             continue
         b0 = re.search(foo_femGen, line)
         if b0:
             if(test_new):
                 foo = "\nres = "+str(res)+" \nstepSize = 1.0/res \nlimit = 5"
-                f.write(foo.encode('utf8'))
+                f.write(foo)
             continue
         else:
             f.write(line)

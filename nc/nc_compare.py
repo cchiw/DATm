@@ -11,9 +11,9 @@ divConstant=7.2
 def toStr(name, var, maxdiff, sumdiff, per, s):
     # f = open("results_tmp.txt", 'a+')
     #f.write("\n\n **********")
-    #print (name)
+    ##print (name)
     x= " max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(sumdiff,4))+" per: "+str(per)
-    #print "x",x
+    ##print "x",x
     #f.write(name)
     rst_good = 0
     rst_eh = 0
@@ -93,26 +93,26 @@ def check_float(o1, c1):
             if(abs(o1-divConstant)<0.01) :
                return false
             else:
-                print "checking:", c1
+               
                 if(not (c1.compare(zoo))):
-                    print "FalseA"
+                    #print "FalseA"
                     return false
                 if(c1=="nan" or c1=="inf" or c1=="-inf"):
-                    print "FalseB"
+                    #print "FalseB"
                     return false
                 elif (float('nan')==c1):
-                    print "FalseC"
+                    #print "FalseC"
                     return false
                 (r, i) =c1.as_real_imag()
-                print "xx:",(r,i)
+                ##print "xx:",(r,i)
                 if(not (i==0)):
-                    print "FalseD"
+                    #print "FalseD"
                     return false
                 elif(math.isnan(c1)):
-                    print "FalseE"
+                    #print "FalseE"
                     return false
                 elif (float('-inf') < float(c1) < float('inf')):
-                    print "true"
+                    #print "true"
                     return true
                 else:
                     return false
@@ -130,7 +130,7 @@ def checkdiff_1(name, obv, cor):
     per = 0.0
     t = 0
     for (o1,c1) in zip(obv,cor):
-        #print ("observed:",o,"correct:",c)
+        ##print ("observed:",o,"correct:",c)
         length+=1
         if(check_float(o1, c1)):
             t+=1
@@ -153,7 +153,7 @@ def checkdiff_1(name, obv, cor):
             per  = abs(100*(maxdiff/o6))
         avg = sumdiff/length
         s=" max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(avg,4))+" "+ str(round(per,4))+"% c:"+str( c6)+ " o:"+str(o6)
-            #print("current maximal difference", maxdiff, "c: ", c, " o:",o)
+            ##print("current maximal difference", maxdiff, "c: ", c, " o:",o)
         return toStr(name,"x0", maxdiff,avg, per ,s)
 
 
@@ -189,7 +189,7 @@ def checkdiff_1Zero(name, obv):
             per  = abs(100*(maxdiff/o6))
         avg = sumdiff/length
         s=" max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(avg,4))+" "+ str(round(per,4))+"% c:"+str( c6)+ " o:"+str(o6)
-        #print("current maximal difference", maxdiff, "c: ", c, " o:",o)
+        ##print("current maximal difference", maxdiff, "c: ", c, " o:",o)
     return toStr(name,"x0", maxdiff,avg, per ,s)
 
 
@@ -198,8 +198,8 @@ def checkdiff(name, obv, cor):
     no = len(obv)
     nc = len(cor)
     if(no!=nc):
-        print "obv", obv
-        print "cor", cor
+        #print "obv", obv
+        #print "cor", cor
         raise ("different size for data- observed: "+str(no)+"correct: "+str(nc))
     maxdiff=0
     sumdiff = 0
@@ -209,7 +209,7 @@ def checkdiff(name, obv, cor):
     c6 = 0.0
     per= 0.0
     size =len(obv[0])
-    #print "no ",no," size: ",size
+    ##print "no ",no," size: ",size
     pre =""
     t= 0
 

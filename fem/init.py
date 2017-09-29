@@ -1,5 +1,6 @@
 from firedrake import *
 import ctypes
+from functools import reduce
 from os.path import abspath, dirname
 import os
 from os import path
@@ -80,7 +81,7 @@ def organizeData(f):
     opt3 = numpy.ones((nc,nc),dtype="int32")
     opt = True
     if opt:
-        setNodes = map(set,cellToNode)
+        setNodes = list(map(set,cellToNode))
         for x in r:
             s = 0
             e = nc - 1
