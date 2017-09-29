@@ -23,6 +23,7 @@ from base_constants import *
 from pde_writeDiderot import readDiderot
 from pde_helper import *
 from pde_max import *
+from pde_max import max_check
 from itertools import repeat
 foo_femfields = "foo_femfield"
 foo_femGen = "foo_femGen"
@@ -194,7 +195,8 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max
                     if lf != 1:
                         print("Abort as max test works on one field")
                         exit(1)
-                    foo = foo+"\nf{0}=Function(V)\nsolve(a == L, f{0}, bc)".format(i)
+                    foo = foo +"\nf{0}=Function(V)\nsolve(a == L, f{0}, bc)".format(i)
+                    foo = foo + max_check("f{0}".format(i))
                     foo =foo+"\n"+initPyname+"(namenrrd, f{0}, target, res, stepSize ,limit)".format(i)
                     #foo = foo + "\nfile = File(\"biharmonic.pvd\")\nfile << u"
                 

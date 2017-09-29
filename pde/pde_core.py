@@ -52,12 +52,23 @@ def cleanup(output, p_out):
     os.system("rm  "+p_out+".txt")
 
 # results from testing
-def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch,t="d"):
+#pde data = sol degree, boundary degree, type, coefficient matrix, vector
+def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch,t="d",pde_data=None):
     (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
     #print "X", x
     x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| " + "stored additional data in rst2/" + t +" | " + rtn_1 
     writeall(x)
     print  x
+    if pde_data != None:
+        f = pde_data[-1][0]
+        bp = f.pde_boundary.sympy_exp
+        sp = f.pde_ground_state.sympy_exp
+        x1 = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| " + "-\n The degree of the solution poly is {0} and the poly is {1}".format(pde_data[1],sp)
+        x1 += "- The degree of the boundary poly is {0} and the poly is {1} \n" .format(pde_data[0],bp)
+        #x1 += "- The pde is biharmonic" if pde == 0 else "The pde is biellipticial\n"
+        x1 += """The pde vector is two applications of: {0}        """.format(f.aoperator)
+        writeall(x1)
+        print(x1)
 
     
     # collect results
@@ -95,7 +106,7 @@ def mk_choice_range(testing_frame, cnt):
     #newapp = apply("opr",op_gradient,app,None,None,grad_otype,False,True)
     #print(newapp.toStr(0))
 
-def core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2,core_fields):
+def core_test(core_fields,app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2):
     backup_lab = "d"+str(time.time())
     
     print ("############################################inside central############################################")
@@ -144,7 +155,7 @@ def core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2,co
     endall = time.time()
     startall=endall
     cleanup(g_output, g_p_Observ)
-    (isCompile, isRun, startall,fp) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields,t=backup_lab)
+    (isCompile, isRun, startall,fp) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields,t=backup_lab,tt=(bpd,spd,pde))
     if(isRun == None):
         if(isCompile == None):
             counter.inc_compile(cnt)
@@ -171,7 +182,7 @@ def core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2,co
             if(test_new):
                 correct_data = 0 #expects zero everywhere
                 rtn = compare_zero(app.oty, app.name, observed_data)
-                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch,t=backup_lab)
+                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch,t=backup_lab,pde_data=(bpd,spd,pde, core_fields))
             else:
                 correct_data = eval(app, positions)
                 print "correct_data",correct_data
@@ -248,11 +259,16 @@ def core_checktys(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=
     bdp = 6
     spd = 10
     pde = 2
+    total = reps*pde*bpd*spd
     for x in range(reps):
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Starting new reptition {0} out of {1}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".format(x,reps))
         for bpds in range(1,bdp+1):
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Starting new Round of BPD type {0} out of {1}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".format(bpds,bpd+1))
             for spds in range(1,spd+1):
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Starting new Round of SPD type {0} out of {1}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".format(spds,spd+1))
                 for pdes in range(1,pde+1):
-                    core_test(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=2,core_fields)
+                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Starting new Round of PDE type {0} out of {1}!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".format(pdes,pde+1))
+                    core_test(core_fields, app, coeffs, dimF, names, testing_frame, cnt,bpd=bpds,spd=spds,pde=pdes)
 
 
 def core(app, coeffs, dimF, names, testing_frame, cnt):
@@ -261,7 +277,7 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     writetys("\n\t-"+apply.get_all_FieldTys(app)+"|"+  names)
     #counter.inc_cnt(cnt)
     if(mk_choice_range(testing_frame, cnt)):
-        rtn = core_types(app, coeffs, dimF, names, testing_frame, cnt,bpd=bpds,spd=spds,pde=pdes)
+        rtn = core_checktys(app, coeffs, dimF, names, testing_frame, cnt)
     
     else:
         return

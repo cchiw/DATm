@@ -46,9 +46,12 @@ def get_fieldinfo(app,core_fields):
 
 
 # create firedrake field
-def useFem(p_out, shape, pos, output, target,dim, res, test_new):
+def useFem(p_out, shape, pos, output, target,dim, res, test_new,t=None):
     print("About to call Python")
     print(p_out+".py")
+    if t != None and len(t) == 3:
+        #print(t)
+        print("We are currently solving a pde with boundary degree {0}, solution degree {1}, and of type {2} ".format(t[0],t[1],t[2]))
     a = os.system("python "+p_out+".py")
     #ummm
 
@@ -118,7 +121,7 @@ def makeProgram(p_out, output, target, init_name,t="d"):
 
 
 ################################ write annd run test program ################################
-def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields, max_coords=[0.0,0.0],t="d"):
+def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields, max_coords=[0.0,0.0],t="d",tt=None):
     template = c_template     # default/main template
     # note here(creating different program)
 
@@ -152,7 +155,7 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
         shape = app.oty.shape
         print("The dot o files exist.")
   
-        r = useFem(p_out, shape, pos, output, target,dim, res, test_new)
+        r = useFem(p_out, shape, pos, output, target,dim, res, test_new,t=tt)
         if (r==0):
             print "pos:",pos
             if (os.path.exists(output+".txt")):

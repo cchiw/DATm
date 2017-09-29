@@ -159,7 +159,7 @@ class field:
         self.pde_ground_state  = poly(dim,d1,coords2)
         self.m = np.sum(coords)
         from itertools import repeat
-        t = (True if np.random.random([]) >= 0.3 else False) if pde_type==2 else (True if pde_type== 0 else False)
+        t = (True if np.random.random([]) >= 0.5 else False) if pde_type==2 else (True if pde_type== 0 else False)
         self.pde_coeffs = (np.identity(dim), np.array(list(repeat(0,dim)))) if t else (pde_coeffs_mat(dim)+np.identity(dim),pde_coeffs_vec(dim)) #add I+np.array([1.0,1.0])
 
 

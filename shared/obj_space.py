@@ -52,7 +52,7 @@ class space:
     def ty_fnSpace_forFire(self):
         mesh = self.mesh
         element = self.element
-        k_order = self.k_order
+        k_order = 4 #self.k_order
         exp = mesh+",\""+element+"\",degree="+str(k_order)
         fnspace = space.ty_fnSpace(self, exp,False)+ "\n"
         return fnspace
@@ -60,9 +60,9 @@ class space:
         mesh = self.mesh
         element = self.element
         k_order = self.k_order
-        self.k_order = min(k_order,4)
+        self.k_order = 4# min(k_order,4)
         fnspace = self.fnspace
-        exp = mesh+", "+element+"(), "+str(min(k_order,4))
+        exp = mesh+", "+element+"(), "+str(self.k_order)
         fnspace= space.ty_fnSpace(self, exp, True)
         return fnspace
     def ty_Json(self,dim):
