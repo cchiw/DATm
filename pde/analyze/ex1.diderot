@@ -33,10 +33,10 @@ tensor [2] pos = [i,j]*stepSize;
 		 if(current > limit){print("The pos is: ",pos,"\n"); print("The diff is ",current-limit,"\n");
 		 tensor [] q1 = inst(a1,pos);
 		 tensor [] q2 = inst(a2,pos);
-		 tensor [] q3 = inst(a1,pos);
-		 tensor [] q4 = inst(a1,pos);
-		 tensor [] q5 = inst(a1,pos);
-		 tensor [] q6 = inst(a1,pos);		
+		 tensor [] q3 = inst(a3,pos);
+		 tensor [] q4 = inst(a4,pos);
+		 tensor [] q5 = inst(a5,pos);
+		 tensor [] q6 = inst(a6,pos);		
 		 	    print("There are several components in this:",q1,",",q2,",",q3,",",q4,",",q5,",",q6," yet the value is ",current,"\n");
 			    print("The limit is ",limit,"\n");
 		 	    out= 1;}
