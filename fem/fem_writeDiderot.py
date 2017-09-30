@@ -43,10 +43,10 @@ pde_Inside = c_pde_Inside
 ##################################### input tensor/field #####################################
 # create space for field
 def fem_fieldShape(f, fldty):
-    #print "fldty: ",fldty
+    ##print "fldty: ",fldty
     pde_test = true
     foo = fty.toDiderot(fldty,pde_test)
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 
 def getConvertLine(f, oty, opfieldname1, i):
@@ -57,7 +57,7 @@ def getConvertLine(f, oty, opfieldname1, i):
     c="convert("+F+","+V+","+ path+");\n"
     t = fty.toDiderot(oty, pde_test)
     foo = t+" "+opfieldname1+" = " +c
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 
 #field input line
@@ -68,7 +68,7 @@ def getConvertLine(f, oty, opfieldname1, i):
 def fem_inShape(f, core_fields):
     i=0
     for exp in core_fields:
-        #print "current fld",field.toStr(exp)
+        ##print "current fld",field.toStr(exp)
         dim = field.get_dim(exp)
         if (field.get_isField(exp)):
             fi = fieldName(i)
@@ -84,11 +84,13 @@ def fem_inShape(f, core_fields):
             foo = foo+"\n string "+path+" = \"fnspace_data"+c_version+"/\";"
             #+exp.inputfile+"\";"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
-            f.write(foo.encode('utf8'))
+            #f.write(foo)
+            f.write(foo)
+            
         else: #tensor type
             fem_fieldShape(f, exp.fldty)
             foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
         i+=1
 
 ################################################################
@@ -101,16 +103,16 @@ def posIn(f, dim):
     elif(dim==3):
         foo = foo+"int i, int j, int k "
     foo =foo+"){"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 
 def posLast(f, dim):
     if(dim==2):
         foo = "initially [ f(i, j) | i in 0..res-1, j in 0..res-1];"
-        f.write(foo.encode('utf8'))
+        f.write(foo)
     elif(dim==3):
         foo = "initially [ f(i, j, k) | i in 0..res-1, j in 0..res-1, k in 0..res-1]; "
-        f.write(foo.encode('utf8'))
+        f.write(foo)
 
 def posIn(f, dim):
     foo = "strand f("
@@ -119,7 +121,7 @@ def posIn(f, dim):
     elif(dim==3):
         foo = foo+"int i, int j, int k "
     foo =foo+"){"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 def fem_limits(f, dim):
     foo = "\n"
@@ -130,7 +132,7 @@ def fem_limits(f, dim):
     foo =foo+ "\n\t\t tensor [] current = inst(G,pos);"
     foo = foo+"\n\t\t if(current > limit){out= 1;}"
     foo = foo+"\n\t\t else{out= 0;}"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 ################################################################
 #witten inside update method
@@ -146,7 +148,7 @@ def cte_update_method(f, pos, app):
         else:
             #foo= "\n\t\tout = inst(G,pos);"
             foo= "\n\t\tout = inst(F0,pos);"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
     else:
         check_conditional(f,  foo_out, app)
 ################################ search Diderot template and replace foo variable name ################################
@@ -174,7 +176,7 @@ def readDiderot(p_out, app, pos, template,core_fields):
         # is it output tensor line?
         b0 = re.search(foo_outTen, line)
         if b0:
-            #print "outline"
+            ##print "outline"
             outLine(f, app)
             continue
         # operation on field
@@ -192,20 +194,20 @@ def readDiderot(p_out, app, pos, template,core_fields):
                 replaceOp(f, app)
             continue
         if c0:
-            #print "replace op"
+            ##print "replace op"
             replaceOp(f, app)
             
             continue
         # index field at position
         d0 = re.search(foo_probe,line)
         if d0:
-            #print "update_method"
+            ##print "update_method"
             cte_update_method(f, pos, app)
             continue
         # length number of positions
         e0 = re.search(foo_length, line)
         if e0:
-            #print "Set length"
+            ##print "Set length"
             nc_setLength(f,len(pos))
             continue
         f0 = re.search(foo_limits, line)
@@ -228,4 +230,4 @@ def readDiderot(p_out, app, pos, template,core_fields):
 
     ftemplate.close()
     f.close()
-    #print "sptting out to:",p_out+".diderot"
+    ##print "sptting out to:",p_out+".diderot"

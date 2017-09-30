@@ -56,7 +56,7 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
     #print "X", x
     x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
     writeall(x)
-    print  x
+    print  (x)
 
     
     # collect results
@@ -109,7 +109,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     core_fields = []
     # limit core fields by the ones we can rep.
     if(not (fty.is_Field(app.oty))):
-        return None
+        return
     
     for e in core_fieldsOrig:
         ty = e.fldty
@@ -117,16 +117,16 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         dim =ty.dim
         shapen = len(ty.shape)
         if(dim==1):
-            return None
+            return 
         elif(shapen>2):
-            return None
+            return
 
         core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length ))
         
 
     for e in core_fields:
         ty = e.fldty
-        print "ty name:",ty.name,ty.space
+        #print "ty name:",ty.name,ty.space
     
     
 
@@ -156,31 +156,25 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
             #raise Exception("stop")
-            return 1
+            return 
         else:
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
 
-            return 2
+            return 
     else:
         #print "read observed data"
         observed_data = observed(app, g_output)
-        print "observed", observed_data
+        print ("observed", observed_data)
         if(check(app, observed_data)):
-
-            if(test_new):
-                correct_data = 0 #expects zero everywhere
-                rtn = compare_zero(app.oty, app.name, observed_data)
-                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
-            else:
-                correct_data = eval(app, positions)
-                print "correct_data",correct_data
-                rtn = compare(app.oty, app.name, observed_data, correct_data)
-                analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
-            return 3
+           correct_data = eval(app, positions)
+           print ("correct_data",correct_data)
+           rtn = compare(app.oty, app.name, observed_data, correct_data)
+           analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
+           return 
         else:
             counter.inc_NA(cnt)
-            return None
+            return 
 
 
 def core(app, coeffs, dimF, names, testing_frame, cnt):
@@ -191,17 +185,6 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     if(mk_choice_range(testing_frame, cnt)):
         # counter.inc_cumulative(cnt)
         rtn = core2(app, coeffs, dimF, names, testing_frame, cnt)
-        if(rtn==None):
-            print "none"
-            #else:
-            #raise Exception ("stop")
-            #fnames = apply.get_all_FieldTys(app)
-            #x = "_"+fnames +" |"+names
-            #name_describe = app.name
-            #g_branch = frame.get_branch(testing_frame)
-            #counter.inc_NA(cnt)
-            #rst_NA(names, x, name_describe, g_branch)
-
     else:
         return
 

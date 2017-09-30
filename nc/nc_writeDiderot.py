@@ -31,7 +31,7 @@ const_out ="7.2"
 
 def nc_setLength(f, n):
     foo="int length ="+str(n)+";"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 ################################  compile and run a diderot program ################################
 # execute new diderot program

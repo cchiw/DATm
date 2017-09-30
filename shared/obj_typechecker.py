@@ -22,13 +22,13 @@ def isShapeOk(a,b):
 # note need to generalize for field and tensor operators 
 # note need to check if field for correct
 def applyUnaryOp(op1,ityps):
-    #print "inside unary op"
+    ##print "inside unary op"
     ityp1=ityps[0]
     k = ityp1.k
     dim = ityp1.dim
     ashape = ityp1.shape
     name =  "op1 "+op1.name+"("+ityp1.name+")"
-    #print "apply unary op", name, ashape
+    ##print "apply unary op", name, ashape
     space = None
     if(fty.is_OField(ityp1)):
         space = ityp1.space
@@ -45,7 +45,7 @@ def applyUnaryOp(op1,ityps):
             return err()
     # differentiation was used, k has a limit
     def mkTyp_deductk(k_limit, shape):
-        #print "inside mktyp deduct k "
+        ##print "inside mktyp deduct k "
         if(k<k_limit or len(shape)>3):
              return err()
         else:
@@ -60,7 +60,7 @@ def applyUnaryOp(op1,ityps):
     elif ((op_copy==op1) or (op_none==op1) or (op_negation==op1) or (op1==op_negationT)):
         return same() #type unaffected by operation
     elif (op_normalize==op1):
-        ##print "made it to normalize"
+        ###print "made it to normalize"
         if(fty.is_Scalar(ityp1)):
             return err()
         else:
@@ -92,7 +92,7 @@ def applyUnaryOp(op1,ityps):
         else:
             return err()
     elif(fty.is_Scalar(ityp1)):
-        #print "tshape-scalar"
+        ##print "tshape-scalar"
         if(op_sqrt==op1):
             return same()
         elif(op_cosine==op1) or (op_sine==op1)or (op_tangent==op1) or (op_acosine==op1) or (op_asine==op1)or (op_atangent==op1):
@@ -110,14 +110,14 @@ def applyUnaryOp(op1,ityps):
             else:
                 return mkTyp_deductk(1, [dim])
         elif (op_hessian==op1):
-            #print "hessian mark"
+            ##print "hessian mark"
             if(not fty.is_Field(ityp1)):
                 return err()
             if (dim==1):
                 # should actually  be gradient of gradient
                 return err()
             else:
-                print "in here"
+                #print "in here"
                 return mkTyp_deductk(2, [dim, dim])
         elif(op_inverse==op1 and InvReal):            # apply op_inverse_d2
             return same()
@@ -199,9 +199,9 @@ def applyUnaryOp(op1,ityps):
 #type of field after operation is applied
 def applyBinaryOp(op1,ityps):
 
-    ##print "---------------------  applyBinaryOp ---------"
+    ###print "---------------------  applyBinaryOp ---------"
 
-#print "---------------------  applyBinaryOp ---------"
+##print "---------------------  applyBinaryOp ---------"
 
     name =  "op1 "+op1.name
     ityp1 = ityps[0]
@@ -209,7 +209,7 @@ def applyBinaryOp(op1,ityps):
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
 
-    ##print "type name", name
+    ###print "type name", name
     (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
     if(not tf):
         return (false, "not the same dimension")
@@ -231,7 +231,7 @@ def applyBinaryOp(op1,ityps):
             return err()
         else:
             (tf, rty1) = isShapeOk(shape, dim)
-            #print tf, rty1
+            ##print tf, rty1
             if(tf):
                 rtn1 = fty.convertTySpace(rty1, k, space)
 
@@ -258,7 +258,7 @@ def applyBinaryOp(op1,ityps):
             if(not (n1==n2)):
                 return err()
             if(fty.is_Field(fldty)):
-                #print "found a field"
+                ##print "found a field"
                 if ((dim==2) and (n1==2)):
                     return mkTyp([])
                 elif((dim==3) and (n1==3)):
@@ -343,16 +343,16 @@ def applyBinaryOp(op1,ityps):
                 return err()
 #type of field after operation is applied
 def applyThirdOp(op1,ityps):
-    ##print "---------------------  applyBinaryOp ---------"
+    ###print "---------------------  applyBinaryOp ---------"
     name =  "op1 "+op1.name
-    ##print name
+    ###print name
     ityp1 = ityps[0]
     ityp2 = ityps[1]
     ityp3 = ityps[2]
     ashape = fty.get_shape(ityp1)
     bshape = fty.get_shape(ityp2)
     name += "("+ityp1.name+","+ityp2.name+","+ityp3.name+")"
-    ##print "type name", name
+    ###print "type name", name
     (tf, fldty) = find_field(ityp1,ityp2) # assures same dimension for both fields
     if(not tf):
         return (false, "not the same dimension")
@@ -367,25 +367,25 @@ def applyThirdOp(op1,ityps):
     elif (fty.is_OField(ityp2)):
         space = ityp2.space
 
-    ##print "---------------------  continue ---------"
+    ###print "---------------------  continue ---------"
     def err():
         # type not supported
         return (false, name)
     def mkTyp(shape):
-        ##print "mkTyp ", shape.name
+        ###print "mkTyp ", shape.name
         if (len(shape)>3):
             return err()
         else:
-            ##print "shape",shape, "dim",dim
+            ###print "shape",shape, "dim",dim
             (tf, rty1) = isShapeOk(shape, dim)
-            ##print "mark d "
+            ###print "mark d "
             if(tf):
                 rtn1 = fty.convertTySpace(rty1, k,space)
                 return (true, rtn1)
             else:
                 return err()
     if(op_concat3==op1):
-        ##print "concat 3 ********  here "
+        ###print "concat 3 ********  here "
         if((not fty.is_Field(ityp1)) or (not fty.is_Field(ityp2)) or (not fty.is_Field(ityp3))):
             return err()
         else:
@@ -407,12 +407,12 @@ def get_tshape(opr1, ishape, pde_test):
     elif(arity==1):
         (a,b) =  applyUnaryOp(opr1, ishape)
         #if(a):
-            #print fty.toDiderot(b,pde_test)
+            ##print fty.toDiderot(b,pde_test)
         return (a,b)
     elif(arity==2):
-        #print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
+        ##print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
         (m,n) = applyBinaryOp(opr1, ishape)
-        #print m, "->", n
+        ##print m, "->", n
         return (m,n)
     elif(arity==3):
         return applyThirdOp(opr1, ishape)

@@ -42,16 +42,16 @@ def fieldShape(f, fldty):
     #print "fldty: ",fldty
     pde_test = false
     foo = fty.toDiderot(fldty,pde_test)
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 # writing to a line
 def write_shape(pre, f, typ, lhs, rhs):
-    f.write(pre.encode('utf8'))
+    f.write(pre)
     # type of resulting field
     fieldShape(f, typ)
     # set expression equal to output field
     foo = lhs+" = "+rhs+";\n"
     # Write to file
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 ##################################### input tensor/field #####################################
 #field input line
 #f: file to write to
@@ -68,10 +68,10 @@ def inShape_base(f, exps):
         if (field.get_isField(exp)):
             krnstr = exp.krn.str
             foo= fieldName(i)+" = "+krnstr+u'⊛'+"  image(\""+exp.inputfile+".nrrd\");\n"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
         else: #tensor type
             foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
         i+=1
 #inputlist: name for input data
 def inShape(f, appC):
@@ -103,7 +103,7 @@ def outLineF(f, type):
     otype = fty.get_tensorType(type)
     foo="\toutput "
     foo+="tensor "+str(otype.shape)+" "+foo_out+" = "+outLineTF(type,"0.0")+";\n\t"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 ##################################### field declaration helpers #####################################
 # checks inside a field but not inside a tensor term
@@ -118,8 +118,8 @@ def getInside(exp, pos, name, pde_test2):
         return ""
 # probes field at variable position
 def isProbe(exp, fld):
-    print "\n\n***************************  exp", exp
-    print "fld.ty:",fld.name
+    #print "\n\n***************************  exp", exp
+    #print "fld.ty:",fld.name
     if(fty.is_Tensor(fld)):
         return "("+exp+")"
     elif(c_pde_test):
@@ -396,7 +396,7 @@ def check_conditional(f, ff, app):
     else: #twice embedded
         # there might be a conditional restraint
         foo= getCond(app, set)
-    f.write(foo.encode('utf8'))
+    f.write(foo)
     return
 ##ff: field that is being probed or tensor variable inside if statement
 def check_conditional(f, ff, app):
@@ -409,7 +409,7 @@ def check_conditional(f, ff, app):
     else: #twice embedded
         # there might be a conditional restraint
         foo= getCond(app, set)
-    f.write(foo.encode('utf8'))
+    f.write(foo)
     return
 ##################################### inside field test  #####################################
 #probes field at variable position
@@ -559,7 +559,7 @@ def check_inside(f, ff, app, pde_test):
     if(app.isrootlhs):
 
         foo = wrap(outerif,set, oty)
-        f.write(foo.encode('utf8'))
+        f.write(foo)
     else:
         t = ""
         if(removeCond):
@@ -570,7 +570,7 @@ def check_inside(f, ff, app, pde_test):
         else:
             t = getCond(app,set)
         foo = wrap(outerif, t, oty)
-        f.write(foo.encode('utf8'))
+        f.write(foo)
 
 
 ##################################### probe field at positions #####################################
@@ -586,7 +586,7 @@ def create_position(f,  dim):
         foo+="tensor [2] "+foo_pos+"=[0,0];\n"
     elif(dim==3):
         foo+="tensor [3] "+foo_pos+"=[0,0,0];\n"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 
 def base_index_field_at_positions(f, pos, dim):
@@ -615,7 +615,7 @@ def base_index_field_at_positions(f, pos, dim):
         # probes field at current position
         foo += "\t\t}\n"
         i=i+1
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 def index_field_at_positions(f, pos, app):
     oty = app.oty

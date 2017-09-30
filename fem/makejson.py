@@ -91,8 +91,7 @@ def organizeDerivatives(rf,function_space_dim,dim,n):
 
 
 def makejson(V,filename):
-    print "made it here"
-    print "print here", filename
+
     #Because python uses ** for float exponentiation and because numpy tries to translate this into an absurdly slow pow
     #we need to manually replace all the pow(x,int) -> x*x*x... 
     #so we bring out the regex expressions.

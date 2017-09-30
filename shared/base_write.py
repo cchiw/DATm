@@ -32,42 +32,43 @@ def writeTime(n, t):
 
 def write(e):
     print (e)
+    
 def writeall(e):
-    #print (e)
+    ###print (e)
     # if it works continue
     f = open("rst/stash/results_final.txt", 'a+')
     f.write(e)
     f.close()
 def writesummary(e):
-    #print (e)
+    ###print (e)
     # if it works continue
     f = open("rst/stash/results_summary.txt", 'a+')
     f.write(e)
     f.close()
 
 def writetys(e):
-    #print (e)
+    ###print (e)
     # if it works continue
     f = open("rst/stash/results_ty.txt", 'a+')
     f.write(e)
     f.close()
 
 def writeex(e):
-    print (e)
+    ##print (e)
     # if it works continue
     f = open("rst/stash/results_ex.txt", 'a+')
     f.write(e)
     f.close()
 
 def write_outer(e):
-    print (e)
+    ##print (e)
     # if it works continue
     f = open("rst/stash/results_outer.txt", 'a+')
     f.write(e)
     f.close()
 
 def write_terrible(e):
-    print (e)
+    ##print (e)
     # if it works continue
     f = open("rst/stash/results_terrible.txt", 'a+')
     f.write(e)
@@ -99,12 +100,12 @@ def writeTitle_outer3(opr_inner, opr_outer1, opr_outer2):
 def writeCumulative(cnt):
     # get cumulative breakdown
     x = counter.writeCumulativeS(cnt)
-    print (x)
+    ##print (x)
     writeall(x)
     writesummary(x)
 
 def writenow(xx):
-    print(xx)
+    ##print(xx)
     writeall(xx)
     writesummary(xx)
 
@@ -117,10 +118,10 @@ def write_results(pre, testing_frame, cnt):
     x+="\n***************************************************\n"
     writeall(x)
     writesummary(x)
-    print(x)
+    ##print(x)
     writeCumulative(cnt)
 
-# compare to ^ it print to terminal, but not to all txt files
+# compare to ^ it ##print to terminal, but not to all txt files
 def write_results_partial(pre, testing_frame, cnt):
     # global variables needed from testing framework
     g_branch = frame.get_branch(testing_frame)
@@ -128,23 +129,23 @@ def write_results_partial(pre, testing_frame, cnt):
     x+=  counter.writeLocal(cnt)
     x+="\n***************************************************\n"
     writeall(x)
-    #print(x)
+    ###print(x)
     x = counter.writeCumulativeS(cnt)
-    print(x)
+    ##print(x)
 
 
 def writeResults_inner(opr_inner, testing_frame, cnt):
-    #print "writeResults_inner"
+    ###print "writeResults_inner"
     y = Title_inner(opr_inner)
     write_results(y, testing_frame, cnt)
 
 def writeResults_outer(opr_inner, opr_outer, testing_frame, cnt):
-    #print "writeResults_outer"
+    ###print "writeResults_outer"
     y = Title_outer(opr_inner, opr_outer)
     write_results(y, testing_frame, cnt)
 
 def writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt):
-    #print "writeResults3_outer"
+    ###print "writeResults3_outer"
     y = Title_outer3(opr_inner, opr_outer1, opr_outer2)
     write_results_partial(y, testing_frame, cnt)
 
@@ -182,7 +183,7 @@ def writeToRst2(opname, name_file,  test_header, observed_data, observed_sphere,
         os.system("cp "+rst_data+"/observ"+i+" "+path+"/test"+i)
     
     tmp ="_max.png"
-    print "opname:",opname
+    ##print "opname:",opname
     os.system("cp "+path+"/test.png "+path+"/"+opname+tmp)
 
     os.system("cp "+" rst/data/vis_color.png "+path+"/"+opname+"_color"+tmp)
@@ -273,7 +274,7 @@ def write_rst(names, x, extraname, phrase):
     writeall(x)
     writesummary(x)
     write_terrible(m)
-    print (x)
+    ##print (x)
     return
 
 
