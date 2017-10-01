@@ -199,7 +199,7 @@ def get_exp(field, field_name):
 # write fem
 def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res):
     #read firedrake template
-    template = "fem/fire"+c_version+".foo"
+    template = "shared/template/fire"+c_version+".foo"
     ftemplate = open(template, 'r')
     ftemplate.readline()
     #write firedrake program

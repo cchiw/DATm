@@ -58,7 +58,7 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
     #print "X", x
     x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| " + "stored additional data in rst2/" + t +" | " + rtn_1 
     writeall(x)
-    print  x
+    print  (x)
     if pde_data != None:
         f = pde_data[-1][0]
         bp = f.pde_boundary.sympy_exp
@@ -176,7 +176,7 @@ def core_test(core_fields,app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd
     else:
         #print "read observed data"
         observed_data = observed(app, g_output)
-        print "observed", observed_data
+        print ("observed", observed_data)
         if(check(app, observed_data)):
 
             if(test_new):
@@ -185,7 +185,7 @@ def core_test(core_fields,app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd
                 analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch,t=backup_lab,pde_data=(bpd,spd,pde, core_fields))
             else:
                 correct_data = eval(app, positions)
-                print "correct_data",correct_data
+                print ("correct_data",correct_data)
                 rtn = compare(app.oty, app.name, observed_data, correct_data)
                 analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
             return
@@ -252,7 +252,7 @@ def core_checktys(app, coeffs, dimF, names, testing_frame, cnt,bpd=6,spd=10,pde=
     for e in core_fields:
         ty = e.fldty
         e.set_pde()
-        print "ty name:",ty.name,ty.space
+        print ("ty name:",ty.name,ty.space)
 
     # if we made it this far then the types are okay
     reps = 2

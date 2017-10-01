@@ -16,13 +16,14 @@ function run {
   # result files
   mkdir rst
   cp  -R ../clean/rst  .
-
+  cp  -R ../clean/fem  .
+  cp  -R ../clean/fnspace_data .
 
   # script and frame
-  cp ../cte_step.py cte_step.py
+  cp ../fem_step.py fem_step.py
   cp ../frame.py frame.py
 
-  python cte_step.py 10 $2 $3
+  python fem_step.py 10 $2 $3
 
   cp rst/stash/results_summary.txt  kitten"$1"
 
@@ -32,10 +33,10 @@ function run {
 
 
 
-run t1 0 12 &
+run t1 0 7 &
 
-run t2 12 4 &
+run t2 7 2 &
 
-run t3 16 2 &
+run t3 9 2 &
 
-run t4 18 13 &
+run t4 11 29 &

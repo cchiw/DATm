@@ -162,9 +162,7 @@ def pnt_ops():
         if(not (op1.id==i)):
             raise Exception(x+" does not match placement "+str(i))
         i+=1
-    f = open("rst/stash/results_final.txt", "w")
-    f.write(e)
-    f.close()
+ 
 
 # get operator from id
 def id_toOpr(n):

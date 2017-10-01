@@ -297,7 +297,7 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
 def embed2_iter_inner(testing_frame, cnt):
     #writeTime(2)
     n_opr = getN()
-    for t_opr in range(10):
+    for t_opr in range(n_opr):
         #t_opr = t_opr+8
         #writeTime(3)
         startx = time.time()

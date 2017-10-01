@@ -12,7 +12,7 @@ def toStr(name, var, maxdiff, sumdiff, per, s):
     # f = open("results_tmp.txt", 'a+')
     #f.write("\n\n **********")
     ##print (name)
-    x= " max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(sumdiff,4))+" per: "+str(per)
+    x= " max diff: "+str((maxdiff))+" sumdiff: "+str((sumdiff))+" per: "+str(per)
     ##print "x",x
     #f.write(name)
     rst_good = 0
@@ -152,9 +152,9 @@ def checkdiff_1(name, obv, cor):
         else:
             per  = abs(100*(maxdiff/o6))
         avg = sumdiff/length
-        s1=round(maxdiff,4)
-        s2=round(avg,4)
-        s3=round(per,4)
+        s1=(maxdiff)
+        s2=(avg)
+        s3=(per)
         s=" max diff: "+str(s1)+" sumdiff: "+str(s2)+" "+ str(s3)+"% c:"+str( c6)+ " o:"+str(o6)
         return toStr(name,"x0", maxdiff,avg, per ,s)
 
@@ -190,9 +190,9 @@ def checkdiff_1Zero(name, obv):
         else:
             per  = abs(100*(maxdiff/o6))
         avg = sumdiff/length
-        s1=round(maxdiff,4)
-        s2=round(avg,4)
-        s3=round(per,4)
+        s1=(maxdiff)
+        s2=(avg)
+        s3=(per)
         s=" max diff: "+str(s1)+" sumdiff: "+str(s2)+" "+ str(s3)+"% c:"+str( c6)+ " o:"+str(o6)
     return toStr(name,"x0", maxdiff,avg, per ,s)
 
@@ -243,9 +243,9 @@ def checkdiff(name, obv, cor):
     else:
         avg = sumdiff/length
 
-        s1=round(maxdiff,4)
-        s2=round(avg,4)
-        s3=round(per,4)
+        s1=(maxdiff)
+        s2=(avg)
+        s3=(per)
         s=" max diff: "+str(s1)+" sumdiff: "+str(s2)+" "+ str(s3)+"% c:"+str( c6)+ " o:"+str(o6)+pre
         return toStr(name,"x0", maxdiff,avg, per ,s)
 

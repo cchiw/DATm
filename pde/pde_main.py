@@ -74,7 +74,7 @@ def useFem(p_out, shape, pos, output, target,dim, res, test_new,t=None):
         m2 = len(pos)+1
 
     w_shape=" -s "+str(product)+" "+str(m2)
-    print "w-shape:",w_shape
+
     if a == 0:
         os.system("unu reshape -i cat.nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
         return(a)
@@ -105,7 +105,7 @@ def makeProgram(p_out, output, target, init_name,t="d"):
 
 
     
-    print "init_name:", init_name
+    #print "init_name:", init_name
     #print "target:", target
     
     es = [s0, s1, s2, s3, s4, s5, s6,s10, s11, s12]
@@ -157,7 +157,7 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
   
         r = useFem(p_out, shape, pos, output, target,dim, res, test_new,t=tt)
         if (r==0):
-            print "pos:",pos
+            #print "pos:",pos
             if (os.path.exists(output+".txt")):
                 print("Created a text file")
                 return (1,1, startall,None)

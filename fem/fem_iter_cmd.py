@@ -6,6 +6,8 @@ import time
 sys.path.insert(0, 'shared/')
 sys.path.insert(0, 'visver/')
 sys.path.insert(0, 'setTest/')
+sys.path.insert(0, 'fem')
+
 # shared base programs
 from obj_apply import *
 from obj_ex import  *
