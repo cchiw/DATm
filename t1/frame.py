@@ -3,12 +3,13 @@
 import sys
 from base_constants import *
 
-s_layer = 2
+s_layer = 1
 
-s_random_range = 99
+s_random_range =3
 from obj_frame import *
 
 cpath =  "/Users/chariseechiw/diderot/"
+# note need to change path in fem/Makefile
 
 # want to make your own testing frame?
 # go for it!
@@ -27,14 +28,14 @@ s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"
 
 # order of coefficients
-#s_coeff_style = coeff_linear
+s_coeff_style = coeff_linear
 #s_coeff_style = coeff_quadratic
-s_coeff_style = coeff_cubic
+#s_coeff_style = coeff_cubic
 
 
 #s_element = elem_Lagrange
-s_element = elem_P
-#s_element = elem_random
+#s_element = elem_P
+s_element = elem_random
 
 s_length = 4
 # kernel

@@ -333,32 +333,34 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     p_Orig=  e_Orig+".diderot"
 
     #os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
+ 
+    if (not (c_pde_test)):
+        # remove executable
+        #os.system(" rm "+e_Orig)
+        # compile program
+        os.system(nrrdbranch+" --log "+p_Orig)
 
+        # comment out if executable exists
+        os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
+        os.system(nrrdbranch+" --log "+p_Orig)
+        # does executable exist
 
-    # remove executable
-    #os.system(" rm "+e_Orig)
-    # compile program
+        endall = time.time()
+        tall53 =(endall - startall)
+        startall=endall
 
-    os.system(nrrdbranch+" --log "+p_Orig)
-
-
-    # comment out if executable exists
-    os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
-    os.system(nrrdbranch+" --log "+p_Orig)
-    # does executable exist
-
-    endall = time.time()
-    tall53 =(endall - startall)
-    startall=endall
-
-    txtfile = orig+".txt"
-    os.system("./"+e_Orig+PARAMS+"| unu save -f nrrd -o "+outputnrrd)
-    os.system("grep \"compiler\" "+e_Orig+".log >> catcreateall.txt")
+        txtfile = orig+".txt"
+        os.system("./"+e_Orig+PARAMS+"| unu save -f nrrd -o "+outputnrrd)
+        os.system("grep \"compiler\" "+e_Orig+".log >> catcreateall.txt")
+    else:
+        endall = time.time()
+        tall53 =(endall - startall)
+        startall=endall
     endall = time.time()
     tall54 = (endall - startall)
     startall=endall
 
-     #os.system("unu reshape -i "+outputnrrd+w_shape+" | unu save -f text -o "+txtfile)
+
     endall = time.time()
     tall55 = (endall - startall)
     startall=endall

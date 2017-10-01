@@ -138,7 +138,6 @@ def cmd(layer, testing_frame, cnt, shift, args):
             opr_outer1 = id_toOpr(t_outer1)
             opr_outer2 = id_toOpr(t_outer2)
             Title_outer3(opr_inner, opr_outer1, opr_outer2)
-
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer1, opr_outer2]
             (name, ishape) = get_single_exampleEx(ex, t_num)
@@ -207,10 +206,14 @@ def main_iter(n_frame, shift):
     args = int(sys.argv[shift])
     cmd(layer, testing_frame, cnt, shift, args)
     end_standard = time.time()
+
     tt_standard  = " time all _standard "+str(end_standard  - start_standard )
     writeall(tt_standard )
     print (tt_standard )
-
+    
+    x = counter.writeCumulativeS(cnt)
+    writeFinalCumulative(x)
+    writeFinalCumulative(tt_standard)
 
 
 # iterating over the different types
@@ -232,4 +235,7 @@ def main_set(n_template, shift):
     tt_standard  = " time all _standard "+str(end_standard  - start_standard )
     writeall(tt_standard )
     print (tt_standard )
+    x = counter.writeCumulativeS(cnt)
+    writeFinalCumulative(x)
+    writeFinalCumulative(tt_standard)
 

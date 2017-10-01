@@ -152,8 +152,10 @@ def checkdiff_1(name, obv, cor):
         else:
             per  = abs(100*(maxdiff/o6))
         avg = sumdiff/length
-        s=" max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(avg,4))+" "+ str(round(per,4))+"% c:"+str( c6)+ " o:"+str(o6)
-            ##print("current maximal difference", maxdiff, "c: ", c, " o:",o)
+        s1=round(maxdiff,4)
+        s2=round(avg,4)
+        s3=round(per,4)
+        s=" max diff: "+str(s1)+" sumdiff: "+str(s2)+" "+ str(s3)+"% c:"+str( c6)+ " o:"+str(o6)
         return toStr(name,"x0", maxdiff,avg, per ,s)
 
 
@@ -188,8 +190,10 @@ def checkdiff_1Zero(name, obv):
         else:
             per  = abs(100*(maxdiff/o6))
         avg = sumdiff/length
-        s=" max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(avg,4))+" "+ str(round(per,4))+"% c:"+str( c6)+ " o:"+str(o6)
-        ##print("current maximal difference", maxdiff, "c: ", c, " o:",o)
+        s1=round(maxdiff,4)
+        s2=round(avg,4)
+        s3=round(per,4)
+        s=" max diff: "+str(s1)+" sumdiff: "+str(s2)+" "+ str(s3)+"% c:"+str( c6)+ " o:"+str(o6)
     return toStr(name,"x0", maxdiff,avg, per ,s)
 
 
@@ -238,7 +242,11 @@ def checkdiff(name, obv, cor):
         return  (rtn, 0, 0, 0, 0, 1)
     else:
         avg = sumdiff/length
-        s=" max diff: "+str(round(maxdiff,4))+" sumdiff: "+str(round(avg,4))+" "+ str(round(per,4))+"% c:"+str( c6)+ " o:"+str(o6)+pre
+
+        s1=round(maxdiff,4)
+        s2=round(avg,4)
+        s3=round(per,4)
+        s=" max diff: "+str(s1)+" sumdiff: "+str(s2)+" "+ str(s3)+"% c:"+str( c6)+ " o:"+str(o6)+pre
         return toStr(name,"x0", maxdiff,avg, per ,s)
 
 #chose function based on length of output

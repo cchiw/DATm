@@ -104,6 +104,14 @@ def writeCumulative(cnt):
     writeall(x)
     writesummary(x)
 
+def writeFinalCumulative(x):
+    f = open("rst/stash/results_cnt.txt", 'a+')
+    f.write(x)
+    f.close()
+
+
+    
+
 def writenow(xx):
     ##print(xx)
     writeall(xx)
