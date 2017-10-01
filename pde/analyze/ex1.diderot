@@ -1,0 +1,47 @@
+
+tensor[2] e1 = [1,0];
+tensor[2] e2 = [0,1];
+ input fem#5(2)[] FF0;
+ //Field:field #4(2)[] F0=-5*x*y - 2*x + 3*y - 3
+ fnspace VF0 = FunctionSpace(UnitSquareMesh(4,4), Lagrange(), 4);
+ string pathF0 = "../../fnspace_data/";
+ ofield#5(2)[] F00 = convert(FF0,VF0,pathF0);
+
+ ofield#4(2)[] F0 = 0.712199547962*(e1•(∇F00)) + 4.62503594086*(e1•(e1•(∇⊗(∇F00)))) + 1.87094539568*(e2•(e1•(∇⊗(∇F00)))) + 0.502249940616*(e2•(∇F00)) + 1.87094539568*(e1•(e2•(∇⊗(∇F00)))) + 3.82417337049*(e2•(e2•(∇⊗(∇F00))));
+ofield#4(2)[]G = (F0);
+ofield#4(2)[] a1 = 0.712199547962*(e1•(∇F00));
+ofield#3(2)[] a2 = 4.62503594086*(e1•(e1•(∇⊗(∇F00))));
+ofield#3(2)[] a3 =  1.87094539568*(e2•(e1•(∇⊗(∇F00))));
+ofield#4(2)[] a4 =  0.502249940616*(e2•(∇F00));
+ofield#3(2)[] a5 =  1.87094539568*(e1•(e2•(∇⊗(∇F00))));
+ofield#3(2)[] a6 = 3.82417337049*(e2•(e2•(∇⊗(∇F00))));
+
+
+
+input int res;
+input real stepSize;
+input real limit;
+
+strand f(int i, int j){
+	output tensor [] out = 0.0;
+	    update {
+
+tensor [2] pos = [i,j]*stepSize;
+		 tensor [] current = inst(G,pos);
+
+		 
+		 if(current > limit){print("The pos is: ",pos,"\n"); print("The diff is ",current-limit,"\n");
+		 tensor [] q1 = inst(a1,pos);
+		 tensor [] q2 = inst(a2,pos);
+		 tensor [] q3 = inst(a3,pos);
+		 tensor [] q4 = inst(a4,pos);
+		 tensor [] q5 = inst(a5,pos);
+		 tensor [] q6 = inst(a6,pos);		
+		 	    print("There are several components in this:",q1,",",q2,",",q3,",",q4,",",q5,",",q6," yet the value is ",current,"\n");
+			    print("The limit is ",limit,"\n");
+		 	    out= 1;}
+		 else{out= 0;}
+        stabilize;
+    }
+}
+initially [ f(i, j) | i in 0..res-1, j in 0..res-1];
