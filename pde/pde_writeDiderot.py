@@ -47,7 +47,7 @@ def fem_fieldShape(f, fldty):
     #print "fldty: ",fldty
     pde_test = true
     foo = fty.toDiderot(fldty,pde_test)
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 
 #field input line
@@ -77,11 +77,11 @@ def fem_inShape(f, core_fields):
             FF = exp.operator.replace("F",fi+"0")
             #foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty,sub=(+2))+" "+fi+" = " + FF +";\n"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = " + FF +";\n"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
         else: #tensor type
             fem_fieldShape(f, exp.fldty)
             foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
         i+=1
 
 ################################################################
@@ -94,16 +94,16 @@ def posIn(f, dim):
     elif(dim==3):
         foo = foo+"int i, int j, int k "
     foo =foo+"){"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 
 def posLast(f, dim):
     if(dim==2):
         foo = "initially [ f(i, j) | i in 0..res-1, j in 0..res-1];"
-        f.write(foo.encode('utf8'))
+        f.write(foo)
     elif(dim==3):
         foo = "initially [ f(i, j, k) | i in 0..res-1, j in 0..res-1, k in 0..res-1]; "
-        f.write(foo.encode('utf8'))
+        f.write(foo)
 
 def posIn(f, dim):
     foo = "strand f("
@@ -112,7 +112,7 @@ def posIn(f, dim):
     elif(dim==3):
         foo = foo+"int i, int j, int k "
     foo =foo+"){"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 def fem_limits(f, dim,application): # look at base_writeDierot at 270 and getCond -> hand it set -> frame 
     foo = "\n"
@@ -124,7 +124,7 @@ def fem_limits(f, dim,application): # look at base_writeDierot at 270 and getCon
     #foo = foo + "\n\t\tofield#3(2)[2,2] a = ∇⊗∇F00;\n\t\t print(inst(a,pos),current);"
     foo = foo+"\n\t\t if(current > limit){out= 1;}"
     foo = foo+"\n\t\t else{out= 0;}"
-    f.write(foo.encode('utf8'))
+    f.write(foo)
 
 ################################################################
 #witten inside update method
@@ -139,7 +139,7 @@ def cte_update_method(f, pos, app):
             check_inside(f, opfieldname1, app, pde_test)
         else:
             foo= "\n\t\tout = inst(G,pos);"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
     else:
         check_conditional(f,  foo_out, app)
 ################################ search Diderot template and replace foo variable name ################################

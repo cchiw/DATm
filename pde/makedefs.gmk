@@ -1,13 +1,13 @@
 SHELL =		/bin/sh
 
-DIDEROTC =	/home/teodoro/gitcode/again/femprime/bin/diderotc --log --double
+DIDEROTC =	/Users/chariseechiw/diderot/femprime/bin/diderotc --log --double
 
 CC =		clang
 CXX =		clang++ -std=gnu++11
 CXXFLAGS =	-g -O2 -fPIC
-INCLUDES =	-I/home/teodoro/gitcode/again/femprime/include -I/usr/local/include
+INCLUDES =	-I/Users/chariseechiw/diderot/femprime/include -I/usr/local/include
 LDFLAGS =	-L/usr/local/lib -L/opt/local/lib -L/usr/lib/
-LIBS =		-lteem -lpng -lz -lbz2
+LIBS =		-lteem  -lz -lbz2
 CPPFLAGS =	 $(INCLUDES) -fPIC
 
 

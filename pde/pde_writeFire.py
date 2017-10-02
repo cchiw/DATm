@@ -202,13 +202,13 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res,max
                 
                 else:
                     foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target)"
-            f.write(foo.encode('utf8'))
+            f.write(foo)
             continue
         b0 = re.search(foo_femGen, line)
         if b0:
             if(test_new):
                 foo = "\nres = "+str(res)+" \nstepSize = 1.0/res \nlimit = 5"
-                f.write(foo.encode('utf8'))
+                f.write(foo)
             continue
         else:
             f.write(line)
