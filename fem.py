@@ -6,31 +6,39 @@ os.system("source ../../fire/firedrake/bin/activate")
 sys.path.insert(0, 'base/')
 sys.path.insert(0,'fem/')
 
-from fem_iter_cmd import main_set
+from fem_iter_cmd import main_set, loop_main
+
+pset=[99,19,9,0]
+for p in pset:
+    n = 5
+    layer =1
+    loop_main(n,layer, p)
 
 
-# for quick use
-# assumes first framework, and iterative search of test case
-# first command is the number of arguments 
-n_template = 0
-shift = 1 # next command number
-os.system("rm -r rst/stash")
-os.system("rm -rf rst")
+pset=[99,19,9,0]
+for p in pset:
+    n = 1
+    layer =2
+    loop_main(n,layer, p)
 
-os.system("mkdir rst")
-os.system("mkdir rst/stash")
-os.system("mkdir rst/tmp")
-os.system("mkdir rst/data")
+pset=[99]
+for p in pset:
+    n = 1
+    layer =3
+    loop_main(n,layer, p)
 
-main_set(n_template, shift)
 
-os.system("rm *.pyc ")
-os.system("rm */*.pyc ")
-os.system("rm *.o ")
-os.system("rm *.cxx ")
-os.system("rm *.log ")
-#os.system("rm *.diderot")
-#os.system("rm p_observ* ")
-os.system("rm symb_f*")
-os.system("rm *.nrrd")
-os.system("rm tmp*")
+pset=[99,19,9,0]
+for p in pset:
+    n = 4
+    layer =2
+    loop_main(n,layer, p)
+
+pset=[99]
+for p in pset:
+    n = 4
+    layer =3
+    loop_main(n,layer, p)
+
+#main_set()
+    
