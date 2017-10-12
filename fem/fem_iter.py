@@ -295,11 +295,9 @@ def embed_base_iter_outer(ex, opr_inner, testing_frame, cnt):
     return
 #run all possible examples from 0...n
 def embed2_iter_inner(testing_frame, cnt):
-    #writeTime(2)
     n_opr = getN()
     for t_opr in range(n_opr):
-        #t_opr = t_opr+8
-        #writeTime(3)
+        t_opr = t_opr
         startx = time.time()
         opr_inner = (id_toOpr(t_opr))
         ex = oprToEx(opr_inner, testing_frame, cnt)
@@ -348,3 +346,14 @@ def single_all_ops(opr_inner, testing_frame, cnt):
     for t_num  in range(n_num):
         single_specific_ex(ex, opr_inner, t_num, testing_frame, cnt)
     return
+
+
+
+def embed2_iter_inner_setrange_layer1(t_start, t_range, testing_frame, cnt):
+    n_opr = getN()
+    for t_opr in range(t_range):
+        t_opr+=t_start
+        startx = time.time()
+        opr_inner = (id_toOpr(t_opr))
+        single_all_ops(opr_inner, testing_frame, cnt)
+

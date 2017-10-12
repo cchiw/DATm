@@ -105,13 +105,11 @@ id=id+len(op_diff)
 #----------------- new features that work on branch -----------------
 op_zeros_add22 = operator(True,id, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
 op_zeros_scale3 = operator(True,id+1, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
-op_concat2 = operator(True,id+2,"concat2", 2,"concat", place_left, limit_none, True)
-op_zeros_outer2 = operator(False,id+3, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
-
-op_max = operator(True,-1,"max", 2,"maxF", place_left, limit_none, True)
-op_min = operator(True,-1,"min", 2,"minF", place_left, limit_none, True)
-op_new1 = [op_zeros_add22, op_zeros_scale3, op_concat2, op_zeros_outer2]
-
+op_max = operator(True,id+2,"max", 2,"maxF", place_left, limit_none, True)
+op_min = operator(True,id+3,"min", 2,"minF", place_left, limit_none, True)
+op_concat2 = operator(True,id+4,"concat2", 2,"concat", place_left, limit_none, True)
+op_zeros_outer2 = operator(False,id+5, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
+op_new1 = [op_zeros_add22, op_zeros_scale3,op_max, op_min, op_concat2, op_zeros_outer2]
 id=id+len(op_new1)
 
 

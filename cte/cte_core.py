@@ -34,8 +34,7 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
     #print "X", x
     x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
     writeall(x)
-    print  x
-
+    print  (x)
     
     # collect results
     counter.inc_locals(cnt, rtn)

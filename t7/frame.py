@@ -3,9 +3,9 @@
 import sys
 from base_constants import *
 
-s_layer =3
+s_layer = 2
 
-s_random_range = 99
+s_random_range =99
 from obj_frame import *
 cpath =  "/Users/chariseechiw/diderot/"
 # note need to change path in fem/Makefile

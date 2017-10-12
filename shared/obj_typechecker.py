@@ -142,7 +142,7 @@ def applyUnaryOp(op1,ityps):
         elif(op_divergence==op1):
             if(not fty.is_Field(ityp1)):
                 return err()
-            return mkTyp_deductk(1, [])
+            return mkTyp_deductk(0, [])
         elif(op_zeros_outer2==op1):
             return  mkTyp([2,n1])
         elif(op_crossT3==op1):

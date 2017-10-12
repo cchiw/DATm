@@ -43,14 +43,22 @@ def get_fieldinfo(app,core_fields):
 
 
 # create firedrake field
-def useFem(p_out, shape, pos, output, target,dim, res, test_new):
+def useFem(p_out, shape, pos, output, target,dim, res, test_new, startall):
     
     os.system("python "+p_out+".py")
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("run python program", tall)
+    startall=endall
+    
     s13 = "cp "+p_out+".py" +output+".py"
     es = [s13]
     for i in es:
         os.system(i)
-    
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("copy python program", tall)
+    startall=endall
     # convert to txt file
     product = 1
     for x in shape:
@@ -65,11 +73,18 @@ def useFem(p_out, shape, pos, output, target,dim, res, test_new):
         m2 = len(pos)+1
 
     w_shape=" -s "+str(product)+" "+str(m2)
-    #print "w-shape:",w_shape
+
+    
+   
     os.system("unu reshape -i cat.nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("cvt output", tall)
+
+    
     #raise Exception ("stop")
 # make program
-def makeProgram(p_out, output, target, init_name):
+def makeProgram(p_out, output, target, init_name, startall):
     
     s0 = "cp "+init_name+"_init.c "+target+"_init.c"
     s1 = "cp observ.diderot "+target+".diderot"
@@ -85,12 +100,32 @@ def makeProgram(p_out, output, target, init_name):
     #print "init_name:", init_name
     ##print "target:", target
     
-    es = [s0, s1, s2, s3, s4, s5, s6,s10, s11, s12]
+    es = [s0, s1, s2, s3]
     for i in es:
         os.system(i)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("set up diderot programs", tall)
+    startall=endall
+
+    es = [s4, s6]
+    for i in es:
+        os.system(i)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("make diderot program", tall)
+    startall=endall
+        
+
+        
     es = [s10, s11, s12]
     for i in es:
         os.system(i)
+
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("copy relalated program", tall)
+    startall=endall       
 # read output of firedrake program
 
 
@@ -107,8 +142,19 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
 
     # write new diderot program
     readDiderot(p_out, app, pos,template,core_fields)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("read diderot", tall)
+    startall=endall
 
+    
     (init_name, num_fields, fields) = get_fieldinfo(app, core_fields)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("get field info", tall)
+    startall=endall
+
+    
     # output type
     oty = app.oty
     shape = oty.shape
@@ -116,20 +162,28 @@ def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, te
     #write python firedrake program
     initPyname = "init"+str(num_fields)
     writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res)
+    endall = time.time()
+    tall = str(endall - startall)
+    writeTime("write fem", tall)
+    startall=endall
+
     #run firedrake program and cvt to txt file
-    makeProgram(p_out, output, target, init_name)
+    makeProgram(p_out, output, target, init_name, startall)
+    startall = time.time()
     # if we need to make k file first
     #useFem(p_out, shape, pos, output, target,dim, res, test_new)
     # check if the program was executed
     if(os.path.exists(target+".o") and os.path.exists(target+"_init.so")):
 
   
-        useFem(p_out, shape, pos, output, target,dim, res, test_new)
-        #print "pos:",pos
+        useFem(p_out, shape, pos, output, target,dim, res, test_new, startall)
         if(os.path.exists(output+".txt")):
            return (1,1, startall)
         else:
            return (1, None, startall)
     else:
         # did not compile
+        writeTime("hold", "0")
+        writeTime("hold", "0")
+        writeTime("hold", "0")
         return (None,None, startall)

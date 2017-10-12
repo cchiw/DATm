@@ -16,8 +16,8 @@ function run {
   # result files
   mkdir rst
   cp  -R ../clean/rst  .
-  cp  -R ../clean/fem  .
-  cp  -R ../clean/fnspace_data .
+  cp  -R ../fem  .
+  cp  -R ../fnspace_data .
 
   # script and frame
   cp ../fem_step.py fem_step.py
@@ -33,10 +33,10 @@ function run {
 
 
 
-run t1 0 7 &
+run t1 0 9 &
 
-run t2 7 2 &
+run t2 9 3 &
 
-run t3 9 2 &
+run t3 12  5  &
 
-run t4 11 29 &
+run t4 17 24 &

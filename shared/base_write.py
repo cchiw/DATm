@@ -24,11 +24,11 @@ def Title_num(opr_inner, opr_outer):
 
 
 def writeTime(n, t):
-    if (n>19):
-        e="\n"+ t
-        f = open("rst/stash/results_time.txt", 'a+')
-        f.write(e)
-        f.close()
+    return 
+    e="\n"+ (n)+",\t\t\t"+t
+    f = open("rst/stash/results_time.txt", 'a+')
+    f.write(e)
+    f.close()
 
 def write(e):
     print (e)
@@ -105,7 +105,7 @@ def writeCumulative(cnt):
     writesummary(x)
 
 def writeFinalCumulative(x):
-    f = open("rst/stash/results_cnt.txt", 'a+')
+    f = open("../../results_multiple_time.txt", 'a+')
     f.write(x)
     f.close()
 

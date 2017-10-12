@@ -52,19 +52,26 @@ def cmd(layer, testing_frame, cnt, shift, args):
             ex = oprToEx(opr_inner, testing_frame, cnt)
             single_specific_ex(ex, opr_inner,t_num, testing_frame, cnt)
             writeResults_inner(opr_inner, testing_frame, cnt)
+        elif (args==10):
+            #run all the programs
+            t_start= int(sys.argv[shift+1])
+            t_range = int(sys.argv[shift+2])
+            embed2_iter_inner_setrange_layer1(t_start, t_range, testing_frame, cnt)
+            writeCumulative(cnt)
         else:
             raise "unsupported"
+    elif (args==10):
+        #run all the programs
+        t_start= int(sys.argv[shift+1])
+        t_range = int(sys.argv[shift+2])
+        embed2_iter_inner_setrange(t_start, t_range,    testing_frame, cnt)
+        writeCumulative(cnt)
+        
     # assumes second or third layer
     elif (args==0):
             ##writeTime(1)
              #run all the programs
             embed2_iter_inner(testing_frame, cnt)
-            writeCumulative(cnt)
-    elif (args==10):
-            #run all the programs
-            t_start= int(sys.argv[shift+1])
-            t_range = int(sys.argv[shift+2])
-            embed2_iter_inner_setrange(t_start, t_range,    testing_frame, cnt)
             writeCumulative(cnt)
     elif (args==1):
            # given operator id for inner  operator
@@ -219,9 +226,47 @@ def main_iter(n_frame, shift):
 
 
 # iterating over the different types
-def main_set(n_template, shift):
+def main_set():
+ 
+    # for quick use
+    # assumes first framework, and iterative search of test case
+    # first command is the number of arguments
+    n_template = 0
+    shift = 1 # next command number
     # get testing framework
     testing_frame = set_template(n_template)
+    # get counter
+    cnt = get_counter()
+    # writing heading based on framework
+    write_heading(testing_frame)
+    # constants (decides layer of testing)
+    layer = frame.get_layer(testing_frame)
+    rr = frame.get_random_range(testing_frame)
+    
+    writeFinalCumulative("\n\n******** Layer: "+str(layer)+"probability: "+str(rr)+"\n")
+    
+    # layer, and shift from constants (decides layer of testing)
+    start_standard = time.time()
+    #choose testing range based on commands
+    args = int(sys.argv[shift])
+    cmd(layer, testing_frame, cnt, shift, args)
+    end_standard = time.time()
+    tt_standard  = " time all _standard "+str(end_standard  - start_standard )
+    writeall(tt_standard )
+    print (tt_standard )
+    x = counter.writeCumulativeS(cnt)
+    writeFinalCumulative(x)
+    writeFinalCumulative(tt_standard)
+
+
+def main_setLayer(layer, prob):
+    # for quick use
+    # assumes first framework, and iterative search of test case
+    # first command is the number of arguments
+    n_template = 0
+    shift = 1 # next command number
+    # get testing framework
+    testing_frame = set_templateLR(n_template, layer, prob)
     # get counter
     cnt = get_counter()
     # writing heading based on framework
@@ -240,4 +285,30 @@ def main_set(n_template, shift):
     x = counter.writeCumulativeS(cnt)
     writeFinalCumulative(x)
     writeFinalCumulative(tt_standard)
+
+
+
+
+
+def loop_main(n, layer, prob):
+    writeFinalCumulative("Layer: "+str(layer)+"probability: "+str(prob))
+    for i in (range(n)):
+        os.system("rm -r rst/stash")
+        os.system("rm -rf rst")
+        os.system("mkdir rst")
+        os.system("mkdir rst/stash")
+        os.system("mkdir rst/tmp")
+        os.system("mkdir rst/data")
+        #main_set()
+        main_setLayer(layer, prob)
+        if(layer>1 and prob<10):
+            os.system("cp rst/stash/results_final.txt ../final_"+str(layer)+"_"+str(prob))
+        os.system("rm *.pyc ")
+        os.system("rm */*.pyc ")
+        os.system("rm *.o ")
+        os.system("rm *.cxx ")
+        os.system("rm *.log ")
+        os.system("rm symb_f*")
+        os.system("rm *.nrrd")
+        os.system("rm tmp*")
 

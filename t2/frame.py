@@ -3,11 +3,10 @@
 import sys
 from base_constants import *
 
-s_layer = 1
+s_layer =3
 
-s_random_range =3
+s_random_range = 99
 from obj_frame import *
-
 cpath =  "/Users/chariseechiw/diderot/"
 # note need to change path in fem/Makefile
 
@@ -16,7 +15,7 @@ cpath =  "/Users/chariseechiw/diderot/"
 # options are commented out
 
 
-name = "vis branch"
+name = "currrent"
 # branch information
 #s_branch  = branch_vis15
 #s_branch  = branch_ein16
@@ -123,3 +122,17 @@ def set_template(template):
     elif (template==3):
         t= template_isIso
     return frame(name, s_branch, s_revision, s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, s_krn,s_random_range,s_random_limit, s_space, s_layer,t,s_element,s_length)
+
+
+# set template for initial frame
+def set_templateLR(template, layer, random_range):
+    t = template_isPlain
+    if (template==1):
+        t= template_isMipMax
+    elif (template==2):
+        t= template_isMipSum
+    elif (template==3):
+        t= template_isIso
+    return frame(name, s_branch, s_revision, s_precision, s_path, s_coeff_style, s_in_tys, s_rst_ty, s_ucoeff_range, s_lpos, s_upos, s_num_pos, s_samples, s_krn,random_range,s_random_limit, s_space, layer,t,s_element,s_length)
+
+

@@ -86,6 +86,7 @@ def mk_choice_range(testing_frame, cnt):
 
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
+
     print ("############################################inside central############################################")
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
@@ -117,7 +118,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         dim =ty.dim
         shapen = len(ty.shape)
         if(dim==1):
-            return 
+            return
         elif(shapen>2):
             return
 
@@ -131,27 +132,49 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     
 
     counter.inc_cumulative(cnt)
-    #print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
-    #print (x)
+    print (x)
     writetys(x)
-    name_describe = app.name
-
+  
+    tt = 0
+    writeTime("start","\n\n\n\n")
+    startall = time.time()
+    #print "*******************************************"
     # testing positions
     # note here should set positions based on space
     l_lpos = 0.0
     l_rpos = 1.0
     positions = get_positions(dimF, l_lpos, l_rpos, g_num_pos)
+  
+
+  
+    writetys(x)
+    name_describe = app.name
+
     # samples
     #create synthetic field data with diderot
     (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(core_fields, g_samples, coeffs, t_nrrdbranch, g_space)
-    #create diderot program with operator
-    endall = time.time()
+  
+    tt=tt+1
+    endall = time.time() 
+    tall = str(endall - startall)
+    writeTime("random position and coeffs",tall)
     startall=endall
+
+    
+    #create diderot program with operator
     cleanup(g_output, g_p_Observ)
     (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields)
+
+    tt=tt+1
+    startall=time.time()
+
+    
     if(isRun == None):
+        writeTime("hold", "0")
+        writeTime("hold", "0")
+        writeTime("hold", "0") 
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
@@ -160,20 +183,39 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         else:
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
-
-            return 
+            return
+        
     else:
         #print "read observed data"
         observed_data = observed(app, g_output)
-        print ("observed", observed_data)
+        tt=tt+1
+        endall = time.time()
+        tall = str(endall - startall)
+        writeTime("observed", tall)
+        startall=endall
+
+        #print ("observed", observed_data)
         if(check(app, observed_data)):
-           correct_data = eval(app, positions)
-           print ("correct_data",correct_data)
-           rtn = compare(app.oty, app.name, observed_data, correct_data)
-           analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
-           return 
+            correct_data = eval(app, positions)
+            tt=tt+1
+            endall = time.time()
+            tall = str(endall - startall)
+            writeTime("correct data", tall)
+            startall=endall
+            rtn = compare(app.oty, app.name, observed_data, correct_data)
+            analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)
+            tt=tt+1
+            endall = time.time()
+            tall = str(endall - startall)
+            writeTime("analyze", tall)
+            startall=endall
+                          
+            return 
         else:
             counter.inc_NA(cnt)
+            writeTime("hold", "0")
+            writeTime("hold", "0")
+            writeTime("hold", "0")
             return 
 
 
