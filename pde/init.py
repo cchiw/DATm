@@ -80,7 +80,7 @@ def organizeData(f):
     opt3 = numpy.ones((nc,nc),dtype="int32")
     opt = True
     if opt:
-        setNodes = map(set,cellToNode)
+        setNodes = list(map(set,cellToNode))
         for x in r:
             s = 0
             e = nc - 1

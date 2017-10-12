@@ -21,13 +21,13 @@ def polyString(variable_names, coords):
     if (vname == 1):
         v = variable_names[0]
       
-        terms = map(lambda x: str(coords[x]) + " * " + mult(v,x), range(cs[0]))
+        terms = list(map(lambda x: str(coords[x]) + " * " + mult(v,x), range(cs[0])))
         temp = " + ".join(terms)
         return("(" + temp + ")")
     else:
         v = variable_names[0]
         new_variable_names = variable_names[1:]
-        terms = map(lambda x : polyString(new_variable_names, coords[x]) + " * " + mult(v,x), range(cs[0]))
+        terms = list(map(lambda x : polyString(new_variable_names, coords[x]) + " * " + mult(v,x), range(cs[0])))
         temp = " + ".join(terms)
         return("(" + temp + ")" )
 
@@ -42,11 +42,11 @@ class poly:
         """
         d = degree +1
         spec_shape = tuple([(d) for x in range(dim)])
-        array_var_names = map(lambda x: "x["+str(x)+"]",range(dim))
+        array_var_names = list(map(lambda x: "x["+str(x)+"]",range(dim)))
         self.coords = kill_extra_indicies(coords,d)
         array_poly = polyString(array_var_names,self.coords)
         self.array_poly = array_poly
-        normal_var_names = map(lambda x: "x"+str(x),range(dim))
+        normal_var_names = list(map(lambda x: "x"+str(x),range(dim)))
         normal_poly = polyString(normal_var_names,self.coords)
         self.normal_poly = normal_poly
         
@@ -73,7 +73,7 @@ class poly:
 def kill_odd_indices(array):
     ix = np.ndindex(array.shape)
     for x in ix:
-        if any(map(lambda u: u % 2 == 1,x)):
+        if any(list(map(lambda u: u % 2 == 1,x))):
             array[x]=0
 
     return(array)
