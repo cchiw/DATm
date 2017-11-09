@@ -1,10 +1,10 @@
 input int sz0 ("# samples on faster axis") = 101;
-input int sz1 ("# samples on slower axis") = 100;
+
 input real width ("approx width of world-space region sampled") = 1;
 input real off ("translation offset from origin-centered grid") = 0;
-input real shear ("amount of shear in sampling grid") = 0;
+
 input real angle ("orientation (in degrees) of faster axis") = 0;
-input vec4 parm ("parameters that functions may use") = [0,0,0,0];
+
 
 real theta = angle*π/180;
 // rotation by theta of [1,0] towards [0,1]

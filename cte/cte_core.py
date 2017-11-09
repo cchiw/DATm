@@ -86,7 +86,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #print "*******************************************"
     fnames = apply.get_all_FieldTys(app)
     x = "_"+fnames +" |"+names
-    #print (x)
+
     writetys(x)
     name_describe = app.name
 
@@ -121,7 +121,7 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     #writeTime(50, str(tall-(all50+all51+all52+all53+all54+all55)))
     #writeTime(100,"n\n")
     startall=endall
-
+    print (name_describe+x)
     (isCompile, isRun, startall) = writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
     #endall = time.time()
     #tall = str(endall - startall)

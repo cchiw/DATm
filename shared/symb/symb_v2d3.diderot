@@ -8,9 +8,7 @@ input vec3 axis ("axis (non-normalized) of rotation of sampling grid") = [1,1,1]
 input real angle ("angle (in degrees) of rotation of sampling grid") = 0;
 input vec3 off ("translation offset, in index space, from origin-centered grid") = [0,0,0];
 
-input vec3 parm0 ("parameters that functions may use") = [0,0,0];
-input vec3 parm1 ("more parameters that functions may use") = [0,0,0];
-input vec3 parm2 ("even more parameters that functions may use") = [0,0,0];
+
 
 real theta = angle*π/180;
 // unit-length axis of rotation scaled by sin(theta/2)

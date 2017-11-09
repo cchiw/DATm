@@ -126,7 +126,7 @@ class frame:
         if(branch == branch_vis15):
             path+= "vis15/bin/diderotc --exec "
         elif(branch == branch_chiw17):
-            path+= "chiw17/bin/diderotc --exec "
+            path+= "chiw17/bin/diderotc --exec --readEinDebug "
         elif(branch == branch_ein16):
             path+= "ein16/bin/diderotc "
         elif(branch == branch_other):
