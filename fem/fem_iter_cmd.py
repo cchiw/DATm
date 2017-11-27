@@ -29,6 +29,7 @@ from fem_iter import *
 ##############################################################################################
 def cmd(layer, testing_frame, cnt, shift, args):
     if (layer==1):
+        print "layer:",layer
         if(args==0):
             # iterate over single layer
             rtn = []

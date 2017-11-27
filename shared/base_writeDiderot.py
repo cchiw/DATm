@@ -34,6 +34,13 @@ eps = "0.01"
 # constants from contants file
 removeCond = flag_vis_test
 pde_Test = c_pde_test
+flag_ver_2 = c_pyVersion2
+
+def write(f,foo):
+    if(flag_ver_2):
+        f.write(foo.encode('utf8'))
+    else:
+        f.write(foo)
 ##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)
@@ -51,7 +58,7 @@ def write_shape(pre, f, typ, lhs, rhs):
     # set expression equal to output field
     foo = lhs+" = "+rhs+";\n"
     # Write to file
-    f.write(foo)
+    write(f, foo)
 ##################################### input tensor/field #####################################
 #field input line
 #f: file to write to
@@ -570,7 +577,7 @@ def check_inside(f, ff, app, pde_test):
         else:
             t = getCond(app,set)
         foo = wrap(outerif, t, oty)
-        f.write(foo)
+        write(f,foo)
 
 
 ##################################### probe field at positions #####################################

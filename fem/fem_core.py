@@ -176,11 +176,13 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
         writeTime("hold", "0")
         writeTime("hold", "0") 
         if(isCompile == None):
+            print "bug: did not compile"
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
             #raise Exception("stop")
             return 
         else:
+            print "bug: did not run"
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
             return
