@@ -21,12 +21,11 @@ from base_constants import *
 # fem specific programs
 from fem_writeDiderot import readDiderot
 from fem_helper import *
-
 foo_femfields = "foo_femfield"
 foo_femGen = "foo_femGen"
 
 
-
+#######################################################################
 def translate_ty(field, exp_name, field_name):
     fldty = field.fldty
     fspace = fldty.space
@@ -38,7 +37,6 @@ def translate_ty(field, exp_name, field_name):
         namedata = ""+space.ty_Json(fspace,fldty.dim) #name of json file
         foo = foo+"\nmakejson(V, \""+namedata+"\")"
     return foo
-
 def translate_coeff(a, xyz):
     if(a==0):
         return ""
@@ -119,7 +117,6 @@ def translate_exp(field):
     fldty = field.fldty
     dim = fldty.dim
     coeffs = field.coeff
-    #print "coeffs", len(coeffs)
     if(dim==1):
         raise Exception ("missing dim")
     elif(fldty.id == ty_scalarF_d2.id):
@@ -185,8 +182,6 @@ def translate_exp(field):
         ss1C = get_CoeffExp_d3(coeff1)
         ss2C = get_CoeffExp_d3(coeff2)
         return "(("+ss0A+","+ss1A+","+ss2A+")"+","+"("+ss0B+","+ss1B+","+ss2B+")"+","+"("+ss0C+","+ss1C+","+ss2C+"))"
-
-
     else:
         raise Exception ("not supported")
 
@@ -197,7 +192,7 @@ def get_exp(field, field_name):
     return  foo+translate_ty(field, exp_name, field_name)
 
 # write fem
-def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res):
+def writeFem(p_out, target, num_fields, dim, fields, initPyname, res):
     #read firedrake template
     template = "shared/template/fire"+c_version+".foo"
     ftemplate = open(template, 'r')
@@ -223,17 +218,12 @@ def writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res):
                 names = names+field_name+", "
                 foo = foo+ get_exp(field,  field_name)
                 i +=1
-            if(test_new):
-                foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target, res, stepSize ,limit)"
-            else:
-                foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target)"
+
+            foo =foo+"\n"+initPyname+"(namenrrd, "+names+" target)"
             f.write(foo)
             continue
         b0 = re.search(foo_femGen, line)
         if b0:
-            if(test_new):
-                foo = "\nres = "+str(res)+" \nstepSize = 1.0/res \nlimit = 5"
-                f.write(foo)
             continue
         else:
             f.write(line)

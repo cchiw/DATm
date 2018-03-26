@@ -34,21 +34,17 @@ eps = "0.01"
 # constants from contants file
 removeCond = flag_vis_test
 pde_Test = c_pde_test
-flag_ver_2 = c_pyVersion2
+
 
 def write(f,foo):
-    if(flag_ver_2):
-        f.write(foo.encode('utf8'))
-    else:
-        f.write(foo)
+ f.write(foo)
 ##################################### field declaration helpers #####################################
 def fieldName(i):
     return "F"+str(i)
 # type of field
 def fieldShape(f, fldty):
     #print "fldty: ",fldty
-    pde_test = false
-    foo = fty.toDiderot(fldty,pde_test)
+    foo = fty.toDiderot(fldty)
     f.write(foo)
 # writing to a line
 def write_shape(pre, f, typ, lhs, rhs):
@@ -114,7 +110,7 @@ def outLineF(f, type):
 
 ##################################### field declaration helpers #####################################
 # checks inside a field but not inside a tensor term
-def getInside(exp, pos, name, pde_test2):
+def getInside(exp, pos, name):
     inside ="inside"
     if (pde_test):
         inside ="insideF"
@@ -124,16 +120,21 @@ def getInside(exp, pos, name, pde_test2):
     else:
         return ""
 # probes field at variable position
+def makeProbe(exp, pos):
+    if(pde_test):
+        return "inst("+exp+","+ pos+")"
+    else:
+        return "("+exp+")("+pos+")"
+
+
 def isProbe(exp, fld):
     #print "\n\n***************************  exp", exp
     #print "fld.ty:",fld.name
     if(fty.is_Tensor(fld)):
         return "("+exp+")"
-    elif(c_pde_test):
-        return "inst("+exp+", pos)"
-        #return "[inst(F0, pos)[0],inst(F1, pos)[0]]"
     else:
-        return "("+exp+")(pos)"
+        return makeProbe(exp, "pos")
+
 
 ##################################### print unary,binary,n-arity op #####################################
 ################## place operator symbol in args ##################
@@ -420,30 +421,27 @@ def check_conditional(f, ff, app):
     return
 ##################################### inside field test  #####################################
 #probes field at variable position
-def check_inside(f, ff, app, pde_test):
+def check_inside(f, ff, app):
 
     oty = app.oty
     set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";"
     exps = apply.get_all_Fields(app)
     foo = ""
     pos = "pos"
-    i0 = getInside(exps[0],"F0", pos, pde_test)
+    i0 = getInside(exps[0],"F0", pos)
     adjs = str(adj)
     outerif = "true"     # create outer if
     ################## comp term ##################
     #number of fields we probe for composition inside test
     def insideExpFld0(i):
-        return getInside(exps[i], fieldName(i) , pos, pde_test)
+        return getInside(exps[i], fieldName(i) , pos)
     def insideExpFld1(i, j):
-        if(c_pde_test):
-            return getInside(exps[i], fieldName(i) , "inst("+fieldName(j)+","+pos+")*"+adjs, pde_test)
-        else:
-            return getInside(exps[i], fieldName(i) , fieldName(j)+"("+pos+")*"+adjs, pde_test)
+        prbe = makeProbe(fieldName(j), pos)
+        return getInside(exps[i], fieldName(i), prbe+"*"+adjs)
     def insideExpFld2(i, j, k):
-        if(c_pde_test):
-            return getInside(exps[i], fieldName(i) , "inst("+fieldName(j)+","+"inst("+fieldName(k)+","+pos+")*" +adjs+")*"+adjs, pde_test)
-        else:
-            return getInside(exps[i], fieldName(i) , fieldName(j)+"("+fieldName(k)+"("+pos+")*" +adjs+")*"+adjs, pde_test)
+        prbeI = makeProbe(fieldName(k), pos)
+        prbeO = makeProbe(fieldName(j), "("+prbeI+")*" +adjs)
+        return getInside(exps[i], fieldName(i) , prbeO+"*"+adjs)
     # inside expression for field in composition
     def i0():
         return insideExpFld0(0)
@@ -559,7 +557,7 @@ def check_inside(f, ff, app, pde_test):
         #regular probing of expressions
         j= ""
         for i in range(len(exps)):
-            j = j+ getInside(exps[i],"F"+str(i), pos, pde_test)
+            j = j+ getInside(exps[i],"F"+str(i), pos)
         outerif = j+"true"
         # inside if
         # check none inside test
@@ -570,10 +568,7 @@ def check_inside(f, ff, app, pde_test):
     else:
         t = ""
         if(removeCond):
-            if(c_pde_test):
-                t = "out = inst(G, pos);"
-            else:
-                t = "out = G(pos);"
+            t = "out ="+makeProbe("G", "pos")+";"
         else:
             t = getCond(app,set)
         foo = wrap(outerif, t, oty)

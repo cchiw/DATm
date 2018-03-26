@@ -135,7 +135,7 @@ class fty:
     def isEq_id(a,b):
         return (a.id==b.id)
     #string for diderot program
-    def toDiderot(self, pde_test2):
+    def toDiderot(self):
         
         if(self.dim==0):
             return "tensor "+str(self.shape)

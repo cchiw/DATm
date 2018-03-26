@@ -21,8 +21,6 @@ from base_observed import observed
 
 
 
-
-
 def ty_fnSpace_forFire(fldty):
     (mesh, element, k_order) = ty_fnSpaceParts(fldty)
     exp = mesh+",\""+element+"\",degree="+k_order

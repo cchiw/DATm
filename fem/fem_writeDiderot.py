@@ -17,10 +17,7 @@ from obj_space import *
 from base_write import * 
 from base_writeDiderot import *
 from base_constants import *
-
 from nc_writeDiderot import nc_compileandRun, nc_setLength
-
-
 
 #strings in diderot template
 foo_in = "foo_in"
@@ -36,16 +33,12 @@ foo_posLast = "foo_posLast"
 foo_out = "out"
 foo_pos = "pos"
 const_out = "7.2"
-pde_test = true 
-pde_Inside = c_pde_Inside
 
-####### FIXME: need to create fem-inside/conditional
-##################################### input tensor/field #####################################
+
 # create space for field
 def fem_fieldShape(f, fldty):
     ##print "fldty: ",fldty
-    pde_test = true
-    foo = fty.toDiderot(fldty,pde_test)
+    foo = fty.toDiderot(fldty)
     f.write(foo)
 
 
@@ -55,7 +48,7 @@ def getConvertLine(f, oty, opfieldname1, i):
     path = "path"+fi
     V = "V"+fi
     c="convert("+F+","+V+","+ path+");\n"
-    t = fty.toDiderot(oty, pde_test)
+    t = fty.toDiderot(oty)
     foo = t+" "+opfieldname1+" = " +c
     f.write(foo)
 
@@ -143,12 +136,7 @@ def cte_update_method(f, pos, app):
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
         # check if position is inside
-        if(c_pde_Inside):
-            check_inside(f, opfieldname1, app, true)
-        else:
-            foo= "\n\t\tout = inst(G,pos);"
-            #foo= "\n\t\tout = inst(F0,pos);"
-            f.write(foo)
+        check_inside(f, opfieldname1, app)
     else:
         check_conditional(f,  foo_out, app)
 ################################ search Diderot template and replace foo variable name ################################

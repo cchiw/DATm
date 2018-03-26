@@ -5,11 +5,8 @@ import pytest
 import os
 from os import path
 cwd = abspath(dirname(__file__))
-
-#sys.path.insert(0, '../../lib/')
 from init import *
-#from connect import *
-#from makejson import *
+
 
 import ctypes
 from ctypes import POINTER, c_int, c_double, c_void_p, c_float

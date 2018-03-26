@@ -29,7 +29,7 @@ from fem_iter import *
 ##############################################################################################
 def cmd(layer, testing_frame, cnt, shift, args):
     if (layer==1):
-        print "layer:",layer
+
         if(args==0):
             # iterate over single layer
             rtn = []
@@ -286,30 +286,4 @@ def main_setLayer(layer, prob):
     x = counter.writeCumulativeS(cnt)
     writeFinalCumulative(x)
     writeFinalCumulative(tt_standard)
-
-
-
-
-
-def loop_main(n, layer, prob):
-    writeFinalCumulative("Layer: "+str(layer)+"probability: "+str(prob))
-    for i in (range(n)):
-        os.system("rm -r rst/stash")
-        os.system("rm -rf rst")
-        os.system("mkdir rst")
-        os.system("mkdir rst/stash")
-        os.system("mkdir rst/tmp")
-        os.system("mkdir rst/data")
-        #main_set()
-        main_setLayer(layer, prob)
-        if(layer>1 and prob<10):
-            os.system("cp rst/stash/results_final.txt ../final_"+str(layer)+"_"+str(prob))
-        os.system("rm *.pyc ")
-        os.system("rm */*.pyc ")
-        os.system("rm *.o ")
-        os.system("rm *.cxx ")
-        os.system("rm *.log ")
-        os.system("rm symb_f*")
-        os.system("rm *.nrrd")
-        os.system("rm tmp*")
 

@@ -9,7 +9,7 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_write import *
-from base_constants import *
+from base_constants import c_pde_test
 
 pathToSynFiles = c_pathToSynFiles
 #convert coeffs
@@ -335,20 +335,17 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     #os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
  
     if (not (c_pde_test)):
-        # remove executable
-        #os.system(" rm "+e_Orig)
         # compile program
         os.system(nrrdbranch+" --log "+p_Orig)
 
         # comment out if executable exists
         os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
         os.system(nrrdbranch+" --log "+p_Orig)
+        
         # does executable exist
-
         endall = time.time()
         tall53 =(endall - startall)
         startall=endall
-
         txtfile = orig+".txt"
         os.system("./"+e_Orig+PARAMS+"| unu save -f nrrd -o "+outputnrrd)
         os.system("grep \"compiler\" "+e_Orig+".log >> catcreateall.txt")
@@ -359,17 +356,7 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
     endall = time.time()
     tall54 = (endall - startall)
     startall=endall
-
-
-    endall = time.time()
-    tall55 = (endall - startall)
-    startall=endall
-    #save nrrd file
-    #os.system("rm *.o")
-    # os.system("rm *.h")
-    #  os.system("rm *.c")
-
-    return (PARAMS,tall50,tall51,tall52,tall53,tall54,tall55)
+    return (PARAMS,tall50,tall51,tall52,tall53,tall54,tall54)
 
 def sortField(flds, outSize, coeffs, nrrdbranch, space):
 

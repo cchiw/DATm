@@ -87,7 +87,7 @@ def mk_choice_range(testing_frame, cnt):
 # already created app object
 def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
-    print ("############################################inside central############################################")
+    #print ("############################################inside central############################################")
     # get global variables from testing framework
     g_lpos = frame.get_lpos(testing_frame)
     g_upos = frame.get_upos(testing_frame)
@@ -121,15 +121,11 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
             return
         elif(shapen>2):
             return
-
         core_fields.append(field.addSpace(e, g_element,g_coeff_style, g_length ))
         
-
     for e in core_fields:
         ty = e.fldty
         #print "ty name:",ty.name,ty.space
-    
-    
 
     counter.inc_cumulative(cnt)
     fnames = apply.get_all_FieldTys(app)
@@ -165,24 +161,22 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
     
     #create diderot program with operator
     cleanup(g_output, g_p_Observ)
-    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall,test_new,core_fields)
-
+    (isCompile, isRun, startall) = writeTestPrograms(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall, core_fields)
     tt=tt+1
     startall=time.time()
-
     
     if(isRun == None):
         writeTime("hold", "0")
         writeTime("hold", "0")
         writeTime("hold", "0") 
         if(isCompile == None):
-            print "bug: did not compile"
+            #print "bug: did not compile"
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
             #raise Exception("stop")
             return 
         else:
-            print "bug: did not run"
+            #print "bug: did not run"
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
             return

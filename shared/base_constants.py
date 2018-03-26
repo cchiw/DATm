@@ -1,4 +1,11 @@
 #top layer of dependence
+
+
+
+#-------------- PDE test variables ----------------------
+flag_vis_test = False
+#c_pde_test = True
+c_pde_test = False
 #-------------- order of coefficients ----------------------
 # chooose order of coefficients
 coeff_cubic = "cubic"
@@ -15,9 +22,8 @@ ty_All ="mix of tensors and fields"
 branch_chiw17 = "chiw17"
 branch_vis15 = "vis15"
 branch_ein16 = "ein16"
-
-
-branch_other = "femprime/"
+branch_other = "Diderot-Dev/"
+#branch_femprime = "femprime/"
 
 
 precision_double ="double"
@@ -63,16 +69,8 @@ c_pathToSynFiles = "shared/symb/symb_f"
 
  # template
 c_template="shared/template/foo.ddro"
+c_version =""
 
-flag_vis_test = False
-#flag_vis_test = True
-c_pde_test = True
-#c_pde_test = True
-#c_pde_Inside = False #is inside implemented?
-c_pde_Inside =  True
 
-c_version ="" #current
-#c_version ="_Aug27"
-#c_version ="_Aug31"
 
-c_pyVersion2 = True #version of python
+

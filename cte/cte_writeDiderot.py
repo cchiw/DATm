@@ -19,9 +19,7 @@ from obj_operator import *
 from obj_field import *
 from base_write import * 
 from base_writeDiderot import *
-
 from base_constants import *
-
 template=c_template     # template
 
 #strings in diderot template
@@ -35,7 +33,6 @@ foo_out="out"
 foo_pos="pos"
 const_out ="7.2"
 
-pde_test =false
 
 #witten inside update method
 #conditionals are commented out
@@ -45,7 +42,7 @@ def cte_update_method(f, pos, app):
         # index field at random positions
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
-        check_inside(f, opfieldname1, app, pde_test)
+        check_inside(f, opfieldname1, app)
         #foo =  "\t"+foo_out+" = "+isProbe(opfieldname1, oty)+";\n"
         #f.write(foo.encode('utf8'))
         #check_conditional(f,  opfieldname1, app)

@@ -4,7 +4,7 @@
 from __future__ import unicode_literals
 from base_constants import *
 adj = (opr_adj)
-pde_test  = c_pde_test
+
 
 import sys
 import re

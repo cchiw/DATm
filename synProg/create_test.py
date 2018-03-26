@@ -26,7 +26,7 @@ from cte_continue import *
 from cte_core import *
 
 
-pde_test = false # test pdes in femprime branch
+pde_test = false # test pdes in fem branch
 # create a field
 def set_fld(id, c_ity, testing_frame):
     # global variables needed from testing framework

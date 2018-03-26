@@ -22,7 +22,7 @@ from base_var_ty import *
 
 # specific fem programs
 from fem_core import *
-pde_test=true # test pdes in femprime branche
+
 
 #    Iterate over defined types and operators
 #create app object that represents that application of one or two operators on tensor and/or tensor field arguments.
@@ -114,7 +114,8 @@ def pre_get_tshape1(name, ishape, opr_inner, testing_frame):
     g_krn = frame.get_krn(testing_frame)
     space =  "Unit"
     ishape0 = set_ks_ofield(g_krn, ishape, space)
-    (tf1, tshape1) = get_tshape(opr_inner, ishape0,pde_test)
+    pde_test = True
+    (tf1, tshape1) = get_tshape(opr_inner, ishape0, pde_test)
     return (name, tf1, tshape1, ishape0)
 
 

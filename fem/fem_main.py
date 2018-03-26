@@ -16,7 +16,6 @@ from obj_field import *
 from base_write import * 
 from base_writeDiderot import *
 from base_constants import *
-
 # fem specific programs
 from fem_writeDiderot import readDiderot
 from fem_helper import *
@@ -34,17 +33,14 @@ def get_fieldinfo(app,core_fields):
             tags = "f"+tags
             num_fields +=1
             exp_fields.append(e)
-        else:
-            if(num_fields>0):
-                tags= "t"+tags
-
+        elif(num_fields>0):
+            tags= "t"+tags
     init_name =init_name +tags
     return (init_name, num_fields,exp_fields)
 
 
 # create firedrake field
-def useFem(p_out, shape, pos, output, target,dim, res, test_new, startall):
-    
+def useFem(p_out, shape, pos, output, target,dim, res, startall):
     os.system("python "+p_out+".py")
     endall = time.time()
     tall = str(endall - startall)
@@ -63,120 +59,85 @@ def useFem(p_out, shape, pos, output, target,dim, res, test_new, startall):
     product = 1
     for x in shape:
         product *= x
-    m2 = 0
-    if(test_new):
-        if(dim==2):
-            m2 = res*res
-        elif(dim==3):
-            m2 = res*res*res
-    else:
-        m2 = len(pos)+1
-
+    m2 = len(pos)+1
     w_shape=" -s "+str(product)+" "+str(m2)
-
-    
-   
     os.system("unu reshape -i cat.nrrd "+w_shape+" | unu save -f text -o "+output+".txt")
     endall = time.time()
     tall = str(endall - startall)
     writeTime("cvt output", tall)
 
-    
-    #raise Exception ("stop")
+
 # make program
 def makeProgram(p_out, output, target, init_name, startall):
-    
     s0 = "cp "+init_name+"_init.c "+target+"_init.c"
     s1 = "cp observ.diderot "+target+".diderot"
     s2 = "cp fem/Makefile Makefile"
     s3 = "make clean"
-    s4 = "make "+target+".o"
-    s5 = "make "+target+"_init.o"
-    s6 = "make "+target+"_init.so"
-    s10 = "cp "+target+".diderot "+output+".diderot"
-    s11 = "cp "+target+".cxx "+output+".cxx"
-    s12 = "cp "+target+"_init.c "+output+"_init.c"
-    
-    #print "init_name:", init_name
-    ##print "target:", target
-    
     es = [s0, s1, s2, s3]
     for i in es:
         os.system(i)
+        print (i)
     endall = time.time()
     tall = str(endall - startall)
     writeTime("set up diderot programs", tall)
     startall=endall
-
-    es = [s4, s6]
+    es = [".o", "_init.so"]
     for i in es:
-        os.system(i)
+        exp  = "make "+target+i
+        os.system(exp)
+        print(exp)
     endall = time.time()
     tall = str(endall - startall)
     writeTime("make diderot program", tall)
     startall=endall
-        
-
-        
-    es = [s10, s11, s12]
+    es = [".diderot",".cxx","_init.c"]
     for i in es:
-        os.system(i)
-
+        exp = "cp "+target+i+" "+output+i
+        os.system(exp)
+        print(exp)
     endall = time.time()
     tall = str(endall - startall)
     writeTime("copy relalated program", tall)
     startall=endall       
-# read output of firedrake program
-
-
+    # read output of firedrake program
 
 ################################ write annd run test program ################################
-def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, test_new, core_fields):
-    template = c_template     # default/main template
-    # note here(creating different program)
-    if(test_new):
-        template =  "shared/template/foo_limit.ddro"
+def writeTestPrograms(p_out, app, pos, output, runtimepath, isNrrd, startall, core_fields):
+    
+    test_new  = False
+    template = c_template
     shape = app.oty.shape
     res = 10
     target ="ex1"
-
     # write new diderot program
     readDiderot(p_out, app, pos,template,core_fields)
     endall = time.time()
     tall = str(endall - startall)
     writeTime("read diderot", tall)
     startall=endall
-
-    
     (init_name, num_fields, fields) = get_fieldinfo(app, core_fields)
     endall = time.time()
     tall = str(endall - startall)
     writeTime("get field info", tall)
     startall=endall
-
-    
     # output type
     oty = app.oty
     shape = oty.shape
     dim = oty.dim
     #write python firedrake program
     initPyname = "init"+str(num_fields)
-    writeFem(p_out, target, num_fields, dim, fields, initPyname,test_new,res)
+    writeFem(p_out, target, num_fields, dim, fields, initPyname,res)
     endall = time.time()
     tall = str(endall - startall)
     writeTime("write fem", tall)
     startall=endall
-
     #run firedrake program and cvt to txt file
     makeProgram(p_out, output, target, init_name, startall)
     startall = time.time()
     # if we need to make k file first
-    #useFem(p_out, shape, pos, output, target,dim, res, test_new)
     # check if the program was executed
     if(os.path.exists(target+".o") and os.path.exists(target+"_init.so")):
-
-  
-        useFem(p_out, shape, pos, output, target,dim, res, test_new, startall)
+        useFem(p_out, shape, pos, output, target,dim, res, startall)
         if(os.path.exists(output+".txt")):
            return (1,1, startall)
         else:
