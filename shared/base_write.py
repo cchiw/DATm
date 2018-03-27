@@ -174,6 +174,7 @@ def write_heading(testing_frame):
     s+= "\n random range: "+ str(frame.get_random_range(testing_frame))
     s+= "\n random limit:  "+ str(frame.get_random_limit(testing_frame))
     r = "\n\n----- Testing framework -----"+name+coeff_style+(samples)+ num_pos+branch+ precision+revision+runtimepath+k+s+l+"\n"
+    print(r)
     writeall(r)
     writesummary(r)
     write_terrible(r)

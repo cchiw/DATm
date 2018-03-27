@@ -1,0 +1,605 @@
+
+
+----- Testing framework -----
+-name: currrent
+ templatet_plain
+-coeff: linear
+-samples: 70
+-number of positions:7
+-branch: chiw17
+-precision:double
+-revision: r current
+-runtimepath: /Users/chariseechiw/diderot/chiw17/bin/diderotc --exec   --double 
+ kernel:c4hexic
+ space:False
+ random range: 19
+ random limit:  800000000
+ layer:2
+
+ none(none) |0_0- chiw17 A:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 1
+***************************************************
+
+
+ # cumulative break down  # 1 total A:1|1 total  iterations-t: 0 total  cumulative: 1 total  cnt: 24
+ neg(none) |0_1- chiw17 A:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 2
+***************************************************
+
+
+ # cumulative break down  # 2 total A:2|2 total  iterations-t: 0 total  cumulative: 2 total  cnt: 24
+ copy(none) |0_2- chiw17 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 2
+***************************************************
+
+
+ # cumulative break down  # 2 total A:2|2 total  iterations-t: 0 total  cumulative: 2 total  cnt: 24
+ norm(none) |0_3- chiw17 A:3|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 5
+***************************************************
+
+
+ # cumulative break down  # 5 total A:5|5 total  iterations-t: 0 total  cumulative: 5 total  cnt: 24
+ normalize(none) |0_4- chiw17 A:2|20 NA:1|20 ran: 20 iterations-l: 0 iterations-t: 0 cumulative: 8
+***************************************************
+
+
+ # cumulative break down  # 8 total A:7|8 total  NA:1|8 total  iterations-t: 0 total  cumulative: 8 total  cnt: 20
+ transpose(none) |0_5- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 8
+***************************************************
+
+
+ # cumulative break down  # 8 total A:7|8 total  NA:1|8 total  iterations-t: 0 total  cumulative: 8 total  cnt: 8
+ trace(none) |0_6- chiw17 A:2|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 10
+***************************************************
+
+
+ # cumulative break down  # 10 total A:9|10 total  NA:1|10 total  iterations-t: 0 total  cumulative: 10 total  cnt: 8
+ det(none) |0_7- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 11
+***************************************************
+
+
+ # cumulative break down  # 11 total A:10|11 total  NA:1|11 total  iterations-t: 0 total  cumulative: 11 total  cnt: 8
+ inverse(none) |0_8- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 11
+***************************************************
+
+
+ # cumulative break down  # 11 total A:10|11 total  NA:1|11 total  iterations-t: 0 total  cumulative: 11 total  cnt: 8
+ addition(none) |0_9- chiw17 A:4|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 15
+***************************************************
+
+
+ # cumulative break down  # 15 total A:14|15 total  NA:1|15 total  iterations-t: 0 total  cumulative: 15 total  cnt: 60
+ subtraction(none) |0_10- chiw17 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 15
+***************************************************
+
+
+ # cumulative break down  # 15 total A:14|15 total  NA:1|15 total  iterations-t: 0 total  cumulative: 15 total  cnt: 60
+ multiplication(none) |0_11- chiw17 A:3|110 NA:1|110 ran: 110 iterations-l: 0 iterations-t: 0 cumulative: 19
+***************************************************
+
+
+ # cumulative break down  # 19 total A:17|19 total  NA:2|19 total  iterations-t: 0 total  cumulative: 19 total  cnt: 110
+ division(none) |0_12- chiw17 A:3|60 NA:1|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 23
+***************************************************
+
+
+ # cumulative break down  # 23 total A:20|23 total  NA:3|23 total  iterations-t: 0 total  cumulative: 23 total  cnt: 60
+ cross_product(none) |0_13- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 23
+***************************************************
+
+
+ # cumulative break down  # 23 total A:20|23 total  NA:3|23 total  iterations-t: 0 total  cumulative: 23 total  cnt: 8
+ modulate(none) |0_14- chiw17 A:2|30 ran: 30 iterations-l: 0 iterations-t: 0 cumulative: 25
+***************************************************
+
+
+ # cumulative break down  # 25 total A:22|25 total  NA:3|25 total  iterations-t: 0 total  cumulative: 25 total  cnt: 30
+ op_doubledot(none) |0_15- chiw17 ran: 20 iterations-l: 0 iterations-t: 0 cumulative: 25
+***************************************************
+
+
+ # cumulative break down  # 25 total A:22|25 total  NA:3|25 total  iterations-t: 0 total  cumulative: 25 total  cnt: 20
+ outer_product(none) |0_16- chiw17 A:6|210 NA:1|210 ran: 210 iterations-l: 0 iterations-t: 0 cumulative: 32
+***************************************************
+
+
+ # cumulative break down  # 32 total A:28|32 total  NA:4|32 total  iterations-t: 0 total  cumulative: 32 total  cnt: 210
+ inner_product(none) |0_17- chiw17 A:6|90 ran: 90 iterations-l: 0 iterations-t: 0 cumulative: 38
+***************************************************
+
+
+ # cumulative break down  # 38 total A:34|38 total  NA:4|38 total  iterations-t: 0 total  cumulative: 38 total  cnt: 90
+ cosine(none) |0_18- chiw17 A:1|3 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 39
+***************************************************
+
+
+ # cumulative break down  # 39 total A:35|39 total  NA:4|39 total  iterations-t: 0 total  cumulative: 39 total  cnt: 3
+ sine(none) |0_19- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 39
+***************************************************
+
+
+ # cumulative break down  # 39 total A:35|39 total  NA:4|39 total  iterations-t: 0 total  cumulative: 39 total  cnt: 3
+ arccosine(none) |0_20- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 39
+***************************************************
+
+
+ # cumulative break down  # 39 total A:35|39 total  NA:4|39 total  iterations-t: 0 total  cumulative: 39 total  cnt: 3
+ arcsine(none) |0_21- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 39
+***************************************************
+
+
+ # cumulative break down  # 39 total A:35|39 total  NA:4|39 total  iterations-t: 0 total  cumulative: 39 total  cnt: 3
+ sqrt(none) |0_22- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 39
+***************************************************
+
+
+ # cumulative break down  # 39 total A:35|39 total  NA:4|39 total  iterations-t: 0 total  cumulative: 39 total  cnt: 4
+ grad(none) |0_23- chiw17 A:1|3 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 40
+***************************************************
+
+
+ # cumulative break down  # 40 total A:36|40 total  NA:4|40 total  iterations-t: 0 total  cumulative: 40 total  cnt: 3
+ hessian(none) |0_24- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 40
+***************************************************
+
+
+ # cumulative break down  # 40 total A:36|40 total  NA:4|40 total  iterations-t: 0 total  cumulative: 40 total  cnt: 2
+ zeros_add(none) |0_25- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 40
+***************************************************
+
+
+ # cumulative break down  # 40 total A:36|40 total  NA:4|40 total  iterations-t: 0 total  cumulative: 40 total  cnt: 4
+ zeros_scale(none) |0_26- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 40
+***************************************************
+
+
+ # cumulative break down  # 40 total A:36|40 total  NA:4|40 total  iterations-t: 0 total  cumulative: 40 total  cnt: 4
+ concat2(none) |0_27- chiw17 ran: 18 iterations-l: 0 iterations-t: 0 cumulative: 40
+***************************************************
+
+
+ # cumulative break down  # 40 total A:36|40 total  NA:4|40 total  iterations-t: 0 total  cumulative: 40 total  cnt: 18
+ zeros_outer(none) |0_28- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 40
+***************************************************
+
+
+ # cumulative break down  # 40 total A:36|40 total  NA:4|40 total  iterations-t: 0 total  cumulative: 40 total  cnt: 2
+ slicem0(none) |0_29- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 41
+***************************************************
+
+
+ # cumulative break down  # 41 total A:37|41 total  NA:4|41 total  iterations-t: 0 total  cumulative: 41 total  cnt: 8
+ slicem1(none) |0_30- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 42
+***************************************************
+
+
+ # cumulative break down  # 42 total A:38|42 total  NA:4|42 total  iterations-t: 0 total  cumulative: 42 total  cnt: 8
+ slicev0(none) |0_31- chiw17 A:2|12 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 44
+***************************************************
+
+
+ # cumulative break down  # 44 total A:40|44 total  NA:4|44 total  iterations-t: 0 total  cumulative: 44 total  cnt: 12
+ slicev1(none) |0_32- chiw17 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 44
+***************************************************
+
+
+ # cumulative break down  # 44 total A:40|44 total  NA:4|44 total  iterations-t: 0 total  cumulative: 44 total  cnt: 12
+ slicet0(none) |0_33- chiw17 ran: 0 iterations-l: 0 iterations-t: 0 cumulative: 44
+***************************************************
+
+
+ # cumulative break down  # 44 total A:40|44 total  NA:4|44 total  iterations-t: 0 total  cumulative: 44 total  cnt: 0
+ slicet1(none) |0_34- chiw17 ran: 0 iterations-l: 0 iterations-t: 0 cumulative: 44
+***************************************************
+
+
+ # cumulative break down  # 44 total A:40|44 total  NA:4|44 total  iterations-t: 0 total  cumulative: 44 total  cnt: 0
+ jacob(none) |0_35- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 44
+***************************************************
+
+
+ # cumulative break down  # 44 total A:40|44 total  NA:4|44 total  iterations-t: 0 total  cumulative: 44 total  cnt: 4
+	-_F_s_d3,F_v3_d3 |p_o0_o36_t18_t20_tN__l2
+	rtn:compile 
+ compose(none) |0_36- chiw17 did not compile: 1 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 45
+***************************************************
+
+
+ # cumulative break down  # 45 total A:40|45 total  NA:4|45 total  did not compile :1|45 total  iterations-t: 0 total  cumulative: 45 total  cnt: 12
+ div(none) |0_37- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 45
+***************************************************
+
+
+ # cumulative break down  # 45 total A:40|45 total  NA:4|45 total  did not compile :1|45 total  iterations-t: 0 total  cumulative: 45 total  cnt: 2
+ curl(none) |0_38- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 45
+***************************************************
+
+
+ # cumulative break down  # 45 total A:40|45 total  NA:4|45 total  did not compile :1|45 total  iterations-t: 0 total  cumulative: 45 total  cnt: 2
+ none(none) |0_0- chiw17 A:1|24 NA:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 47
+***************************************************
+
+
+ # cumulative break down  # 47 total A:41|47 total  NA:5|47 total  did not compile :1|47 total  iterations-t: 0 total  cumulative: 47 total  cnt: 24
+ none(neg) |1_0- chiw17 A:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 48
+***************************************************
+
+
+ # cumulative break down  # 48 total A:42|48 total  NA:5|48 total  did not compile :1|48 total  iterations-t: 0 total  cumulative: 48 total  cnt: 24
+ none(copy) |2_0- chiw17 A:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 49
+***************************************************
+
+
+ # cumulative break down  # 49 total A:43|49 total  NA:5|49 total  did not compile :1|49 total  iterations-t: 0 total  cumulative: 49 total  cnt: 24
+ none(norm) |3_0- chiw17 A:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 50
+***************************************************
+
+
+ # cumulative break down  # 50 total A:44|50 total  NA:5|50 total  did not compile :1|50 total  iterations-t: 0 total  cumulative: 50 total  cnt: 24
+ none(normalize) |4_0- chiw17 NA:1|20 ran: 20 iterations-l: 0 iterations-t: 0 cumulative: 51
+***************************************************
+
+
+ # cumulative break down  # 51 total A:44|51 total  NA:6|51 total  did not compile :1|51 total  iterations-t: 0 total  cumulative: 51 total  cnt: 20
+ none(transpose) |5_0- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 52
+***************************************************
+
+
+ # cumulative break down  # 52 total A:45|52 total  NA:6|52 total  did not compile :1|52 total  iterations-t: 0 total  cumulative: 52 total  cnt: 8
+ none(trace) |6_0- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 53
+***************************************************
+
+
+ # cumulative break down  # 53 total A:46|53 total  NA:6|53 total  did not compile :1|53 total  iterations-t: 0 total  cumulative: 53 total  cnt: 8
+ none(det) |7_0- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 53
+***************************************************
+
+
+ # cumulative break down  # 53 total A:46|53 total  NA:6|53 total  did not compile :1|53 total  iterations-t: 0 total  cumulative: 53 total  cnt: 8
+ none(inverse) |8_0- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 54
+***************************************************
+
+
+ # cumulative break down  # 54 total A:47|54 total  NA:6|54 total  did not compile :1|54 total  iterations-t: 0 total  cumulative: 54 total  cnt: 8
+ none(addition) |9_0- chiw17 A:3|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 57
+***************************************************
+
+
+ # cumulative break down  # 57 total A:50|57 total  NA:6|57 total  did not compile :1|57 total  iterations-t: 0 total  cumulative: 57 total  cnt: 60
+ none(subtraction) |10_0- chiw17 A:1|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 58
+***************************************************
+
+
+ # cumulative break down  # 58 total A:51|58 total  NA:6|58 total  did not compile :1|58 total  iterations-t: 0 total  cumulative: 58 total  cnt: 60
+ none(multiplication) |11_0- chiw17 A:6|110 NA:2|110 ran: 110 iterations-l: 0 iterations-t: 0 cumulative: 66
+***************************************************
+
+
+ # cumulative break down  # 66 total A:57|66 total  NA:8|66 total  did not compile :1|66 total  iterations-t: 0 total  cumulative: 66 total  cnt: 110
+ none(division) |12_0- chiw17 A:1|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 67
+***************************************************
+
+
+ # cumulative break down  # 67 total A:58|67 total  NA:8|67 total  did not compile :1|67 total  iterations-t: 0 total  cumulative: 67 total  cnt: 60
+ none(cross_product) |13_0- chiw17 NA:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 68
+***************************************************
+
+
+ # cumulative break down  # 68 total A:58|68 total  NA:9|68 total  did not compile :1|68 total  iterations-t: 0 total  cumulative: 68 total  cnt: 8
+ none(modulate) |14_0- chiw17 A:2|30 ran: 30 iterations-l: 0 iterations-t: 0 cumulative: 70
+***************************************************
+
+
+ # cumulative break down  # 70 total A:60|70 total  NA:9|70 total  did not compile :1|70 total  iterations-t: 0 total  cumulative: 70 total  cnt: 30
+ none(op_doubledot) |15_0- chiw17 ran: 20 iterations-l: 0 iterations-t: 0 cumulative: 70
+***************************************************
+
+
+ # cumulative break down  # 70 total A:60|70 total  NA:9|70 total  did not compile :1|70 total  iterations-t: 0 total  cumulative: 70 total  cnt: 20
+ none(outer_product) |16_0- chiw17 A:5|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 75
+***************************************************
+
+
+ # cumulative break down  # 75 total A:65|75 total  NA:9|75 total  did not compile :1|75 total  iterations-t: 0 total  cumulative: 75 total  cnt: 60
+ none(inner_product) |17_0- chiw17 A:4|90 ran: 90 iterations-l: 0 iterations-t: 0 cumulative: 79
+***************************************************
+
+
+ # cumulative break down  # 79 total A:69|79 total  NA:9|79 total  did not compile :1|79 total  iterations-t: 0 total  cumulative: 79 total  cnt: 90
+ none(cosine) |18_0- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 79
+***************************************************
+
+
+ # cumulative break down  # 79 total A:69|79 total  NA:9|79 total  did not compile :1|79 total  iterations-t: 0 total  cumulative: 79 total  cnt: 3
+ none(sine) |19_0- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 79
+***************************************************
+
+
+ # cumulative break down  # 79 total A:69|79 total  NA:9|79 total  did not compile :1|79 total  iterations-t: 0 total  cumulative: 79 total  cnt: 3
+ none(arccosine) |20_0- chiw17 A:1|3 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 80
+***************************************************
+
+
+ # cumulative break down  # 80 total A:70|80 total  NA:9|80 total  did not compile :1|80 total  iterations-t: 0 total  cumulative: 80 total  cnt: 3
+ none(arcsine) |21_0- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 80
+***************************************************
+
+
+ # cumulative break down  # 80 total A:70|80 total  NA:9|80 total  did not compile :1|80 total  iterations-t: 0 total  cumulative: 80 total  cnt: 3
+ none(sqrt) |22_0- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 80
+***************************************************
+
+
+ # cumulative break down  # 80 total A:70|80 total  NA:9|80 total  did not compile :1|80 total  iterations-t: 0 total  cumulative: 80 total  cnt: 4
+ none(grad) |23_0- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 80
+***************************************************
+
+
+ # cumulative break down  # 80 total A:70|80 total  NA:9|80 total  did not compile :1|80 total  iterations-t: 0 total  cumulative: 80 total  cnt: 3
+ none(hessian) |24_0- chiw17 A:1|2 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 81
+***************************************************
+
+
+ # cumulative break down  # 81 total A:71|81 total  NA:9|81 total  did not compile :1|81 total  iterations-t: 0 total  cumulative: 81 total  cnt: 2
+ none(zeros_add) |25_0- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 81
+***************************************************
+
+
+ # cumulative break down  # 81 total A:71|81 total  NA:9|81 total  did not compile :1|81 total  iterations-t: 0 total  cumulative: 81 total  cnt: 4
+ none(zeros_scale) |26_0- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 81
+***************************************************
+
+
+ # cumulative break down  # 81 total A:71|81 total  NA:9|81 total  did not compile :1|81 total  iterations-t: 0 total  cumulative: 81 total  cnt: 4
+ none(concat2) |27_0- chiw17 A:2|18 ran: 18 iterations-l: 0 iterations-t: 0 cumulative: 83
+***************************************************
+
+
+ # cumulative break down  # 83 total A:73|83 total  NA:9|83 total  did not compile :1|83 total  iterations-t: 0 total  cumulative: 83 total  cnt: 18
+ none(zeros_outer) |28_0- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 83
+***************************************************
+
+
+ # cumulative break down  # 83 total A:73|83 total  NA:9|83 total  did not compile :1|83 total  iterations-t: 0 total  cumulative: 83 total  cnt: 2
+ none(slicem0) |29_0- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 84
+***************************************************
+
+
+ # cumulative break down  # 84 total A:74|84 total  NA:9|84 total  did not compile :1|84 total  iterations-t: 0 total  cumulative: 84 total  cnt: 8
+ none(slicem1) |30_0- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 85
+***************************************************
+
+
+ # cumulative break down  # 85 total A:75|85 total  NA:9|85 total  did not compile :1|85 total  iterations-t: 0 total  cumulative: 85 total  cnt: 8
+ none(slicev0) |31_0- chiw17 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 85
+***************************************************
+
+
+ # cumulative break down  # 85 total A:75|85 total  NA:9|85 total  did not compile :1|85 total  iterations-t: 0 total  cumulative: 85 total  cnt: 12
+ none(slicev1) |32_0- chiw17 A:1|12 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 86
+***************************************************
+
+
+ # cumulative break down  # 86 total A:76|86 total  NA:9|86 total  did not compile :1|86 total  iterations-t: 0 total  cumulative: 86 total  cnt: 12
+ none(slicet0) |33_0- chiw17 ran: 0 iterations-l: 0 iterations-t: 0 cumulative: 86
+***************************************************
+
+
+ # cumulative break down  # 86 total A:76|86 total  NA:9|86 total  did not compile :1|86 total  iterations-t: 0 total  cumulative: 86 total  cnt: 0
+ none(slicet1) |34_0- chiw17 ran: 0 iterations-l: 0 iterations-t: 0 cumulative: 86
+***************************************************
+
+
+ # cumulative break down  # 86 total A:76|86 total  NA:9|86 total  did not compile :1|86 total  iterations-t: 0 total  cumulative: 86 total  cnt: 0
+ none(jacob) |35_0- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 86
+***************************************************
+
+
+ # cumulative break down  # 86 total A:76|86 total  NA:9|86 total  did not compile :1|86 total  iterations-t: 0 total  cumulative: 86 total  cnt: 4
+ none(compose) |36_0- chiw17 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 86
+***************************************************
+
+
+ # cumulative break down  # 86 total A:76|86 total  NA:9|86 total  did not compile :1|86 total  iterations-t: 0 total  cumulative: 86 total  cnt: 12
+ none(div) |37_0- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 86
+***************************************************
+
+
+ # cumulative break down  # 86 total A:76|86 total  NA:9|86 total  did not compile :1|86 total  iterations-t: 0 total  cumulative: 86 total  cnt: 2
+ none(curl) |38_0- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 86
+***************************************************
+
+
+ # cumulative break down  # 86 total A:76|86 total  NA:9|86 total  did not compile :1|86 total  iterations-t: 0 total  cumulative: 86 total  cnt: 2
+ none(neg) |1_0- chiw17 A:2|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 88
+***************************************************
+
+
+ # cumulative break down  # 88 total A:78|88 total  NA:9|88 total  did not compile :1|88 total  iterations-t: 0 total  cumulative: 88 total  cnt: 24
+ neg(neg) |1_1- chiw17 A:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 89
+***************************************************
+
+
+ # cumulative break down  # 89 total A:79|89 total  NA:9|89 total  did not compile :1|89 total  iterations-t: 0 total  cumulative: 89 total  cnt: 24
+ copy(neg) |1_2- chiw17 NA:1|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 90
+***************************************************
+
+
+ # cumulative break down  # 90 total A:79|90 total  NA:10|90 total  did not compile :1|90 total  iterations-t: 0 total  cumulative: 90 total  cnt: 24
+ norm(neg) |1_3- chiw17 A:3|24 ran: 24 iterations-l: 0 iterations-t: 0 cumulative: 93
+***************************************************
+
+
+ # cumulative break down  # 93 total A:82|93 total  NA:10|93 total  did not compile :1|93 total  iterations-t: 0 total  cumulative: 93 total  cnt: 24
+ normalize(neg) |1_4- chiw17 ran: 20 iterations-l: 0 iterations-t: 0 cumulative: 93
+***************************************************
+
+
+ # cumulative break down  # 93 total A:82|93 total  NA:10|93 total  did not compile :1|93 total  iterations-t: 0 total  cumulative: 93 total  cnt: 20
+ transpose(neg) |1_5- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 93
+***************************************************
+
+
+ # cumulative break down  # 93 total A:82|93 total  NA:10|93 total  did not compile :1|93 total  iterations-t: 0 total  cumulative: 93 total  cnt: 8
+ trace(neg) |1_6- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 93
+***************************************************
+
+
+ # cumulative break down  # 93 total A:82|93 total  NA:10|93 total  did not compile :1|93 total  iterations-t: 0 total  cumulative: 93 total  cnt: 8
+ det(neg) |1_7- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 93
+***************************************************
+
+
+ # cumulative break down  # 93 total A:82|93 total  NA:10|93 total  did not compile :1|93 total  iterations-t: 0 total  cumulative: 93 total  cnt: 8
+ inverse(neg) |1_8- chiw17 A:2|8 NA:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 96
+***************************************************
+
+
+ # cumulative break down  # 96 total A:84|96 total  NA:11|96 total  did not compile :1|96 total  iterations-t: 0 total  cumulative: 96 total  cnt: 8
+ addition(neg) |1_9- chiw17 A:1|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 97
+***************************************************
+
+
+ # cumulative break down  # 97 total A:85|97 total  NA:11|97 total  did not compile :1|97 total  iterations-t: 0 total  cumulative: 97 total  cnt: 60
+ subtraction(neg) |1_10- chiw17 A:1|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 98
+***************************************************
+
+
+ # cumulative break down  # 98 total A:86|98 total  NA:11|98 total  did not compile :1|98 total  iterations-t: 0 total  cumulative: 98 total  cnt: 60
+ multiplication(neg) |1_11- chiw17 A:4|110 ran: 110 iterations-l: 0 iterations-t: 0 cumulative: 102
+***************************************************
+
+
+ # cumulative break down  # 102 total A:90|102 total  NA:11|102 total  did not compile :1|102 total  iterations-t: 0 total  cumulative: 102 total  cnt: 110
+ division(neg) |1_12- chiw17 A:1|60 NA:1|60 ran: 60 iterations-l: 0 iterations-t: 0 cumulative: 104
+***************************************************
+
+
+ # cumulative break down  # 104 total A:91|104 total  NA:12|104 total  did not compile :1|104 total  iterations-t: 0 total  cumulative: 104 total  cnt: 60
+ cross_product(neg) |1_13- chiw17 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 104
+***************************************************
+
+
+ # cumulative break down  # 104 total A:91|104 total  NA:12|104 total  did not compile :1|104 total  iterations-t: 0 total  cumulative: 104 total  cnt: 8
+ modulate(neg) |1_14- chiw17 ran: 30 iterations-l: 0 iterations-t: 0 cumulative: 104
+***************************************************
+
+
+ # cumulative break down  # 104 total A:91|104 total  NA:12|104 total  did not compile :1|104 total  iterations-t: 0 total  cumulative: 104 total  cnt: 30
+ op_doubledot(neg) |1_15- chiw17 A:1|20 ran: 20 iterations-l: 0 iterations-t: 0 cumulative: 105
+***************************************************
+
+
+ # cumulative break down  # 105 total A:92|105 total  NA:12|105 total  did not compile :1|105 total  iterations-t: 0 total  cumulative: 105 total  cnt: 20
+ outer_product(neg) |1_16- chiw17 A:5|210 ran: 210 iterations-l: 0 iterations-t: 0 cumulative: 110
+***************************************************
+
+
+ # cumulative break down  # 110 total A:97|110 total  NA:12|110 total  did not compile :1|110 total  iterations-t: 0 total  cumulative: 110 total  cnt: 210
+ inner_product(neg) |1_17- chiw17 A:4|90 ran: 90 iterations-l: 0 iterations-t: 0 cumulative: 114
+***************************************************
+
+
+ # cumulative break down  # 114 total A:101|114 total  NA:12|114 total  did not compile :1|114 total  iterations-t: 0 total  cumulative: 114 total  cnt: 90
+ cosine(neg) |1_18- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 114
+***************************************************
+
+
+ # cumulative break down  # 114 total A:101|114 total  NA:12|114 total  did not compile :1|114 total  iterations-t: 0 total  cumulative: 114 total  cnt: 3
+ sine(neg) |1_19- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 114
+***************************************************
+
+
+ # cumulative break down  # 114 total A:101|114 total  NA:12|114 total  did not compile :1|114 total  iterations-t: 0 total  cumulative: 114 total  cnt: 3
+ arccosine(neg) |1_20- chiw17 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 114
+***************************************************
+
+
+ # cumulative break down  # 114 total A:101|114 total  NA:12|114 total  did not compile :1|114 total  iterations-t: 0 total  cumulative: 114 total  cnt: 3
+ arcsine(neg) |1_21- chiw17 A:2|3 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 116
+***************************************************
+
+
+ # cumulative break down  # 116 total A:103|116 total  NA:12|116 total  did not compile :1|116 total  iterations-t: 0 total  cumulative: 116 total  cnt: 3
+ sqrt(neg) |1_22- chiw17 NA:1|4 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 117
+***************************************************
+
+
+ # cumulative break down  # 117 total A:103|117 total  NA:13|117 total  did not compile :1|117 total  iterations-t: 0 total  cumulative: 117 total  cnt: 4
+ grad(neg) |1_23- chiw17 A:1|3 ran: 3 iterations-l: 0 iterations-t: 0 cumulative: 118
+***************************************************
+
+
+ # cumulative break down  # 118 total A:104|118 total  NA:13|118 total  did not compile :1|118 total  iterations-t: 0 total  cumulative: 118 total  cnt: 3
+ hessian(neg) |1_24- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 118
+***************************************************
+
+
+ # cumulative break down  # 118 total A:104|118 total  NA:13|118 total  did not compile :1|118 total  iterations-t: 0 total  cumulative: 118 total  cnt: 2
+ zeros_add(neg) |1_25- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 118
+***************************************************
+
+
+ # cumulative break down  # 118 total A:104|118 total  NA:13|118 total  did not compile :1|118 total  iterations-t: 0 total  cumulative: 118 total  cnt: 4
+ zeros_scale(neg) |1_26- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 118
+***************************************************
+
+
+ # cumulative break down  # 118 total A:104|118 total  NA:13|118 total  did not compile :1|118 total  iterations-t: 0 total  cumulative: 118 total  cnt: 4
+ concat2(neg) |1_27- chiw17 A:1|18 ran: 18 iterations-l: 0 iterations-t: 0 cumulative: 119
+***************************************************
+
+
+ # cumulative break down  # 119 total A:105|119 total  NA:13|119 total  did not compile :1|119 total  iterations-t: 0 total  cumulative: 119 total  cnt: 18
+ zeros_outer(neg) |1_28- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 119
+***************************************************
+
+
+ # cumulative break down  # 119 total A:105|119 total  NA:13|119 total  did not compile :1|119 total  iterations-t: 0 total  cumulative: 119 total  cnt: 2
+ slicem0(neg) |1_29- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 120
+***************************************************
+
+
+ # cumulative break down  # 120 total A:106|120 total  NA:13|120 total  did not compile :1|120 total  iterations-t: 0 total  cumulative: 120 total  cnt: 8
+ slicem1(neg) |1_30- chiw17 A:1|8 ran: 8 iterations-l: 0 iterations-t: 0 cumulative: 121
+***************************************************
+
+
+ # cumulative break down  # 121 total A:107|121 total  NA:13|121 total  did not compile :1|121 total  iterations-t: 0 total  cumulative: 121 total  cnt: 8
+ slicev0(neg) |1_31- chiw17 A:1|12 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 12
+ slicev1(neg) |1_32- chiw17 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 12
+ slicet0(neg) |1_33- chiw17 ran: 0 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 0
+ slicet1(neg) |1_34- chiw17 ran: 0 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 0
+ jacob(neg) |1_35- chiw17 ran: 4 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 4
+ compose(neg) |1_36- chiw17 ran: 12 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 12
+ div(neg) |1_37- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 2
+ curl(neg) |1_38- chiw17 ran: 2 iterations-l: 0 iterations-t: 0 cumulative: 122
+***************************************************
+
+
+ # cumulative break down  # 122 total A:108|122 total  NA:13|122 total  did not compile :1|122 total  iterations-t: 0 total  cumulative: 122 total  cnt: 2

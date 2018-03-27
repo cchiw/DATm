@@ -1,0 +1,30 @@
+***rtn:compile __p_o0_o36_t12_t13_tN__l2
+	 -: compose(none)
+	-_F_s_d2,F_v2_d2 |p_o0_o36_t12_t13_tN__l2
+	rtn:compile 
+
+***rtn:compile __p_o36_o1_t9_tN_tN__l2
+	 -: neg(compose)
+	-_F_v4_d2,F_v2_d2 |p_o36_o1_t9_tN_tN__l2
+	rtn:compile 
+----- Testing framework -----
+-name: currrent
+ templatet_plain
+-coeff: linear
+-samples: 70
+-number of positions:7
+-branch: chiw17
+-precision:double
+-revision: r current
+-runtimepath: /Users/chariseechiw/diderot/chiw17/bin/diderotc --exec   --double 
+ kernel:c4hexic
+ space:False
+ random range: 19
+ random limit:  800000000
+ layer:2
+
+
+***rtn:compile __p_o0_o36_t18_t20_tN__l2
+	 -: compose(none)
+	-_F_s_d3,F_v3_d3 |p_o0_o36_t18_t20_tN__l2
+	rtn:compile 

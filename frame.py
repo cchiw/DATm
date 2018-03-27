@@ -5,7 +5,7 @@ from base_constants import *
 
 s_layer = 2
 
-s_random_range = 9
+s_random_range = 19
 from obj_frame import *
 cpath =  "/Users/chariseechiw/diderot/"
 # note need to change path in fem/Makefile
@@ -19,9 +19,10 @@ name = "currrent"
 # branch information
 #s_branch  = branch_vis15
 #s_branch  = branch_ein16
-s_branch  = branch_other
-#s_branch = branch_chiw17
-
+#s_branch  = branch_other
+s_branch = branch_chiw17
+#s_branch = branch_dev
+#s_branch = branch_fem
 s_revision = "r current"
 s_precision = precision_double  #precision_single
 s_path = cpath # "--whatever the path to diderot is"

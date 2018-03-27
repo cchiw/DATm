@@ -126,7 +126,11 @@ class frame:
         if(branch == branch_vis15):
             path+= "vis15/bin/diderotc --exec "
         elif(branch == branch_chiw17):
-            path+= "chiw17/bin/diderotc --exec --readEinDebug "
+            path+= "chiw17/bin/diderotc --exec  "
+        elif(branch == branch_dev):
+            path+= "Diderot-Dev/bin/diderotc --exec  "
+        elif(branch == branch_fem):
+            path+= "femprime/bin/diderotc --exec  "
         elif(branch == branch_ein16):
             path+= "ein16/bin/diderotc "
         elif(branch == branch_other):
@@ -154,11 +158,9 @@ class frame:
     # if so need to convert file to a text file
     def transform_isNrrd(self):
         branch = self.branch
-        if(branch == branch_vis15 or branch==branch_chiw17):
-            return True
-        elif(branch == branch_ein16):
+        if(branch == branch_ein16):
             return False
-        elif(branch == branch_other):
+        else:
             return True # assumption
 
     def transform_template_size(self):

@@ -98,6 +98,7 @@ def nc_compileandRun(p_out, shape, pos, output, runtimepath, isNrrd, startall):
             #print "compiled and execute"
             # copyfiles
             os.system("cp "+p_out+".txt "+output+".txt")
-            #os.system("cp "+p_out+".c "+output+".c")
+            os.system("cp "+p_out+".c "+"../../../chiw-tashi.c")
+            
             #os.system("rm "+p_out+"*")
             return (true, true, startall)
