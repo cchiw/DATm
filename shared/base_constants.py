@@ -4,8 +4,6 @@
 
 #-------------- PDE test variables ----------------------
 flag_vis_test = False
-#c_pde_test = True
-c_pde_test = False
 #-------------- order of coefficients ----------------------
 # chooose order of coefficients
 coeff_cubic = "cubic"

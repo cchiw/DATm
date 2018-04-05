@@ -8,8 +8,8 @@ nonefield_dim = 0
 
 from base_constants import *
 from obj_space import *
+from input import c_pde_test
 
-pde_test = c_pde_test 
 #tensor types
 class tty:
     def __init__(self, id, name, shape):
@@ -140,7 +140,7 @@ class fty:
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            if(pde_test):
+            if(c_pde_test):
                 return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
             else:
                 return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)

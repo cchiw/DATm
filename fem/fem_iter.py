@@ -8,7 +8,7 @@ sys.path.insert(0, 'shared/')
 sys.path.insert(0, 'fem/')
 sys.path.insert(0, 'nc/')
 #top-level
-from frame import  *
+from input import  *
 
 # shared base programs
 from obj_apply import *

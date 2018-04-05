@@ -5,7 +5,7 @@ import random
 
 
 #top-level
-from frame import  *
+from input import  *
 
 # shared base programs
 from obj_apply import *
@@ -150,8 +150,8 @@ def core2(app, coeffs, dimF, names, testing_frame, cnt):
 
     # samples
     #create synthetic field data with diderot
-    (PARAMS,all50,all51,all52,all53,all54,all55) = sortField(core_fields, g_samples, coeffs, t_nrrdbranch, g_space)
-  
+    ##PARAMS,all50,all51,all52,all53,all54,all55) = sortField(core_fields, g_samples, coeffs, t_nrrdbranch, g_space)
+    PARAMS =""
     tt=tt+1
     endall = time.time() 
     tall = str(endall - startall)

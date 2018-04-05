@@ -7,7 +7,7 @@ import random
 
 
 #top-level
-from frame import  *
+#from input import c_pde_test
 
 # shared base programs
 from obj_apply import *

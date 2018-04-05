@@ -5,7 +5,6 @@ import time
 
 sys.path.insert(0, 'shared/')
 sys.path.insert(0, 'visver/')
-sys.path.insert(0, 'setTest/')
 sys.path.insert(0, 'fem')
 
 # shared base programs
@@ -27,9 +26,12 @@ from fem_iter import *
 # ^ where all the points are.
 
 ##############################################################################################
-def cmd(layer, testing_frame, cnt, shift, args):
+def fem_cmd(testing_frame, cnt):
+    shift = 0
+    layer = frame.get_layer(testing_frame)
+    args = len(sys.argv)-1  #number of arguments
+    
     if (layer==1):
-
         if(args==0):
             # iterate over single layer
             rtn = []
@@ -198,92 +200,3 @@ def cmd(layer, testing_frame, cnt, shift, args):
             raise "unsupported"
     else:
       raise "unsupported"
-
-
-# iterating over the different types
-def main_iter(n_frame, shift):
-    # get testing framework
-    testing_frame = get_testing_frame(n_frame)
-    # get counter
-    cnt = get_counter()
-    # writing heading based on framework
-    write_heading(testing_frame)
-    # constants (decides layer of testing)
-    layer = frame.get_layer(testing_frame)
-    # layer, and shift from constants (decides layer of testing)
-    start_standard = time.time()
-    #choose testing range based on commands
-    args = int(sys.argv[shift])
-    cmd(layer, testing_frame, cnt, shift, args)
-    end_standard = time.time()
-
-    tt_standard  = " time all _standard "+str(end_standard  - start_standard )
-    writeall(tt_standard )
-    print (tt_standard )
-    
-    x = counter.writeCumulativeS(cnt)
-    writeFinalCumulative(x)
-    writeFinalCumulative(tt_standard)
-
-
-# iterating over the different types
-def main_set():
- 
-    # for quick use
-    # assumes first framework, and iterative search of test case
-    # first command is the number of arguments
-    n_template = 0
-    shift = 1 # next command number
-    # get testing framework
-    testing_frame = set_template(n_template)
-    # get counter
-    cnt = get_counter()
-    # writing heading based on framework
-    write_heading(testing_frame)
-    # constants (decides layer of testing)
-    layer = frame.get_layer(testing_frame)
-    rr = frame.get_random_range(testing_frame)
-    
-    writeFinalCumulative("\n\n******** Layer: "+str(layer)+"probability: "+str(rr)+"\n")
-    
-    # layer, and shift from constants (decides layer of testing)
-    start_standard = time.time()
-    #choose testing range based on commands
-    args = int(sys.argv[shift])
-    cmd(layer, testing_frame, cnt, shift, args)
-    end_standard = time.time()
-    tt_standard  = " time all _standard "+str(end_standard  - start_standard )
-    writeall(tt_standard )
-    print (tt_standard )
-    x = counter.writeCumulativeS(cnt)
-    writeFinalCumulative(x)
-    writeFinalCumulative(tt_standard)
-
-
-def main_setLayer(layer, prob):
-    # for quick use
-    # assumes first framework, and iterative search of test case
-    # first command is the number of arguments
-    n_template = 0
-    shift = 1 # next command number
-    # get testing framework
-    testing_frame = set_templateLR(n_template, layer, prob)
-    # get counter
-    cnt = get_counter()
-    # writing heading based on framework
-    write_heading(testing_frame)
-    # constants (decides layer of testing)
-    layer = frame.get_layer(testing_frame)
-    # layer, and shift from constants (decides layer of testing)
-    start_standard = time.time()
-    #choose testing range based on commands
-    args = int(sys.argv[shift])
-    cmd(layer, testing_frame, cnt, shift, args)
-    end_standard = time.time()
-    tt_standard  = " time all _standard "+str(end_standard  - start_standard )
-    writeall(tt_standard )
-    print (tt_standard )
-    x = counter.writeCumulativeS(cnt)
-    writeFinalCumulative(x)
-    writeFinalCumulative(tt_standard)
-

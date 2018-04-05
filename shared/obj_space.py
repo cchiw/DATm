@@ -7,7 +7,7 @@ nonefield_k= -1
 nonefield_dim = 0
 import random
 from base_constants import *
-pde = c_pde_test
+from input import c_pde_test
 
 class space:
     def __init__(self, mesh, element, k_order, fnspace, shape):
@@ -53,7 +53,7 @@ class space:
     def ty_fnSpace_forFire(self):
         mesh = self.mesh
         element = self.element
-        k_order = 4 if pde else self.k_order
+        k_order = 4 #if pde else self.k_order
         exp = mesh+",\""+element+"\",degree="+str(k_order)
         fnspace = space.ty_fnSpace(self, exp,False)+ "\n"
         return fnspace
@@ -61,7 +61,7 @@ class space:
         mesh = self.mesh
         element = self.element
         k_order = self.k_order
-        self.k_order = 4 if pde else self.k_order #4# min(k_order,4)
+        self.k_order = 4 #if pde else self.k_order #4# min(k_order,4)
         fnspace = self.fnspace
         exp = mesh+", "+element+"(), "+str(self.k_order)
         fnspace= space.ty_fnSpace(self, exp, True)

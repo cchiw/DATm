@@ -9,7 +9,6 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_write import *
-from base_constants import c_pde_test
 
 pathToSynFiles = c_pathToSynFiles
 #convert coeffs
@@ -334,25 +333,21 @@ def createSingleField(itype, outSize, orig, coeffOrig, nrrdbranch, space):
 
     #os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
  
-    if (not (c_pde_test)):
-        # compile program
-        os.system(nrrdbranch+" --log "+p_Orig)
 
-        # comment out if executable exists
-        os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
-        os.system(nrrdbranch+" --log "+p_Orig)
-        
-        # does executable exist
-        endall = time.time()
-        tall53 =(endall - startall)
-        startall=endall
-        txtfile = orig+".txt"
-        os.system("./"+e_Orig+PARAMS+"| unu save -f nrrd -o "+outputnrrd)
-        os.system("grep \"compiler\" "+e_Orig+".log >> catcreateall.txt")
-    else:
-        endall = time.time()
-        tall53 =(endall - startall)
-        startall=endall
+    # compile program
+    os.system(nrrdbranch+" --log "+p_Orig)
+
+    # comment out if executable exists
+    os.system("cp shared/symb/"+ p_Orig +" "+ p_Orig)
+    os.system(nrrdbranch+" --log "+p_Orig)
+    
+    # does executable exist
+    endall = time.time()
+    tall53 =(endall - startall)
+    startall=endall
+    txtfile = orig+".txt"
+    os.system("./"+e_Orig+PARAMS+"| unu save -f nrrd -o "+outputnrrd)
+    os.system("grep \"compiler\" "+e_Orig+".log >> catcreateall.txt")
     endall = time.time()
     tall54 = (endall - startall)
     startall=endall

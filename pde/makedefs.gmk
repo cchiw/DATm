@@ -1,11 +1,11 @@
 SHELL =		/bin/sh
 
-DIDEROTC =	/Users/chariseechiw/diderot/femprime/bin/diderotc --log --double
+DIDEROTC =	/Users/chariseechiw/diderot/Diderot-Dev/bin/diderotc --log --double
 
 CC =		clang
 CXX =		clang++ -std=gnu++11
 CXXFLAGS =	-g -O2 -fPIC
-INCLUDES =	-I/Users/chariseechiw/diderot/femprime/include -I/usr/local/include
+INCLUDES =	-I/Users/chariseechiw/diderot/Diderot-Dev/include -I/usr/local/include
 LDFLAGS =	-L/usr/local/lib -L/opt/local/lib -L/usr/lib/
 LIBS =		-lteem  -lz -lbz2
 CPPFLAGS =	 $(INCLUDES) -fPIC
@@ -16,8 +16,8 @@ LIBS +=		-Wl,-rpath=/usr/local/lib
 endif
 
 ifeq ($(PARALLEL),yes)
-PTHREAD_FLAGS =	-D_THREAD_SAFE 
-PTHREAD_LIBS =	
+PTHREAD_FLAGS =	-D_THREAD_SAFE
+PTHREAD_LIBS =
 else
 PTHREAD_FLAGS =
 PTHREAD_LIBS =

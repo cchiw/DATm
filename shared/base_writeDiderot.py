@@ -14,6 +14,8 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_constants import *
+from input import c_pde_test
+
 
 adj = (opr_adj)
 template="shared/template/foo.ddro"     # template
@@ -33,7 +35,7 @@ eps = "0.01"
 
 # constants from contants file
 removeCond = flag_vis_test
-pde_Test = c_pde_test
+pde_test = c_pde_test
 
 
 def write(f,foo):
