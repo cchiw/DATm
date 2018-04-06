@@ -5,8 +5,6 @@ import time
 
 sys.path.insert(0, 'shared/')
 sys.path.insert(0, 'visver/')
-sys.path.insert(0, 'fem')
-
 # shared base programs
 from obj_apply import *
 from obj_ex import  *
@@ -14,8 +12,8 @@ from obj_counter import *
 from obj_field import *
 from obj_frame import  *
 
-# specific fem programs
-from fem_iter import *
+# specific cte programs
+from core_iter import *
 
 
 
@@ -26,11 +24,10 @@ from fem_iter import *
 # ^ where all the points are.
 
 ##############################################################################################
-def fem_cmd(testing_frame, cnt):
+def core_cmd(testing_frame, cnt):
     shift = 0
     layer = frame.get_layer(testing_frame)
     args = len(sys.argv)-1  #number of arguments
-    
     if (layer==1):
         if(args==0):
             # iterate over single layer
@@ -55,26 +52,19 @@ def fem_cmd(testing_frame, cnt):
             ex = oprToEx(opr_inner, testing_frame, cnt)
             single_specific_ex(ex, opr_inner,t_num, testing_frame, cnt)
             writeResults_inner(opr_inner, testing_frame, cnt)
-        elif (args==10):
-            #run all the programs
-            t_start= int(sys.argv[shift+1])
-            t_range = int(sys.argv[shift+2])
-            embed2_iter_inner_setrange_layer1(t_start, t_range, testing_frame, cnt)
-            writeCumulative(cnt)
         else:
             raise "unsupported"
-    elif (args==10):
-        #run all the programs
-        t_start= int(sys.argv[shift+1])
-        t_range = int(sys.argv[shift+2])
-        embed2_iter_inner_setrange(t_start, t_range,    testing_frame, cnt)
-        writeCumulative(cnt)
-        
     # assumes second or third layer
     elif (args==0):
             ##writeTime(1)
              #run all the programs
             embed2_iter_inner(testing_frame, cnt)
+            writeCumulative(cnt)
+    elif (args==10):
+            #run all the programs
+            t_start= int(sys.argv[shift+1])
+            t_range = int(sys.argv[shift+2])
+            embed2_iter_inner_setrange(t_start, t_range,    testing_frame, cnt)
             writeCumulative(cnt)
     elif (args==1):
            # given operator id for inner  operator
@@ -150,6 +140,7 @@ def fem_cmd(testing_frame, cnt):
             opr_outer1 = id_toOpr(t_outer1)
             opr_outer2 = id_toOpr(t_outer2)
             Title_outer3(opr_inner, opr_outer1, opr_outer2)
+
             ex = oprToEx(opr_inner, testing_frame, cnt)
             oprs =  [opr_inner, opr_outer1, opr_outer2]
             (name, ishape) = get_single_exampleEx(ex, t_num)
@@ -200,3 +191,4 @@ def fem_cmd(testing_frame, cnt):
             raise "unsupported"
     else:
       raise "unsupported"
+

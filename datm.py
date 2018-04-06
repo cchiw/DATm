@@ -1,9 +1,8 @@
 import sys
 import os
 
-sys.path.insert(0,'cte/')
-sys.path.insert(0,'fem/')
 sys.path.insert(0, 'shared/')
+sys.path.insert(0,'core/')
 
 from base_write import *
 from input import get_testing_frame, c_pde_test
@@ -16,8 +15,7 @@ from obj_field import *
 from obj_frame import  *
 
 # specific fem programs
-from fem_iter_cmd import fem_cmd
-from cte_iter_cmd import cte_cmd
+from core_iter_cmd import core_cmd
 
 
 # get testing framework
@@ -29,10 +27,9 @@ cnt = get_counter()
 
 start_standard = time.time()
 ########################
-if(c_pde_test):
-    fem_cmd(testing_frame, cnt)
-else:
-    cte_cmd(testing_frame, cnt)
+
+core_cmd(testing_frame,cnt)
+
 ########################
 end_standard = time.time()
 tt_standard  = " time all _standard "+str(end_standard  - start_standard )

@@ -4,7 +4,7 @@ import sys
 from base_constants import *
 from obj_frame import *
 
-s_layer = 2
+s_layer = 1
 s_random_range = 0
 #c_pde_test = True
 c_pde_test = False

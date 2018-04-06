@@ -5,11 +5,9 @@ import time
 import random
 
 sys.path.insert(0, 'shared/')
-sys.path.insert(0, 'cte/')
 sys.path.insert(0, 'nc/')
 #top-level
 from input import  *
-
 # shared base programs
 from obj_apply import *
 from obj_ex import  *
@@ -19,12 +17,11 @@ from obj_frame import  *
 from base_observed import observed
 from base_write import *
 from base_var_ty import *
+# core
+from core_main import core_get_tshape2,create_single_app
 
-# specific cte programs
-from cte_writeDiderot import writeDiderot
-from cte_core import *
 
-pde_test = false # test pdes in femprime branch
+# test pdes in femprime branch
 #    Iterate over defined types and operators
 #create app object that represents that application of one or two operators on tensor and/or tensor field arguments.
 #for a unary operator unary(e) we iterate over the single argu- ment (e) where e in tau.
@@ -90,7 +87,7 @@ def embed_base_specific_ex(ex, tshape1, ishape0, oprs, tys, testing_frame, cnt):
             z = set_k(g_krn, id+1, x)
             return (ishape0+[y,z], [y,z])
     (ishape, fty) = get_fty()
-    return get_tshape2(tshape1, ishape, fty, oprs, tys, testing_frame, cnt)
+    return core_get_tshape2(tshape1, ishape, fty, oprs, tys, testing_frame, cnt)
 
 # concise verion of above code
 # already given type for extra argument
@@ -106,7 +103,7 @@ def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, test
         id = id+1
                 
     ishape = ishape0+fty
-    return get_tshape2(tshape1, ishape, fty, oprs, tys_num, testing_frame, cnt)
+    return core_get_tshape2(tshape1, ishape, fty, oprs, tys_num, testing_frame, cnt)
 
 
 ################################################## more helpers  ###############################################
@@ -114,9 +111,15 @@ def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, test
 # get tshape of get_tshape
 def pre_get_tshape1(name, ishape, opr_inner, testing_frame):
     g_krn = frame.get_krn(testing_frame)
-    ishape0 = set_ks(g_krn, ishape)
-    (tf1, tshape1) = get_tshape(opr_inner, ishape0,pde_test)
-    return (name, tf1, tshape1, ishape0)
+    if(c_pde_test):
+        space =  "Unit"
+        ishape0 = set_ks_ofield(g_krn, ishape, space)
+        (tf1, tshape1) = get_tshape(opr_inner, ishape0, c_pde_test)
+        return (name, tf1, tshape1, ishape0)
+    else:
+        ishape0 = set_ks(g_krn, ishape)
+        (tf1, tshape1) = get_tshape(opr_inner, ishape0, c_pde_test)
+        return (name, tf1, tshape1, ishape0)
 
 
 # operator, and testing framework -> built in example given
@@ -137,10 +140,6 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
     #writeTime(5)
     opr_inner = oprs[0]
     opr_outer = oprs[1]
-    def call(t_num, t_ty2, ty_ty2):
-        tys = [t_num, t_ty2]
-        #print "call: ",t_num, t_ty2,ty_ty2
-        embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys, ty_ty2, testing_frame, cnt)
     # core
     n_num = len(ex.tys)
     for t_num  in range(n_num):
@@ -159,7 +158,6 @@ def embed_base_iter_ty2(ex, oprs, testing_frame, cnt):
                 n_ty2 = len(ty2s)
                 for t_ty2 in range(n_ty2):  #extra type
                     ty_ty2 = ty2s[t_ty2]
-                    #call(t_num, t_ty2,ty_ty2)
                     tys_num = [t_num, t_ty2, None]
                     tys_ty = [ty_ty2]
                     embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, testing_frame, cnt)

@@ -129,7 +129,6 @@ id=id+len(op_slice)
 ### features not fully supported on fem. expected errors
 op_jacob= operator(True,id, "jacob", 1, u'∇⊗', place_left, limit_none, True)
 op_comp = operator(True,id+1,"compose", 2,(u'compose(', u'*'+str(adj)+')'), place_split, limit_none, True)
-#op_comp = operator(True,id+1,"compose", 2,u'∘', place_middle, limit_none, True)
 op_divergence = operator(False,id+2, "div", 1, u'∇•', place_left, limit_none, True)
 op_curl= operator(False,id+3, "curl", 1, u'∇×',place_left, limit_none, True)
 op_new2 = [op_jacob,op_comp,op_divergence,op_curl]
@@ -165,7 +164,7 @@ def pnt_ops():
         if(not (op1.id==i)):
             raise Exception(x+" does not match placement "+str(i))
         i+=1
-    f = open("rst/stash/results_final.txt", 'a+')
+    f = open("rst/stash/results_ops.txt", 'a+')
     f.write(e)
     f.close()
 
