@@ -27,28 +27,31 @@ from nc_createField import sortField
 # specific cte programs
 from fem_core import  fem_core
 from cte_core import  cte_core
-
+from input import s_field
 
 ###################################################################################################
 ###################################################################################################
 # different based on cte or fem
 def convert_fields(ishape,testing_frame):
-    if(c_pde_test):
+    if(s_field==field_pde):
         g_krn = frame.get_krn(testing_frame)
         x = set_ks_ofield(g_krn, ishape, space)
         return x
 
-    else:
+    elif(s_field==field_conv):
         g_krn = frame.get_krn(testing_frame)
         x = set_ks(g_krn, ishape)
         return x
-
+    else:
+        raise Fail ("convert fields issue")
 
 def core_inside(app, coeffs, dimF, title, testing_frame, cnt):
-    if(c_pde_test):
+    if(s_field==field_pde):
         return fem_core(app, coeffs, dimF, title, testing_frame, cnt)
-    else:
+    elif(s_field==field_conv):
         return  cte_core(app, coeffs, dimF, title, testing_frame, cnt)
+    else:
+        raise Fail ("core inside issue")
 
 ###################################################################################################
 ###################################################################################################
@@ -98,7 +101,7 @@ def create_single_app(ex, opr_inner, t_num, testing_frame, cnt):
     ishape = convert_fields(ishape,testing_frame)
     #print "calling tshape"
     #print opr_inner.name,ishape[0].name
-    (tf1, tshape1) = get_tshape(opr_inner,ishape,c_pde_test)
+    (tf1, tshape1) = get_tshape(opr_inner,ishape)
     #print "post get-tshape"
     if(not tf1):
         write_terrible("\n apply blocked from attempting: "+"b__"+name+str(opr_inner.id)+"_"+str(t_num))
@@ -176,7 +179,7 @@ def get_tshape3(app, coeffs, ishape, tshape2, oprs, tys, newtys, testing_frame, 
     ishape_all = convert_fields(ishape_all, testing_frame)
 
     # ok now back to regular programming
-    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2,c_pde_test)
+    (tf3, tshape3) = get_tshape(opr_outer2, ishape_outer2)
     if(tf3==true):#
         writeResults_outer3(opr_inner, opr_outer1, opr_outer2, testing_frame, cnt)
         appname = opr_outer2.name+"("+opr_outer1.name+"("+opr_inner.name+")"+")"
@@ -223,7 +226,7 @@ def core_get_tshape2(tshape1, ishape, fty,  oprs, tys, testing_frame, cnt):
     ishape = convert_fields(ishape, testing_frame)
     #second layer, adds second field type
     es = [tshape1]+fty
-    xy = get_tshape(opr_outer,es,c_pde_test)
+    xy = get_tshape(opr_outer,es)
   
     (tf2, tshape2) =xy
     #print "tshape2", tshape2

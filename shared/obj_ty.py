@@ -8,7 +8,6 @@ nonefield_dim = 0
 
 from base_constants import *
 from obj_space import *
-from input import c_pde_test
 
 #tensor types
 class tty:
@@ -140,10 +139,7 @@ class fty:
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            if(c_pde_test):
-                return "ofield#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
-            else:
-                return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
+            return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
     def toFemDiderot(self,sub=0):
         if(self.dim==0):
             return "tensor "+str(self.shape)
@@ -153,7 +149,7 @@ class fty:
         if(self.dim==0):
             return "tensor "+str(self.shape)
         else:
-            return "ofield#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
+            return "field#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
 
     def toStr(self):
         if(self.dim==nonefield_dim):

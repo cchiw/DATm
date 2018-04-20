@@ -1,9 +1,15 @@
 #top layer of dependence
 
 
+#-------------- Different Field Definitions ----------------------
+field_pde = "pde field"
+field_cfe = "closed-form expression field"
+field_conv = "dicrete image data field"
+
+
 
 #-------------- PDE test variables ----------------------
-flag_vis_test = False
+#flag_vis_test = False
 #-------------- order of coefficients ----------------------
 # chooose order of coefficients
 coeff_cubic = "cubic"

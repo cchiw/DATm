@@ -5,10 +5,6 @@ import re
 import os
 import random
 
-
-#top-level
-#from input import c_pde_test
-
 # shared base programs
 from obj_apply import *
 from obj_ex import  *

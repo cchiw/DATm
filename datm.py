@@ -5,7 +5,7 @@ sys.path.insert(0, 'shared/')
 sys.path.insert(0,'core/')
 
 from base_write import *
-from input import get_testing_frame, c_pde_test
+from input import get_testing_frame
 
 # shared base programs
 from obj_apply import *

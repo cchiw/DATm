@@ -155,7 +155,7 @@ class frame:
             return frame.transform_fullpath(self, branch_vis15, precision_single)
 
     # does the branch create nrrd file
-    # if so need to convert file to a text file
+    # if so need to change file to a text file
     def transform_isNrrd(self):
         branch = self.branch
         if(branch == branch_ein16):

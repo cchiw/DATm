@@ -73,7 +73,7 @@ def fem_inShape(f, core_fields):
     
             foo = foo+"\n string "+path+" = \"fnspace_data/\";"
             #+exp.inputfile+"\";"
-            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty,sub=(-1))+" "+fi+"0"+" = convert("+F+","+V+","+ path+");\n"
+            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty,sub=(-1))+" "+fi+"0"+" = FEM("+F+","+V+","+ path+");\n"
             FF = exp.operator.replace("F",fi+"0")
             #foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty,sub=(+2))+" "+fi+" = " + FF +";\n"
             foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = " + FF +";\n"
@@ -120,8 +120,8 @@ def fem_limits(f, dim,application): # look at base_writeDierot at 270 and getCon
         foo = "tensor [2] pos = [i,j]*stepSize;"
     elif(dim==3):
         foo = "tensor [3] pos = [i,j,k]*stepSize;"
-    foo =foo+ "\n\t\t tensor [] current = inst(G,pos);"
-    #foo = foo + "\n\t\tofield#3(2)[2,2] a = ∇⊗∇F00;\n\t\t print(inst(a,pos),current);"
+    foo =foo+ "\n\t\t tensor [] current = G(pos);"
+    #foo = foo + "\n\t\tofield#3(2)[2,2] a = ∇⊗∇F00;\n\t\t print((a,pos),current);"
     foo = foo+"\n\t\t if(current > limit){out= 1;}"
     foo = foo+"\n\t\t else{out= 0;}"
     f.write(foo)
@@ -138,7 +138,7 @@ def cte_update_method(f, pos, app):
         if(c_pde_Inside):
             check_inside(f, opfieldname1, app, pde_test)
         else:
-            foo= "\n\t\tout = inst(G,pos);"
+            foo= "\n\t\tout = G(pos);"
             f.write(foo)
     else:
         check_conditional(f,  foo_out, app)

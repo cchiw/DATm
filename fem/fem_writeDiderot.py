@@ -47,7 +47,7 @@ def getConvertLine(f, oty, opfieldname1, i):
     F = "F"+fi
     path = "path"+fi
     V = "V"+fi
-    c="convert("+F+","+V+","+ path+");\n"
+    c="FEM("+F+","+V+","+ path+");\n"
     t = fty.toDiderot(oty)
     foo = t+" "+opfieldname1+" = " +c
     f.write(foo)
@@ -76,7 +76,7 @@ def fem_inShape(f, core_fields):
         
             foo = foo+"\n string "+path+" = \"fnspace_data"+c_version+"/\";"
             #+exp.inputfile+"\";"
-            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = convert("+F+","+V+","+ path+");\n"
+            foo = foo+"\n "+fty.toOFieldDiderot(exp.fldty)+" "+fi+" = FEM("+F+","+V+","+ path+");\n"
             #f.write(foo)
             f.write(foo)
             
@@ -122,7 +122,7 @@ def fem_limits(f, dim):
         foo = "tensor [2] pos = [i,j]*stepSize;"
     elif(dim==3):
         foo = "tensor [3] pos = [i,j,k]*stepSize;"
-    foo =foo+ "\n\t\t tensor [] current = inst(G,pos);"
+    foo =foo+ "\n\t\t tensor [] current = G(pos);"
     foo = foo+"\n\t\t if(current > limit){out= 1;}"
     foo = foo+"\n\t\t else{out= 0;}"
     f.write(foo)

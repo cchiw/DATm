@@ -111,16 +111,17 @@ def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, test
 # get tshape of get_tshape
 def pre_get_tshape1(name, ishape, opr_inner, testing_frame):
     g_krn = frame.get_krn(testing_frame)
-    if(c_pde_test):
+    if(s_field==field_pde):
         space =  "Unit"
         ishape0 = set_ks_ofield(g_krn, ishape, space)
-        (tf1, tshape1) = get_tshape(opr_inner, ishape0, c_pde_test)
+        (tf1, tshape1) = get_tshape(opr_inner, ishape0)
+        return (name, tf1, tshape1, ishape0)
+    elif(s_field==field_conv):
+        ishape0 = set_ks(g_krn, ishape)
+        (tf1, tshape1) = get_tshape(opr_inner, ishape0)
         return (name, tf1, tshape1, ishape0)
     else:
-        ishape0 = set_ks(g_krn, ishape)
-        (tf1, tshape1) = get_tshape(opr_inner, ishape0, c_pde_test)
-        return (name, tf1, tshape1, ishape0)
-
+         raise Fail("inside pre get tshape")
 
 # operator, and testing framework -> built in example given
 def oprToEx(opr_inner, testing_frame, cnt):

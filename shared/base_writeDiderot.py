@@ -14,7 +14,8 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_constants import *
-from input import c_pde_test
+from input import s_field
+
 
 
 adj = (opr_adj)
@@ -34,8 +35,8 @@ opfieldname1="G"
 eps = "0.01"
 
 # constants from contants file
-removeCond = flag_vis_test
-pde_test = c_pde_test
+removeCond = False # FIXME flag_vis_test
+
 
 
 def write(f,foo):
@@ -114,7 +115,7 @@ def outLineF(f, type):
 # checks inside a field but not inside a tensor term
 def getInside(exp, pos, name):
     inside ="inside"
-    if (pde_test):
+    if ((s_field==field_pde)):
         inside ="insideF"
     
     if (fty.is_Field(exp.fldty)):
@@ -123,10 +124,7 @@ def getInside(exp, pos, name):
         return ""
 # probes field at variable position
 def makeProbe(exp, pos):
-    if(pde_test):
-        return "inst("+exp+","+ pos+")"
-    else:
-        return "("+exp+")("+pos+")"
+    return "("+exp+")("+pos+")"
 
 
 def isProbe(exp, fld):

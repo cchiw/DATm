@@ -339,4 +339,4 @@ def rst_good(names, x, extraname,  branch, observed_data, correct_data,  positio
     labl = dir+"_"+names
     write_rst(names, x, extraname, "rtn:general")
 
-    #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
+    writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)

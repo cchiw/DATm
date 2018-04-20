@@ -27,7 +27,7 @@ class example:
         return self.tys[i]
 
 
-InvR = flag_vis_test
+InvR = False # FIXME: what is happenning here?
 #--------------  put list in parameter form  ----------------------
 # make list of unary args
 def get_unu(fall):

@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
-#from set import *
-# constants
 nonefield_k= -1
 nonefield_dim = 0
 import random
 from base_constants import *
-from input import c_pde_test
+
 
 class space:
     def __init__(self, mesh, element, k_order, fnspace, shape):

@@ -7,9 +7,10 @@ from obj_ty import *
 from obj_operator import *
 from obj_field import *
 from base_constants import *
+from input import s_field
 
 #apply inverse of reals
-InvReal = flag_vis_test
+InvReal = False #FIXME
 
 # check application of operator to types
 # organized by arity of operator
@@ -400,19 +401,15 @@ def applyThirdOp(op1,ityps):
         return err()
 #############################################################################################
 # apply unary and binary operator
-def get_tshape(opr1, ishape, pde_test):
+def get_tshape(opr1, ishape):
     arity = opr1.arity
     if(arity==0):
         return (true, ty_mat3x3F_d3)
     elif(arity==1):
         (a,b) =  applyUnaryOp(opr1, ishape)
-        #if(a):
-            ##print fty.toDiderot(b,pde_test)
         return (a,b)
     elif(arity==2):
-        ##print "getting tshape of-applyBinaryOp", opr1.name,"arg=", ishape[0].name,",", ishape[1].name
         (m,n) = applyBinaryOp(opr1, ishape)
-        ##print m, "->", n
         return (m,n)
     elif(arity==3):
         return applyThirdOp(opr1, ishape)
