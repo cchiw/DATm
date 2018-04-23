@@ -19,20 +19,6 @@ from base_writeDiderot import *
 from base_constants import *
 from nc_writeDiderot import nc_compileandRun, nc_setLength
 
-#strings in diderot template
-foo_in = "foo_in"
-foo_outTen = "foo_outTen"
-foo_op = "foo_op"
-foo_probe = "foo_probe"
-foo_length ="foo_length"
-foo_limits = "foo_limits"
-foo_posIn = "foo_posIn"
-foo_posLast = "foo_posLast"
-
-#otherwise variables in diderot program
-foo_out = "out"
-foo_pos = "pos"
-const_out = "7.2"
 
 
 # create space for field

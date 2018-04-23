@@ -113,7 +113,7 @@ def outLineF(f, type):
 
 ##################################### field declaration helpers #####################################
 # checks inside a field but not inside a tensor term
-def getInside(exp, pos, name):
+def getInside(exp, pos, name,):
     inside ="inside"
     if ((s_field==field_pde)):
         inside ="insideF"
@@ -123,17 +123,20 @@ def getInside(exp, pos, name):
     else:
         return ""
 # probes field at variable position
-def makeProbe(exp, pos):
-    return "("+exp+")("+pos+")"
+def makeProbe(exp, pos,cfenames):
+    if (s_field==field_cfe):
+        return "inst("+const_probeG_cfe+cfenames+")"
+    else:
+        return "("+exp+")("+pos+")"
 
 
-def isProbe(exp, fld):
+def isProbe(cfenames,exp, fld):
     #print "\n\n***************************  exp", exp
     #print "fld.ty:",fld.name
     if(fty.is_Tensor(fld)):
         return "("+exp+")"
     else:
-        return makeProbe(exp, "pos")
+        return makeProbe(exp, "pos",cfenames)
 
 
 ##################################### print unary,binary,n-arity op #####################################
@@ -310,7 +313,7 @@ def innerL(app, lhs, i):
     opr = app.opr
     oty = app.oty
     (z, _) = get_exp2(opr, lhs , i)
-    return isProbe(z, oty)
+    return isProbe(cfenames,z, oty)
 def innerF(app, i):
     exp0 = fieldName(i)
     return  innerL(app, exp0, i+1)
@@ -327,11 +330,11 @@ def get_args2(app, app_inner, i):
             third = app.lhs.lhs
             opr = third.opr
             z = get_exp1(opr, i)
-        return isProbe(z, oty)
+        return isProbe(cfenames,z, oty)
     else:
         if(app.lhs.isrootlhs):
             oty  = app_inner.oty
-            return isProbe(exp0, oty)
+            return isProbe(cfenames,exp0, oty)
         else:
             third = app.lhs.lhs
             return innerF(third, i)
@@ -345,12 +348,12 @@ def get_args3(app):
             opr_inner = app_inner.opr
             z = get_exp1(opr_inner,1)
             oty = app_outer.rhs.fldty
-            return isProbe(z, oty)
+            return isProbe("FIXME",z, oty)
         else:
             # one layer
             z = app.rhs.name
             oty = app.rhs.fldty
-            return isProbe(z, oty)
+            return isProbe(cfenames,z, oty)
     else:
         if((app.lhs).isrootlhs):
             # layer 2
@@ -397,7 +400,7 @@ def getCond(app, set):
 def check_conditional(f, ff, app):
     # probes field at variable position
     oty = app.oty
-    set = "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
+    set = "\t"+foo_out+" = "+isProbe(cfenames,ff,oty)+";\n"
     foo = ""
     if(app.isrootlhs or oty.dim==1):
         foo = set
@@ -410,7 +413,7 @@ def check_conditional(f, ff, app):
 def check_conditional(f, ff, app):
     # probes field at variable position
     oty = app.oty
-    set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";\n"
+    set =  "\t"+foo_out+" = "+isProbe(cfenames,ff,oty)+";\n"
     foo =  ""
     if(app.isrootlhs or oty.dim==1):
         foo = set
@@ -421,10 +424,10 @@ def check_conditional(f, ff, app):
     return
 ##################################### inside field test  #####################################
 #probes field at variable position
-def check_inside(f, ff, app):
+def check_inside(f, probeG, app,cfenames):
 
     oty = app.oty
-    set =  "\t"+foo_out+" = "+isProbe(ff,oty)+";"
+    set =  "\t"+foo_out+" = "+isProbe(cfenames,probeG,oty)+";"
     exps = apply.get_all_Fields(app)
     foo = ""
     pos = "pos"
@@ -436,11 +439,11 @@ def check_inside(f, ff, app):
     def insideExpFld0(i):
         return getInside(exps[i], fieldName(i) , pos)
     def insideExpFld1(i, j):
-        prbe = makeProbe(fieldName(j), pos)
+        prbe = makeProbe(fieldName(j), pos,cfenames)
         return getInside(exps[i], fieldName(i), prbe+"*"+adjs)
     def insideExpFld2(i, j, k):
-        prbeI = makeProbe(fieldName(k), pos)
-        prbeO = makeProbe(fieldName(j), "("+prbeI+")*" +adjs)
+        prbeI = makeProbe(fieldName(k), pos,cfenames)
+        prbeO = makeProbe(fieldName(j), "("+prbeI+")*" +adjs,cfenames)
         return getInside(exps[i], fieldName(i) , prbeO+"*"+adjs)
     # inside expression for field in composition
     def i0():
@@ -568,7 +571,7 @@ def check_inside(f, ff, app):
     else:
         t = ""
         if(removeCond):
-            t = "out ="+makeProbe("G", "pos")+";"
+            t = "out ="+makeProbe(probeG, "pos",cfenames)+";"
         else:
             t = getCond(app,set)
         foo = wrap(outerif, t, oty)

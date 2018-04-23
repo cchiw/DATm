@@ -5,6 +5,7 @@ import random
 
 sys.path.insert(0,'fem/')
 sys.path.insert(0,'cte/')
+sys.path.insert(0,'cfe/')
 
 #top-level
 from input import  *
@@ -27,6 +28,7 @@ from nc_createField import sortField
 # specific cte programs
 from fem_core import  fem_core
 from cte_core import  cte_core
+from cfe_core import  cfe_core
 from input import s_field
 
 ###################################################################################################
@@ -35,6 +37,7 @@ from input import s_field
 def convert_fields(ishape,testing_frame):
     if(s_field==field_pde):
         g_krn = frame.get_krn(testing_frame)
+        space =  "Unit"
         x = set_ks_ofield(g_krn, ishape, space)
         return x
 
@@ -42,6 +45,8 @@ def convert_fields(ishape,testing_frame):
         g_krn = frame.get_krn(testing_frame)
         x = set_ks(g_krn, ishape)
         return x
+    elif(s_field==field_cfe):
+        return ishape
     else:
         raise Fail ("convert fields issue")
 
@@ -50,6 +55,8 @@ def core_inside(app, coeffs, dimF, title, testing_frame, cnt):
         return fem_core(app, coeffs, dimF, title, testing_frame, cnt)
     elif(s_field==field_conv):
         return  cte_core(app, coeffs, dimF, title, testing_frame, cnt)
+    elif(s_field==field_cfe):
+        return  cfe_core(app, coeffs, dimF, title, testing_frame, cnt)
     else:
         raise Fail ("core inside issue")
 

@@ -37,7 +37,7 @@ def applyOnce(oexp_inner, app_inner, app_outer, rhs1, rhs2, pos, arity):
     oty_inner = apply.get_oty(app_inner)
     oty_outer = apply.get_oty(app_outer)
     opr_outer = app_outer.opr
-    lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "", None)
+    lhs_tmp = field(true, "tmp", oty_inner, "", oexp_inner, "", None, None)
     #create new apply
     app_tmp = apply("tmp", opr_outer, lhs_tmp, rhs1, rhs2, oty_outer, true, true)
     return simple_apply(None, app_tmp, pos)

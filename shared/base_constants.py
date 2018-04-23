@@ -79,4 +79,19 @@ c_version =""
 
 
 
-
+#strings in diderot template
+foo_in="foo_in"
+foo_outTen="foo_outTen"
+foo_op ="foo_op"
+foo_probe ="foo_probe"
+foo_length="foo_length"
+foo_limits = "foo_limits"
+foo_posIn = "foo_posIn"
+foo_posLast = "foo_posLast"
+foo_basis = "foo_basis"
+#otherwise variables in diderot program
+foo_out="out"
+foo_pos="pos"
+const_out ="7.2"
+const_probeG_cfe = "GCFE"
+const_probeG_conv = "G"

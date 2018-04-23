@@ -8,6 +8,7 @@ nonefield_dim = 0
 
 from base_constants import *
 from obj_space import *
+from input import s_field
 
 #tensor types
 class tty:
@@ -135,27 +136,27 @@ class fty:
         return (a.id==b.id)
     #string for diderot program
     def toDiderot(self):
-        
-        if(self.dim==0):
+        if((self.dim==nonefield_dim) or (s_field == field_cfe)):
             return "tensor "+str(self.shape)
-        else:
+        elif(s_field==field_conv or s_field==field_pde):
             return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
-    def toFemDiderot(self,sub=0):
-        if(self.dim==0):
-            return "tensor "+str(self.shape)
-        else:
-            return "fem#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
-    def toOFieldDiderot(self,sub=0):
-        if(self.dim==0):
-            return "tensor "+str(self.shape)
-        else:
-            return "field#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
 
-    def toStr(self):
-        if(self.dim==nonefield_dim):
-            return "tensor "
+
+    def toFemDiderot(self,sub=0):
+        if(not(self.dim==nonefield_dim)):
+            return "fem#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
         else:
-            return ("field #"+str(self.k)+"("+str(self.dim)+")"+str(self.shape))
+            return self.toDiderot()
+
+    def toOFieldDiderot(self,sub=0):
+        if(not(self.dim==0)):
+            return "field#"+str(self.k-sub)+"("+str(self.dim)+")"+str(self.shape)
+        else:
+            return self.toDiderot()
+    
+    def toStr(self):
+        return self.toDiderot()
+
     #creates ty object
     def convertTy(const,k):
         return  fty(const.id,const.name, const.dim, const.shape, const.tensorType, k, const.space)

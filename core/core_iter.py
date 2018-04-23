@@ -18,7 +18,7 @@ from base_observed import observed
 from base_write import *
 from base_var_ty import *
 # core
-from core_main import core_get_tshape2,create_single_app
+from core_main import core_get_tshape2,create_single_app,convert_fields
 
 
 # test pdes in femprime branch
@@ -110,18 +110,12 @@ def embed_giventy2_specific_ex(ex, tshape1, ishape0, oprs, tys_num, tys_ty, test
 # current example
 # get tshape of get_tshape
 def pre_get_tshape1(name, ishape, opr_inner, testing_frame):
-    g_krn = frame.get_krn(testing_frame)
-    if(s_field==field_pde):
-        space =  "Unit"
-        ishape0 = set_ks_ofield(g_krn, ishape, space)
-        (tf1, tshape1) = get_tshape(opr_inner, ishape0)
-        return (name, tf1, tshape1, ishape0)
-    elif(s_field==field_conv):
-        ishape0 = set_ks(g_krn, ishape)
-        (tf1, tshape1) = get_tshape(opr_inner, ishape0)
-        return (name, tf1, tshape1, ishape0)
-    else:
-         raise Fail("inside pre get tshape")
+    # convert field with kernels
+    ishape = convert_fields(ishape,testing_frame)
+    # done setting kernels
+    (tf1, tshape1) = get_tshape(opr_inner, ishape)
+    return (name, tf1, tshape1, ishape)
+
 
 # operator, and testing framework -> built in example given
 def oprToEx(opr_inner, testing_frame, cnt):

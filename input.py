@@ -8,14 +8,14 @@ from obj_frame import *
 
 #--------------------- Testing envt parameters ------------------------------------------
 #------ Different Field Definitions(choose one) -----------------
-s_field = field_conv # type of field
-#s_field = field_cfe
+#s_field = field_conv # type of field
+s_field = field_cfe
 #s_field = field_pde
 #-------------- ---------------Parameters -----------------------
 # Number of operations in  a core computaiton
 s_layer = 2
 # probably of a single test being executed
-s_random_range = 99
+s_random_range = 0
 
 #--------------------- New user (look here) ---------------------
 # note need to change path in fem/Makefile
@@ -36,8 +36,8 @@ s_precision = precision_double
 #s_precision = precision_single
 #-------------- order of coefficients(choose one) ----------------
 # order of coefficients
-#s_coeff_style = coeff_linear
-s_coeff_style = coeff_quadratic
+s_coeff_style = coeff_linear
+#s_coeff_style = coeff_quadratic
 #s_coeff_style = coeff_cubic
 #-------------- Type of element(choose one) ----------------------
 #s_element = elem_Lagrange

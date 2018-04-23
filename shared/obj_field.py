@@ -99,7 +99,7 @@ def set_ks_ofield(g_krn, ishapes, space):
 
 #returns expression created with coefficients
 class field:
-    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff,boundary_poly_degree = 6, sol_poly_degree = 10,pde_type = 2):
+    def __init__(self, isField, name, fldty, krn, data, inputfile, coeff,cfes,boundary_poly_degree = 6, sol_poly_degree = 10,pde_type = 2):
         #boundary_poly degree should be 6 if you rand random but otherwise in 1..5
         #sol_poly_degree  should be 10 if you want random but otherwise anything
         #pde type is 2 for random, but should be 1 or 0
@@ -110,6 +110,7 @@ class field:
         self.data = data
         self.inputfile = inputfile
         self.coeff = coeff
+        self.cfes = cfes
         #pde specific stuff
         self.pde_boundary = None
         self.pde_coeffs = None
@@ -198,6 +199,10 @@ class field:
         d = self.data
         #print "self get data", d
         return d
+    def get_cfe(self):
+        d = self.cfes
+        #print "self get data", d
+        return d
     def get_ty(self):
         return self.fldty
     def get_isField(self):
@@ -223,7 +228,7 @@ class field:
         shape = ty0.fldty.shape
         return  (len(shape)==3)
     def addSpace(self,g_element,g_ucoeff, g_length,pde_test=False,bpd=6,spd=10,pde=2 ):
-        f = field(self.isField, self.name, fty.addSpace(self.fldty,g_element,g_ucoeff, g_length ), self.krn, self.data, self.inputfile, self.coeff)
+        f = field(self.isField, self.name, fty.addSpace(self.fldty,g_element,g_ucoeff, g_length ), self.krn, self.data, self.inputfile, self.coeff,self.cfes)
         if pde_test: #boundary_poly_degree = 6, sol_poly_degree = 10,pde_type = 2
             f.set_pde(boundary_poly_degree=bpd, sol_poly_degree=spd,pde_type=pde )
         return(f)
@@ -243,86 +248,93 @@ def mk_Field(index, i_fty, k, inputfile, dim, coeff_style, ucoeff, krn, t_templa
     input1 = inputfile+tag
     def get_vec(n):
         if (n==2):
-            (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff, t_template)
-            (coeff2, exp2)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff1, exp1,exp_cfe1)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff2, exp2,exp_cfe2)= mk_exp(dim, coeff_style, ucoeff, t_template)
             coeffs= [ coeff1,coeff2]
             exps = [exp1,exp2]
-            return (coeffs, exps)
+            exp_cfe = [exp_cfe1,exp_cfe2]
+            return (coeffs, exps,exp_cfe)
         elif (n==3):
-            (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff, t_template)
-            (coeff2, exp2)= mk_exp(dim, coeff_style, ucoeff, t_template)
-            (coeff3, exp3)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff1, exp1,exp_cfe1)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff2, exp2,exp_cfe2)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff3, exp3,exp_cfe3)= mk_exp(dim, coeff_style, ucoeff, t_template)
             coeffs= [ coeff1,coeff2, coeff3]
             exps = [exp1, exp2, exp3]
-            return (coeffs, exps)
+            exp_cfe = [exp_cfe1,exp_cfe2,exp_cfe3]
+            return (coeffs, exps,exp_cfe)
         elif (n==4):
-            (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff, t_template)
-            (coeff2, exp2)= mk_exp(dim, coeff_style, ucoeff, t_template)
-            (coeff3, exp3)= mk_exp(dim, coeff_style, ucoeff, t_template)
-            (coeff4, exp4)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff1, exp1,exp_cfe1)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff2, exp2,exp_cfe2)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff3, exp3,exp_cfe3)= mk_exp(dim, coeff_style, ucoeff, t_template)
+            (coeff4, exp4,exp_cfe4)= mk_exp(dim, coeff_style, ucoeff, t_template)
             coeffs= [ coeff1,coeff2, coeff3, coeff4]
             exps = [exp1, exp2, exp3, exp4]
-            return (coeffs, exps)
+            exp_cfe = [exp_cfe1,exp_cfe2,exp_cfe3,exp_cfe4]
+            return (coeffs, exps,exp_cfe)
         else:
             raise Exception ("unsupported length:"+str(n))
     def get_mat(n,m):
-        exps=[]
-        coeffs=[]
+        exps = []
+        coeffs = []
+        cfes = []
         #print "starting get_mat"
         for i in range(n):
-            (c1,e1)= get_vec(m)
+            (c1,e1,cfe1)= get_vec(m)
             exps.append(e1)
             coeffs.append(c1)
-        return (coeffs, exps)
+            cfes.append(cfe1)
+        return (coeffs, exps,cfes)
     def get_ten3(n,m,o):
         exps=[]
         coeffs=[]
+        cfes = []
         for i in range(n):
-            (c1,e1)= get_mat(m, o)
+            (c1,e1,cfe1)= get_mat(m, o)
             exps.append(e1)
             coeffs.append(c1)
-        return (coeffs, exps)
+            cfes.append(cfe1)
+        return (coeffs, exps,cfes)
     if (fty.is_ScalarField(finfo1)):
-        (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
-        F = field(true, id, finfo1 , krn, exp1, input1, coeff1)
+        (coeff1, exp1,exp_cfe1)= mk_exp(dim, coeff_style, ucoeff,t_template)
+        F = field(true, id, finfo1 , krn, exp1, input1, coeff1,exp_cfe1)
         #print ("Fsca", field.toStr(F))
         return (F, finfo1, coeff1)
     elif(fty.is_VectorField(finfo1)): # input is a vector field
         n= fty.get_vecLength(finfo1)
-        (coeffs, exps) = get_vec(n)
-        F = field(true, id, finfo1 ,krn, exps, input1, coeffs)
+        (coeffs, exps,cfes) = get_vec(n)
+        F = field(true, id, finfo1 ,krn, exps, input1, coeffs,cfes)
         #print ("Fvec", field.toStr(F))
         return (F, finfo1, coeffs)
     elif(fty.is_MatrixField(finfo1)): # input is a vector field
         [shape0, shape1] = fty.get_shape(finfo1)
-        (coeffs, exps) =  get_mat(shape0, shape1)
-        F = field(true, id, finfo1 ,krn, exps, input1, coeffs)
+        (coeffs, exps,cfes) =  get_mat(shape0, shape1)
+        F = field(true, id, finfo1 ,krn, exps, input1, coeffs,cfes)
         #print ("Fvec", field.toStr(F))
         return (F, finfo1, coeffs)
     elif(fty.get_dim(finfo1)==0): #tensor
         if(fty.is_Scalar(finfo1)):
-            (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
+            (coeff1, exp1,exp_cfe1)= mk_exp(dim, coeff_style, ucoeff,t_template)
             (coeffs, exps) = (coeff1, exp1)
-            F = field(false, id, i_fty,"", exps, "", coeffs)
+            F = field(false, id, i_fty,"", exps, "", coeffs,exp_cfe1)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeff1)
         elif(fty.is_Vector(finfo1)):
             n= fty.get_vecLength(finfo1)
-            (coeff1, exp1)= mk_exp(dim, coeff_style, ucoeff,t_template)
-            (coeffs, exps) = get_vec(n)
-            F = field(false, id, i_fty,"", exps, "", coeffs)
+            (coeff1, exp1,exp_cfe1)= mk_exp(dim, coeff_style, ucoeff,t_template)
+            (coeffs, exps,cfes) = get_vec(n)
+            F = field(false, id, i_fty,"", exps, "", coeffs,exp_cfe1)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeff1)
         elif(fty.is_Matrix(finfo1)):
             [shape0, shape1] = fty.get_shape(finfo1)
-            (coeffs, exps) =  get_mat(shape0, shape1)
-            F = field(false, id, i_fty,"", exps, "", coeffs)
+            (coeffs, exps,cfes) =  get_mat(shape0, shape1)
+            F = field(false, id, i_fty,"", exps, "", coeffs,cfes)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeffs)
         elif(fty.is_Ten3(finfo1)):
             [shape0, shape1, shape2] = fty.get_shape(finfo1)
-            (coeffs, exps) = get_ten3(shape0, shape1, shape2)
-            F = field(false, id, i_fty,"", exps, "", coeffs)
+            (coeffs, exps,cfes) = get_ten3(shape0, shape1, shape2)
+            F = field(false, id, i_fty,"", exps, "", coeffs,cfes)
             #print ("Ften", field.toStr(F))
             return (F, finfo1, coeffs)
         else:

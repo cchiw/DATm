@@ -25,53 +25,10 @@ from nc_createField import sortField
 # specific fem programs
 from fem_main import writeTestPrograms
 
-
 #from fem_eval import eval
 sys.path.insert(0, 'cte/')
 from cte_eval import eval
 
-pde_test=true # test pdes in femprime branche
-test_new = false # new type of test
-
-def cleanup(output, p_out):
-    os.system("rm ex1.o")
-    os.system("rm ex1_init.o")
-    os.system("rm ex1_init.so")
-    os.system("rm ex1.cxx")
-    os.system("rm ex1.diderot")
-    os.system("rm *.c")
-    os.system("rm *.h")
-    os.system("rm *.txt")
-    os.system("rm *.nrrd")
-    os.system("rm observ.diderot")
-    os.system("rm "+output+"*")
-    os.system("rm cat.nrrd")
-    os.system("rm  "+p_out+".nrrd")
-    os.system("rm  "+output+".txt")
-    os.system("rm  "+p_out+".txt")
-
-# results from testing
-def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, branch):
-    (rtn_1, rst_good_1, rst_eh_1, rst_check_1, rst_terrible_1, rst_NA_1) =  rtn
-    #print "X", x
-    x = "\n-"+name_file+" "+name_describe+"| "+name_ty+"| "+rtn_1
-    writeall(x)
-    print  (x)
-
-    
-    # collect results
-    counter.inc_locals(cnt, rtn)
-    #writeCumulative(cnt)
-    # check results
-    if (rst_check_1==7):
-        rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
-    elif (rst_terrible_1==1):
-        rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-    elif (rst_NA_1==9):
-         rst_NA(name_file, x, name_describe,  branch)
-             #elif (rst_good_1==1):
-             #rst_good(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-    return
 
 ##################################################################################################
 ##################################################################################################
