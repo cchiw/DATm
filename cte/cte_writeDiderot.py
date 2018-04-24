@@ -32,7 +32,7 @@ def cte_update_method(f, pos, app):
         # index field at random positions
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
-        check_inside(f, const_probeG_Conv, app)
+        check_inside(f, const_probeG_conv, app,"")
         #foo =  "\t"+foo_out+" = "+isProbe(const_probeGConv, oty)+";\n"
         #f.write(foo.encode('utf8'))
         #check_conditional(f,  const_probeGConv, app)

@@ -413,7 +413,7 @@ def check_conditional(f, ff, app):
 def check_conditional(f, ff, app):
     # probes field at variable position
     oty = app.oty
-    set =  "\t"+foo_out+" = "+isProbe(cfenames,ff,oty)+";\n"
+    set =  "\t"+foo_out+" = "+isProbe("FIXME",ff,oty)+";\n"
     foo =  ""
     if(app.isrootlhs or oty.dim==1):
         foo = set

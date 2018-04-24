@@ -137,15 +137,16 @@ def coeffToExp(coeff, dim):
     ##print "dim",dim
     if (dim==0):
         zvalue = 1 # no z is use
-        return toExp_quad(coeff, zvalue)
+        exp = toExp_quad(coeff, zvalue)
+        return (exp,exp)
     elif (dim==1):
         [a, b, c, d] = coeff
         exp = a+b*x+c*x*x+d*x*x*x
-        return (exp, [exp])
+        return (exp, exp)
     elif (dim==2):
         zvalue = 1 # no z is used
         exp = toExp_cubic(coeff)
-        return (exp, [exp])
+        return (exp, exp)
     elif(dim==3):
         #digest coefficients
         [z0,z1,z2] = coeff
@@ -163,7 +164,8 @@ def mk_exp(dim, coeff_style, ucoeff,t_template):
     if (t_template==template_isPlain):
         #print "using regular template"
         coeff1= get_coeffs(dim, coeff_style, ucoeff)
-        (exp_py,exp_cfe) = coeffToExp(coeff1, dim)
+        x = coeffToExp(coeff1, dim)
+        (exp_py,exp_cfe) = x
         return (coeff1, exp_py,exp_cfe)
     else:
         #print "using mip template"
