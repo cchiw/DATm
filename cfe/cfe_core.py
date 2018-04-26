@@ -49,12 +49,17 @@ def cfe_core(app, coeffs, dimF, names, testing_frame, cnt):
     writetys(x)
     name_describe = app.name
     print (name_describe+x)
+   
     
     # testing positions
     positions = get_positions(dimF, g_lpos, g_upos, g_num_pos)
     #create synthetic field data with diderot
     flds = apply.get_all_Fields(app)
 
+
+    if(app.opr.fieldop or app.lhs.opr.fieldop):
+        #rst_execute(names, x, name_describe, g_branch,  positions, "")
+        return 2
     (isCompile, isRun, startall) = cfe_writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
 
     PARAMS = ""
@@ -64,12 +69,12 @@ def cfe_core(app, coeffs, dimF, names, testing_frame, cnt):
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
-            raise Fail("does not compile")
+            #raise Fail("does not compile")
             return 1
         else:
             counter.inc_run(cnt)
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
-            raise Fail("does not run")
+            #raise Fail("does not run")
             return 2
     else:
         observed_data = observed(app, g_output)

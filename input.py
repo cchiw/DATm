@@ -15,7 +15,7 @@ s_field = field_cfe
 # Number of operations in  a core computaiton
 s_layer = 2
 # probably of a single test being executed
-s_random_range = 99
+s_random_range = 4
 
 #--------------------- New user (look here) ---------------------
 # note need to change path in fem/Makefile

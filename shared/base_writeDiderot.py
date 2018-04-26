@@ -151,6 +151,9 @@ def prntOpr(opr, center):
         return (opr.symb)+center
     elif(opr.placement == place_right):
         return center+(opr.symb)
+    elif(opr.placement == place_wrap):
+        (symb_lhs, symb_rhs)= opr.symb
+        return symb_lhs+"("+e1+")"+symb_rhs
     else:
         raise Exception ("unsupported placement"+opr.placement)
 # separated here by arity
@@ -164,6 +167,9 @@ def prntBinary(opr, e1, e2):
     elif(opr.placement == place_split):
         (symb_lhs, symb_rhs)= opr.symb
         return symb_lhs+e1+",("+e2+ symb_rhs+")"
+    elif(opr.placement == place_wrap):
+        (symb_lhs, symb_rhs)= opr.symb
+        return symb_lhs+"("+e1+"),("+e2+")"+symb_rhs
     else:
         return prntOpr(opr, center)
 def prntThird(opr, e1, e2, e3):

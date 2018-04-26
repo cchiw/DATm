@@ -43,6 +43,7 @@ place_left = "left"
 place_right = "right"
 place_middle = "middle"
 place_split = "split"
+place_wrap = "wrap"
 #----------------- limitations -----------------
 # add limit to arguments
 limit_none = None
@@ -80,18 +81,18 @@ op_inner = operator(False,id+8,"inner_product", 2, u'•', place_middle, limit_n
 op_binary = [op_add, op_subtract,op_scale, op_division, op_cross, op_modulate, op_doubledot,op_outer,op_inner ]
 id=id+len(op_binary)
 #----------------- trig -----------------
-op_cosine = operator(True,id, "cosine", 1, u'cos', place_left, limit_none, True)
-op_sine = operator(True,id+1, "sine", 1, u'sin', place_left, limit_none, True)
+op_cosine = operator(True,id, "cosine", 1, u'cos', place_left, limit_none, False)
+op_sine = operator(True,id+1, "sine", 1, u'sin', place_left, limit_none, False)
 # limit- x must be between -1 and 1 for acos|asine and positive for sqrt.
 # to avoid getting a bunch of (inf, or NAN)
 # operator arguments are augmented here and in test_eval
-op_acosine = operator(True,id+2, "arccosine", 1,  (u'acos(0.01*', u')'), place_split, limit_trig, True)
-op_asine = operator(True,id+3, "arcsine", 1,  (u'asin(0.01*', u')'), place_split, limit_trig, True)
+op_acosine = operator(True,id+2, "arccosine", 1,  (u'acos(0.01*', u')'), place_split, limit_trig, False)
+op_asine = operator(True,id+3, "arcsine", 1,  (u'asin(0.01*', u')'), place_split, limit_trig, False)
 #note sqrt is 'sqrt' in each branch
 #op_sqrt = operator(True,id+4, "sqrt", 1, (u'sqrt(|', u'|)'), place_split, limit_nonzero, False)
 op_sqrt = operator(True,id+4, "sqrt", 1, (u'sqrt(', u')'), place_split, limit_nonzero, False)
-op_atangent = operator(True,id+5, "arctangent", 1, u'atan', place_left, limit_none, True)
-op_tangent = operator(True,id+6, "tangent", 1, u'tan', place_left, limit_none, True)
+op_atangent = operator(True,id+5, "arctangent", 1, u'atan', place_left, limit_none, False)
+op_tangent = operator(True,id+6, "tangent", 1, u'tan', place_left, limit_none, False)
 op_trig=[ op_cosine, op_sine, op_acosine, op_asine, op_sqrt]#,op_atangent, op_tangent]
 id=id+len(op_trig)
 
@@ -105,11 +106,11 @@ id=id+len(op_diff)
 #----------------- new features that work on branch -----------------
 op_zeros_add22 = operator(True,id, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
 op_zeros_scale3 = operator(True,id+1, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
-op_concat2 = operator(True,id+2,"concat2", 2,"concat", place_left, limit_none, True)
+op_concat2 = operator(True,id+2,"concat", 2,(u'[', u']'), place_wrap, limit_none, False)
 op_zeros_outer2 = operator(False,id+3, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
 
-op_max = operator(True,-1,"max", 2,"maxF", place_left, limit_none, True)
-op_min = operator(True,-1,"min", 2,"minF", place_left, limit_none, True)
+op_max = operator(True,-1,"max", 2,"max", place_left, limit_none, False)
+op_min = operator(True,-1,"min", 2,"min", place_left, limit_none, False)
 op_new1 = [op_zeros_add22, op_zeros_scale3, op_concat2, op_zeros_outer2]
 
 id=id+len(op_new1)
