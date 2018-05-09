@@ -17,6 +17,8 @@ from obj_frame import  *
 # specific fem programs
 from core_iter_cmd import core_cmd
 
+os.system("rm rst/data/*")
+os.system("rm rst/stash/*")
 
 # get testing framework
 testing_frame = get_testing_frame()

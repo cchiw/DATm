@@ -17,11 +17,11 @@ from base_observed import observed
 #specific nc programs
 from nc_compare import compare
 from nc_continue import check
-
+from cte_eval import eval
 
 # specific cte programs
 from cfe_writeDiderot import cfe_writeDiderot
-from cte_eval import eval
+
 
 ##################################################################################################
 ##################################################################################################
@@ -38,7 +38,7 @@ def cfe_core(app, coeffs, dimF, names, testing_frame, cnt):
     g_output = frame.get_output(testing_frame)
     g_samples = frame.get_samples(testing_frame)
     g_branch = frame.get_branch(testing_frame)
-    g_space = frame.get_space(testing_frame)
+
     # transform from global variables
     t_isNrrd = frame.transform_isNrrd(testing_frame)
     t_nrrdbranch = frame.transform_nrrdpath(testing_frame)
@@ -56,10 +56,12 @@ def cfe_core(app, coeffs, dimF, names, testing_frame, cnt):
     #create synthetic field data with diderot
     flds = apply.get_all_Fields(app)
 
-
+    # field operations is used
     if(app.opr.fieldop or app.lhs.opr.fieldop):
-        #rst_execute(names, x, name_describe, g_branch,  positions, "")
-        return 2
+        if(s_field == field_cfe_post):
+            return 2
+        elif(s_field == field_cfe_wrap and dimF>1):
+            return 2
     (isCompile, isRun, startall) = cfe_writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
 
     PARAMS = ""
@@ -78,10 +80,10 @@ def cfe_core(app, coeffs, dimF, names, testing_frame, cnt):
             return 2
     else:
         observed_data = observed(app, g_output)
-        print("observed:",observed_data)
+        #print("observed:",observed_data)
         if(check(app, observed_data)):
             correct_data = eval(app , positions)
-            print("correct:",correct_data)
+            #print("correct:",correct_data)
             ex_otype = fty.get_tensorType(app.oty)
             rtn = compare(app.oty, app.name, observed_data, correct_data)
             analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)

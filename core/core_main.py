@@ -45,7 +45,7 @@ def convert_fields(ishape,testing_frame):
         g_krn = frame.get_krn(testing_frame)
         x = set_ks(g_krn, ishape)
         return x
-    elif(s_field==field_cfe):
+    elif(s_field==field_cfe_post or s_field==field_cfe_wrap):
         return ishape
     else:
         raise Fail ("convert fields issue")
@@ -55,7 +55,7 @@ def core_inside(app, coeffs, dimF, title, testing_frame, cnt):
         return fem_core(app, coeffs, dimF, title, testing_frame, cnt)
     elif(s_field==field_conv):
         return  cte_core(app, coeffs, dimF, title, testing_frame, cnt)
-    elif(s_field==field_cfe):
+    elif(s_field==field_cfe_post or s_field==field_cfe_wrap):
         return  cfe_core(app, coeffs, dimF, title, testing_frame, cnt)
     else:
         raise Fail ("core inside issue")

@@ -22,43 +22,17 @@ from base_writeDiderot import *
 from base_constants import *
 template=c_template     # template
 
-# define field  as tensors
-def cfe_defineField(f, app):
-    exps = apply.get_all_Fields(app)
-    i=0
-    foo = "\nreal x= 11.1;\nreal y= 22.2;\nreal z= 33.3;\n"
+
+from input import  s_field
+
+
+def mkstatment(f, ty, lhs, rhs):
+    foo = ty+lhs+" = " + rhs+";\n"
     f.write(foo)
-    for exp in exps:
-        if (field.get_isField(exp)):
-            type = (exp.fldty)
-            shape =(type.shape)
-            #outLineTF(type,"0.0")
-            print("\n exp-data:",str(exp.data))
-            print("\n exp-cfe:",str(exp.cfes))
-            foo="tensor "+str(shape)+" "+fieldName(i)+" = "+str(exp.data)+";\n\t"
-            f.write(foo)
-        else: #tensor type
-            fieldShape(f, exp.fldty)
-            foo= fieldName(i)+" = "+str(field.get_data(exp))+";\n"
-            f.write(foo)
-        i+=1
 
-def  getField(app):
-    exps = apply.get_all_Fields(app)
-    flds = []
-    i = 0
-    f_vars = []
-    for exp in exps:
-        if (field.get_isField(exp)):
-            f_vars+=[(fieldName(i),exp)]
-        i+=1
-    return f_vars
-
-# last line to make cse
-def cfe_makeCFE(f,app):
-    fldty = app.oty
+#Make CFE
+def cfe_makeCFE(f,fldty,lhs,G):
     dim =fldty.dim
-    shape = fldty.shape
     f_str =""
     if(dim==1):
         f_str = "x"
@@ -66,8 +40,30 @@ def cfe_makeCFE(f,app):
         f_str = "x,y"
     elif(dim==3):
         f_str = "x,y,z"
-    foo = "ofield#3("+str(dim)+")"+str(shape)+const_probeG_cfe+" = " + "cfexp(G,"+f_str+");\n"
+    ty = fldty.toDiderot()
+    exp = "cfexp("+G+","+f_str+")"
+    mkstatment(f, ty,lhs, exp)
+
+
+
+# define field  as tensors
+def cfe_defineField(f, app):
+    args = apply.get_all_Fields(app)
+    i=0
+    foo = "\nreal x= 11.1;\nreal y= 22.2;\nreal z= 33.3;\n"
     f.write(foo)
+    for arg in args:
+        lhs = fieldName(i)
+        rhs = str(arg.data)
+        fldty = arg.fldty
+        if (field.get_isField(arg) and (s_field==field_cfe_wrap)):
+            cfe_makeCFE(f, fldty, lhs, rhs)
+        else: #tensor type
+            # cfe-post defines expression separately
+            ty = "tensor "+str(fldty.shape)
+            mkstatment(f, ty,lhs, rhs)
+        i+=1
+
 
 def  cfe_defineXYZ(f,dim):
     foo  = ""
@@ -89,8 +85,14 @@ def cfe_update_method(f, pos, app):
         base_index_field_at_positions(f, pos, dim)
         XYZ = cfe_defineXYZ(f,dim)
         # check_inside(f, const_probeG_cfe, app,XYZ)
-        foo = "\n\t\t out = inst("+const_probeG_cfe+XYZ+");"
+        output ="FIXME"
+        if (s_field==field_cfe_post):
+            output = const_probeG_cfe
+        elif(s_field==field_cfe_wrap):
+            output = const_probeG_conv
+        foo = "\n\t\t out = inst("+output+XYZ+");"
         f.write(foo)
+
     else:
         # get conditional for tensor argument
         check_conditional(f,  foo_out, app)
@@ -126,7 +128,8 @@ def cfe_readDiderot(p_out, app, pos):
         if c0:
             #print "replace op"
             replaceOp(f, app)
-            cfe_makeCFE(f,app)
+            if ((s_field==field_cfe_post)):
+                cfe_makeCFE(f,app.oty,const_probeG_cfe,const_probeG_conv)
             continue
         # index field at position
         d0 = re.search(foo_probe,line)

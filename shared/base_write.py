@@ -357,13 +357,15 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         rst_check(fname_file, x, name_describe, branch, observed_data, correct_data)
     elif (rst_terrible_1==1):
         rst_terrible(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+        print("observed:",observed_data)
+        print("correct_data:",correct_data)
         #raise Fail("stop here:terrible")
     elif (rst_NA_1==9):
         rst_NA(name_file, x, name_describe,  branch)
-    #elif (rst_good_1==1 or rst_eh_1==1):
-    #elif(rst_good_1==1):
+    elif (rst_good_1==1 or rst_eh_1==1):
+        #elif(rst_good_1==1):
     #raise Exception ("stop")
-    #rst_good(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+        rst_good(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
     return
 
 def cleanup(output, p_out):
