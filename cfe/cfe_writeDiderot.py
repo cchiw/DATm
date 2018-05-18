@@ -63,7 +63,7 @@ def cfe_update_method(f, args, pos, app):
         elif(dim==2):
             foo ="\n\t\treal x  = pos[0]; \n\t\t real y = pos[1];\n"
         elif(dim==3):
-            foo ="\n\t\treal x  = pos[0]; \n\t\t real y = pos[1]; \n\t\t real z = pos[2]\n"
+            foo ="\n\t\treal x  = pos[0]; \n\t\t real y = pos[1]; \n\t\t real z = pos[2];\n"
         f.write(foo)
         FLDNames = ""
         i=0

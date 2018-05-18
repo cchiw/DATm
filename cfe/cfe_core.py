@@ -61,6 +61,9 @@ def cfe_core(app, coeffs, dimF, names, testing_frame, cnt):
         return 2
     if(fty.is_Tensor(app.oty)):
         return 2
+    for ff in flds:
+        if(fty.is_Matrix(ff.fldty) or fty.is_Ten3(ff.fldty)):
+            return 2
     # limit to field output but can not support differentiation
     (isCompile, isRun, startall) = cfe_writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
 
