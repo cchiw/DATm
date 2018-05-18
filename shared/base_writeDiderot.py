@@ -105,6 +105,11 @@ def outLineTF(type,s):
         [k, j, i] = otype.shape
         return mkMat(k, mkMat(j, mkMat(i,s)))
 #instaniate output tensor
+def outTensor(f, lhs, type):
+    otype = fty.get_tensorType(type)
+    foo="tensor "+str(otype.shape)+" "+lhs+" = "+outLineTF(type,"0.0")+";\n\t"
+    f.write(foo)
+
 def outLineF(f, type):
     otype = fty.get_tensorType(type)
     foo="\toutput "
