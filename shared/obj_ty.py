@@ -136,10 +136,8 @@ class fty:
         return (a.id==b.id)
     #string for diderot program
     def toDiderot(self):
-        if((self.dim==nonefield_dim) or (s_field == field_cfe_post)):
+        if((self.dim==nonefield_dim) or (s_field == field_cfe)):
             return "tensor "+str(self.shape)
-        elif(s_field == field_cfe_wrap):
-             return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
         elif(s_field==field_conv or s_field==field_pde):
             return "field#"+str(self.k)+"("+str(self.dim)+")"+str(self.shape)
 

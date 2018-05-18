@@ -19,7 +19,7 @@ from base_writeDiderot import *
 from base_constants import *
 from nc_writeDiderot import nc_compileandRun, nc_setLength
 
-
+cfenames ="FIXME"
 
 # create space for field
 def fem_fieldShape(f, fldty):
@@ -122,7 +122,7 @@ def cte_update_method(f, pos, app):
         dim = oty.dim
         base_index_field_at_positions(f, pos, dim)
         # check if position is inside
-        check_inside(f, opfieldname1, app)
+        check_inside(f, opfieldname1, app,cfenames)
     else:
         check_conditional(f,  foo_out, app)
 ################################ search Diderot template and replace foo variable name ################################

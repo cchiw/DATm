@@ -9,8 +9,7 @@ from obj_frame import *
 #--------------------- Testing envt parameters ------------------------------------------
 #------ Different Field Definitions(choose one) -----------------
 #s_field = field_conv # type of field
-s_field = field_cfe_wrap #wrap cfe immediately around polynomial then apply operators to field
-#s_field = field_cfe_post  # apply operators to tensor then wrap cfe around it.
+s_field = field_cfe  # apply operators to tensor then wrap cfe around it.
 #s_field = field_pde
 #-------------- ---------------Parameters -----------------------
 # Number of operations in  a core computaiton

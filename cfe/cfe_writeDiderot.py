@@ -40,7 +40,7 @@ def cfe_makeCFE(f,fldty,lhs,G):
         f_str = "x,y"
     elif(dim==3):
         f_str = "x,y,z"
-    ty = fldty.toDiderot()
+    ty = "field#"+str(fldty.k)+"("+str(dim)+")"+str(fldty.shape)
     exp = "cfexp("+G+","+f_str+")"
     mkstatment(f, ty,lhs, exp)
 
@@ -56,12 +56,12 @@ def cfe_defineField(f, app):
         lhs = fieldName(i)
         rhs = str(arg.data)
         fldty = arg.fldty
-        if (field.get_isField(arg) and (s_field==field_cfe_wrap)):
-            cfe_makeCFE(f, fldty, lhs, rhs)
-        else: #tensor type
+        #if (field.get_isField(arg)):
+        #    cfe_makeCFE(f, fldty, lhs, rhs)
+        #else: #tensor type
             # cfe-post defines expression separately
-            ty = "tensor "+str(fldty.shape)
-            mkstatment(f, ty,lhs, rhs)
+        ty = "tensor "+str(fldty.shape)
+        mkstatment(f, ty,lhs, rhs)
         i+=1
 
 
@@ -85,11 +85,7 @@ def cfe_update_method(f, pos, app):
         base_index_field_at_positions(f, pos, dim)
         XYZ = cfe_defineXYZ(f,dim)
         # check_inside(f, const_probeG_cfe, app,XYZ)
-        output ="FIXME"
-        if (s_field==field_cfe_post):
-            output = const_probeG_cfe
-        elif(s_field==field_cfe_wrap):
-            output = const_probeG_conv
+        output = const_probeG_cfe
         foo = "\n\t\t out = inst("+output+XYZ+");"
         f.write(foo)
 
@@ -128,8 +124,7 @@ def cfe_readDiderot(p_out, app, pos):
         if c0:
             #print "replace op"
             replaceOp(f, app)
-            if ((s_field==field_cfe_post)):
-                cfe_makeCFE(f,app.oty,const_probeG_cfe,const_probeG_conv)
+            cfe_makeCFE(f,app.oty,const_probeG_cfe,const_probeG_conv)
             continue
         # index field at position
         d0 = re.search(foo_probe,line)

@@ -3,8 +3,7 @@
 
 #-------------- Different Field Definitions ----------------------
 field_pde = "pde field"
-field_cfe_wrap = "closed-form expression field"
-field_cfe_post = "field_cfe_post"
+field_cfe = "field_cfe_post"
 field_conv = "dicrete image data field"
 
 

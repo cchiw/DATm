@@ -58,10 +58,10 @@ def cfe_core(app, coeffs, dimF, names, testing_frame, cnt):
 
     # field operations is used
     if(app.opr.fieldop or app.lhs.opr.fieldop):
-        if(s_field == field_cfe_post):
-            return 2
-        elif(s_field == field_cfe_wrap and dimF>1):
-            return 2
+        return 2
+    if(fty.is_Tensor(app.oty)):
+        return 2
+    # limit to field output but can not support differentiation
     (isCompile, isRun, startall) = cfe_writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
 
     PARAMS = ""

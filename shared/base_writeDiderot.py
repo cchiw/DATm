@@ -316,6 +316,7 @@ def get_exp1(opr, i):
     elif(arity==3):
         return fieldName(i+2)
 def innerL(app, lhs, i):
+    cfenames = ""
     opr = app.opr
     oty = app.oty
     (z, _) = get_exp2(opr, lhs , i)
@@ -324,7 +325,7 @@ def innerF(app, i):
     exp0 = fieldName(i)
     return  innerL(app, exp0, i+1)
 def get_args2(app, app_inner, i):
-
+    cfenames = ""
     opr_inner =app_inner.opr
     exp0 = fieldName(i)
     exp1 = fieldName(i+1)
