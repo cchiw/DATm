@@ -94,7 +94,7 @@ def applyUnaryOp(op1,ityps):
             return err()
     elif(fty.is_Scalar(ityp1)):
         ##print "tshape-scalar"
-        if(op_sqrt==op1):
+        if(op_sqrt==op1 or op_abs==op1):
             return same()
         elif(op_cosine==op1) or (op_sine==op1)or (op_tangent==op1) or (op_acosine==op1) or (op_asine==op1)or (op_atangent==op1):
             if(fty.is_Field(ityp1)):

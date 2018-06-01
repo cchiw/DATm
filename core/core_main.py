@@ -74,8 +74,9 @@ def core(app, coeffs, dimF, names, testing_frame, cnt):
     counter.inc_cnt(cnt)
     if(mk_choice_range(testing_frame, cnt)):
         counter.inc_cumulative(cnt)
-        
+        print ("DATM: about to call core inside")
         rtn = core_inside(app, coeffs, dimF, names, testing_frame, cnt)
+        print ("DATM: done calling core inside")
         if(rtn==None):
             fnames = apply.get_all_FieldTys(app)
             x = "_"+fnames +" |"+names

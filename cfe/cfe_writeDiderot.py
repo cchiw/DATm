@@ -36,7 +36,7 @@ def cfe_defineField(f,args, app, dim):
     for arg in args:
         lhs = fieldName(i)
         type =arg.fldty
-        outTensor(f, lhs, type)
+        outTensor(f, lhs, type, str(i))
         i+=1
 #Make CFE wrapper
 def cfe_makeCFE(f,args,fldty,lhs,G):

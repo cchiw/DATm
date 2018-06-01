@@ -1023,6 +1023,8 @@ def unary(e):
         return exp
     if(op_norm==fn_name):#norm
         return fn_norm(fld, dim)
+    elif(op_abs.id==fn_name.id):
+        return abs(exp)
     elif(op_normalize==fn_name):#normalize
         x= fn_normalize(fld, dim)
         return x

@@ -351,7 +351,7 @@ def oprToArgs(op1, tys):
             return ps_unu_sk
         elif((op1.id== op_tangent.id) or (op1.id== op_atangent.id)):
             return ps_unu_sk
-        elif(op1.id== op_sqrt.id):
+        elif(op1.id== op_sqrt.id or op1.id ==op_abs.id):
             return get_k(get_scaF)
         elif(op1.id==op_gradient.id):
             return get_k_noT(get_scaF) # differentiation only for scalar fields

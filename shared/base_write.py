@@ -277,13 +277,20 @@ def writeToRst(names, observed_data, correct_data,  positions, PARAMS, branch, r
     f.close()
 
 
-def write_rst(names, x, extraname, phrase):
+def write_rstG(names, x, extraname, phrase):
+    x = "\n\t-"+x+"\n\t"+phrase
+    m = "\n\n***"+ phrase+"__"+names +"\n\t -: " + extraname+x
+    writeall(x)
+    print(x)
+    return
+
+def write_rstT(names, x, extraname, phrase):
     x = "\n\t-"+x+"\n\t"+phrase
     m = "\n\n***"+ phrase+"__"+names +"\n\t -: " + extraname+x
     writeall(x)
     writesummary(x)
     write_terrible(m)
-    ##print (x)
+    print (x)
     return
 
 
@@ -292,7 +299,7 @@ def rst_compile(names, x, extraname,  branch,  positions, PARAMS):
 
     rtn1 = "rtn:compile "
     dir = "c"
-    write_rst(names, x, extraname, rtn1)
+    write_rstT(names, x, extraname, rtn1)
     labl = dir+"__"+names
     x = extraname+x
 
@@ -303,13 +310,13 @@ def rst_compile(names, x, extraname,  branch,  positions, PARAMS):
 def rst_execute(names, x, extraname,  branch,  positions, PARAMS):
     rtn1 = "rtn:execute "
     dir = "r"
-    write_rst(names, x, extraname, rtn1)
+    write_rstT(names, x, extraname, rtn1)
     labl = dir+"__"+names
 
 def rst_fp(names, x, extraname,  branch,  positions, PARAMS):
     rtn1 = "rtn:fp "
     dir = "r"
-    write_rst(names, x, extraname, rtn1)
+    write_rstG(names, x, extraname, rtn1)
     labl = dir+"__"+names
     #writeToRst(labl, None, None,  positions, PARAMS, branch, x)
 
@@ -318,26 +325,26 @@ def rst_fp(names, x, extraname,  branch,  positions, PARAMS):
 def rst_NA(names, x, extraname, branch):
     dir = "na"
     labl = dir+"__"+names
-    #write_rst(names, x, extraname, "rtn:NA")
+    #write_rstG(names, x, extraname, "rtn:NA")
     #writeToRst(labl, None, None, branch, x)
 
 # check results
 def rst_check(names, x, extraname, branch, observed_data, correct_data):
     dir = "k"
     labl = dir+"__"+names
-    write_rst(names, x, extraname, "rtn:check")
+    write_rstG(names, x, extraname, "rtn:check")
     #writeToRst(labl, observed_data, correct_data, branch, x)
 def rst_terrible(names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "t"
     labl = dir+"__"+names
-    write_rst(names, x, extraname, "rtn:terrible")
+    write_rstT(names, x, extraname, "rtn:terrible")
 
     #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
 def rst_good(names, x, extraname,  branch, observed_data, correct_data,  positions, PARAMS) :
     dir = "p"
     labl = dir+"_"+names
-    write_rst(names, x, extraname, "rtn:general")
+    write_rstG(names, x, extraname, "rtn:general")
 
     #writeToRst(labl, observed_data, correct_data,  positions, PARAMS, branch, x)
 
@@ -362,11 +369,11 @@ def analyze(name_file, name_ty, name_describe, cnt, rtn, observed_data, correct_
         #raise Fail("stop here:terrible")
     elif (rst_NA_1==9):
         rst_NA(name_file, x, name_describe,  branch)
-    elif (rst_good_1==1 or rst_eh_1==1):
+    #elif (rst_good_1==1 or rst_eh_1==1):
         #elif(rst_good_1==1):
     #raise Exception ("stop")
-        rst_good(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
-    return
+    #rst_good(name_file, x, name_describe, branch, observed_data, correct_data,  positions, PARAMS)
+
 
 def cleanup(output, p_out):
     os.system("rm ex1.o")

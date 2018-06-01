@@ -59,8 +59,8 @@ def cte_core(app, coeffs, dimF, names, testing_frame, cnt):
 
     print (name_describe+x)
     (isCompile, isRun, startall) = cte_writeDiderot(g_p_Observ, app, positions, g_output, t_runtimepath, t_isNrrd, startall)
+    print (" \n DATm: just called write diderot")
     if(isRun == None):
-  
         if(isCompile == None):
             counter.inc_compile(cnt)
             rst_compile(names, x, name_describe, g_branch,  positions, PARAMS)
@@ -70,9 +70,13 @@ def cte_core(app, coeffs, dimF, names, testing_frame, cnt):
             rst_execute(names, x, name_describe, g_branch,  positions, PARAMS)
             return 2
     else:
+        print (" \n DATm: did not run")
         observed_data = observed(app, g_output)
+        print (" \n DATm:  observed",observed_data)
         if(check(app, observed_data)):
+            print("nDATm: checked")
             correct_data = eval(app , positions)
+            print ("nDATm: correct:", correct_data)
             ex_otype = fty.get_tensorType(app.oty)
             rtn = compare(app.oty, app.name, observed_data, correct_data)
             analyze(names, fnames, name_describe, cnt, rtn, observed_data, correct_data,  positions, PARAMS, g_branch)

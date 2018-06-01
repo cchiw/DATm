@@ -65,7 +65,8 @@ op_transpose = operator(True, id+5,"transpose", 1, u'transpose', place_left, lim
 op_trace = operator(False,id+6,"trace", 1, u'trace', place_left, limit_none, False)
 op_det = operator(False,id+7,"det", 1, u'det', place_left, limit_none, False)
 op_inverse = operator(False,id+8, "inverse", 1, u'inv', place_left, limit_det, False)
-op_reg = [op_none, op_negation, op_copy, op_norm, op_normalize,op_transpose,op_trace,op_det,op_inverse]
+op_abs = operator(True,id+9,"abs", 1, (u'abs(',u')'), place_split, limit_none, False)
+op_reg = [op_none, op_negation, op_copy, op_norm, op_normalize,op_transpose,op_trace,op_det,op_inverse,op_abs]
 id=id+len(op_reg)
 #----------------- binary -----------------
 op_add = operator(True,id,"addition", 2,"+", place_middle, limit_none, False)
@@ -106,7 +107,7 @@ id=id+len(op_diff)
 #----------------- new features that work on branch -----------------
 op_zeros_add22 = operator(True,id, "zeros_add", 1, (u'(zeros[2, 2]+', u')'), place_split, limit_none, False)
 op_zeros_scale3 = operator(True,id+1, "zeros_scale", 1, (u'(', u'*zeros[3, 3])'), place_split, limit_none, False)
-op_concat2 = operator(True,id+2,"concat", 2,(u'[', u']'), place_wrap, limit_none, False)
+op_concat2 = operator(True,id+2,"concat", 2,(u'[', u']'), place_wrap, limit_none, True)
 op_zeros_outer2 = operator(False,id+3, "zeros_outer", 1, (u'(zeros[2]⊗', u')'), place_split, limit_none, False)
 
 op_max = operator(True,-1,"max", 2,"max", place_left, limit_none, False)
